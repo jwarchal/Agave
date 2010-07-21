@@ -79,11 +79,11 @@ function editFieldSettings($args=null) {
 	exit($fm->render($form));
 }
 
-function deleteField($meta) {
+function deleteField($args=null) {
 	global $agave;
 
 	//parse metadata to find the field we need to edit
-	$meta = explode(".", $meta);
+	$meta = explode(".", $_POST['metadata']);
 	$stem = $meta[0];
 	$nodeKey = $meta[1];
 	
@@ -219,11 +219,7 @@ function saveField($args=NULL) {
 
 	$form = $fm->getForm('sm_field_element');
 
-	$agave->death($form->values);
-
-
 	$form->values = $fm->cleanup($form->values); //mysql_real_escape_string's any strings
-
 
 	$stem = $form->values['stem'];
 	$nodeKey = $form->values['nodeKey'];
@@ -233,10 +229,10 @@ function saveField($args=NULL) {
 	$help = $form->values['helpText'];
 	$access = $form->values['access'];
 	$types = $form->values['types'];
-	$showLabel = $form->values['showLabel'];
+	$showLabel = !empty($form->values['showLabel']) ? $form->values['showLabel'] : 0;
 	
-	$query = "	INSERT INTO `".$stem."_schema` (nodeKey, keyName, type, label, help, access, showLabel, ".$stem."_type)
-				VALUES($nodeKey, '$keyName', '$type', '$label', '$help', '$access', '$showLabel', '$types') 
+	$query = "	INSERT INTO `".$stem."_schema` (`nodeKey`, `keyName`, `type`, `label`, `help`, `access`, `showLabel`, `".$stem."_type`)
+				VALUES('$nodeKey', '$keyName', '$type', '$label', '$help', '$access', '$showLabel', '$types')
 				ON DUPLICATE KEY UPDATE 
 				`nodeKey`=VALUES(`nodeKey`), `keyName`=VALUES(`keyName`),
 				`type`=VALUES(`type`), `label`=VALUES(`label`),

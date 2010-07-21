@@ -95,8 +95,10 @@ function schemaManager_return_field_element_form($data=FALSE) {
 	return $form;
 }
 
-function schemaManager_return_field_element_settings_form($values, $settings=FALSE) {
+function schemaManager_return_field_element_settings_form($settings=FALSE) {
 	global $agave;
+die('foo');
+	$form = array();
 
-	//for fields load fieldManager, have it returnElementSettings, or whatever
+	return $form;
 }

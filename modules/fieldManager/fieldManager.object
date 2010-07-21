@@ -234,7 +234,7 @@ final class fieldManager {
 			if(!$this->isProp($key)){
 				$class = $value['#type'];
 				$field = $this->loadField($class);
-				$form->values[$value['#name']] = $field->unformat($form->values[$value['#name']]);
+				if(isset($form->values[$value['#name']])) $form->values[$value['#name']] = $field->unformat($form->values[$value['#name']]);
 				$this->unformatValuesWithFieldsArray($value, $form);
 			}
 		}
@@ -332,7 +332,7 @@ final class fieldManager {
 	public function cleanup($values) {
 		foreach($values as $key=>$value) {
 			$key = mysql_real_escape_string($key);
-			$value = mysql_real_escape_string($value);
+			$value = (is_string($value)) ? mysql_real_escape_string($value) : $value;
 		}
 		return $values;
 	}

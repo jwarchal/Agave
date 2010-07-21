@@ -43,7 +43,7 @@ $(document).ready(function() {
 	});
 	
 	//field settings button
-	$('#show-field-settings').live('click', function() {
+	$('.show-field-settings').live('click', function() {
 		var metadata = $('#edit-field-metadata').val();
 		editFieldSettings(metadata);
 	});

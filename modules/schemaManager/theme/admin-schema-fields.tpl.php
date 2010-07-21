@@ -33,8 +33,9 @@
 			<?php $listItemClass = ($field[$table."_type"] != $type) ? "class='schema-field schema-shared-field'" : "class='schema-field'"; ?>
 			<li <?php echo $listItemClass ?> id='<?php echo $table."_".$field['nodeKey'] ?>'>
 				<span class='schema-field-keyName'><?php echo $field['keyName'] ?></span>
-				<a class='schema-field-delete schema-field-control'>delete</a> 
+				<a class='schema-field-delete schema-field-control'>delete</a>
 				<a class='schema-field-edit schema-field-control'>edit</a>
+				<a class='schema-field-control show-field-settings' val=<?php print $field['type'] ?>>settings</a>
 				<input class='schema-field-metadata' type='hidden' value='<?php echo $table.".".$field['nodeKey'].".".$field[$table.'_type'] ?>' />
 			</li>
 		<?php endforeach; else: print "No fields :("; endif; ?>
