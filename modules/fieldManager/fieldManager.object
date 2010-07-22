@@ -19,7 +19,6 @@ final class fieldManager {
 			$this->registerFields();
 			$this->registerValidators();
 			$this->registerAlterers();
-			global $agave;
 			$this->extensionsLoaded = TRUE;
 		}
 		$firstpass = TRUE;
@@ -474,20 +473,20 @@ final class fieldManager {
 		return $html;
 	}
 
-        public function format($type, $value){
-            $field = $this->loadField($type);
-            $values[0]=$value;
-            return $field->format($values,0);
-        }
+	public function format($type, $value){
+		$field = $this->loadField($type);
+		$values[0]=$value;
+		return $field->format($values,0);
+	}
 
-        public function unformat($type, $value){
-            $field = $this->loadField($type);
-            return $field->unformat($value);
-        }
+	public function unformat($type, $value){
+		$field = $this->loadField($type);
+		return $field->unformat($value);
+	}
 
-        protected function generateMetaData($element) { //TODO: old, try to get away from using
+	protected function generateMetaData($element) { //TODO: old, try to get away from using
 		if(!empty($element['metaData'])) {
-                        isset($element['blockNum']) ? $block = $element['blockNum'] : $block = 0;
+            isset($element['blockNum']) ? $block = $element['blockNum'] : $block = 0;
 			$element['metaData']['type'] = $element['type'];
 			$metadata = $this->agave->encrypt(json_encode($element['metaData']));
 			$html = "<input type='hidden' class='fm-metadata' name='metaData[".$block."][".$element['name']."]' value='$metadata' />";
@@ -495,5 +494,9 @@ final class fieldManager {
 		}
 		else return "";
 	}
-	
+
+	public function returnSettingsFields($field, $data=FALSE){
+		return $this->loadField($field)->returnSettingsForm($data);
+	}
+
 } //endfieldManager class

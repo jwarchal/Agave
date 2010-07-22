@@ -21,7 +21,8 @@ final class field_select extends genericField implements fieldInterface {
 	
 	public function edit($element) {
 		$attributes = $this->generateAttributes($element);
-		$html = "<select name='".$this->generateName($element)."' $attributes >";
+		$disabled = $attributes['disabled'];
+		$html = "<select name='".$this->generateName($element)."' $attributes $disabled>";
 		if(isset($element['values'][0])) {
 			$values = $element['values'];
 			$default = isset($element['default']) ? $element['default'] : NULL;
@@ -55,12 +56,12 @@ final class field_select extends genericField implements fieldInterface {
 	public function returnSettingsForm($settings) {
 		$elements = array();
 		$elements[] = array(
-			'name'=>'values',
-			'type'=>'text',
-			'label'=>'Values',
-			'help'=>"Enter a comma delimited string, such as 'A, B, C' or 'A:1, B:2' for keyed arrays.",
-			'size'=>60,
-			'default'=>(isset($settings['values'])) ? implode(",", $settings['values']) : NULL
+			'#name'=>'values',
+			'#type'=>'text',
+			'#label'=>'Values',
+			'#help'=>"Enter a comma delimited string, such as 'A, B, C' or 'A:1, B:2' for keyed arrays.",
+			'#size'=>60,
+			'#default'=>(isset($settings['values'])) ? implode(",", $settings['values']) : NULL,
 		);
 
 		return $elements;
@@ -75,4 +76,3 @@ final class field_select extends genericField implements fieldInterface {
 		return $settings;		
 	}
 }
-?>

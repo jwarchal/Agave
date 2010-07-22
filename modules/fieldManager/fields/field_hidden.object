@@ -47,11 +47,11 @@ final class field_hidden extends genericField implements fieldInterface {
 	public function returnSettingsForm($settings) {
 		$elements = array();
 		$elements[] = array(
-			'name'=>'value',
-			'type'=>'text',
-			'label'=>'Value:',
-			'help'=>'Optionally hard code a value in a hidden element.',
-			'default'=>(isset($settings['value'])) ? $settings['value'] : NULL
+			'#name'=>'value',
+			'#type'=>'text',
+			'#label'=>'Value:',
+			'#help'=>'Optionally hard code a value in a hidden element.',
+			'#default'=>(isset($settings['value'])) ? $settings['value'] : NULL
 		);
 		
 		return $elements;
@@ -64,4 +64,3 @@ final class field_hidden extends genericField implements fieldInterface {
 	}
 	
 }
-?>

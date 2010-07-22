@@ -61,30 +61,30 @@ final class field_cktext extends genericField implements fieldInterface {
 		$elements = array();
 		//maxlength
 		$elements[] = array(
-			'name'=>'maxlength',
-			'type'=>'text',
-			'label'=>'Max characters:',
-			'size'=>5,
-			'maxlength'=>5,
-			'default'=>(isset($settings['maxlength'])) ? $settings['maxlength'] : NULL
+			'#name'=>'maxlength',
+			'#type'=>'text',
+			'#label'=>'Max characters:',
+			'#size'=>5,
+			'#maxlength'=>5,
+			'#default'=>(isset($settings['maxlength'])) ? $settings['maxlength'] : NULL
 		);
 		//cols: textarea
 		$elements[] = array(
-			'name'=>'cols',
-			'type'=>'text',
-			'label'=>'Cols:',
-			'size'=>4,
-			'maxlength'=>4,
-			'default'=>(isset($settings['cols'])) ? $settings['cols'] : NULL
+			'#name'=>'cols',
+			'#type'=>'text',
+			'#label'=>'Cols:',
+			'#size'=>4,
+			'#maxlength'=>4,
+			'#default'=>(isset($settings['cols'])) ? $settings['cols'] : NULL
 		);
 		//rows: textarea
 		$elements[] = array(
-			'name'=>'rows',
-			'type'=>'text',
-			'label'=>'Rows:',
-			'size'=>4,
-			'maxlength'=>4,
-			'default'=>(isset($settings['rows'])) ? $settings['rows'] : NULL
+			'#name'=>'rows',
+			'#type'=>'text',
+			'#label'=>'Rows:',
+			'#size'=>4,
+			'#maxlength'=>4,
+			'#default'=>(isset($settings['rows'])) ? $settings['rows'] : NULL
 		);
 		
 		return $elements;

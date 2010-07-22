@@ -87,36 +87,36 @@ final class field_radio extends genericField implements fieldInterface {
 	public function returnSettingsForm($settings) {
 		$elements = array();
 		$elements[] = array(
-			'name'=>'values',
-			'type'=>'text',
-			'label'=>'Values',
-			'help'=>"Enter a comma delimited string, such as 'A, B, C' or 'A:1, B:2' for keyed arrays.",
-			'size'=>60,
-			'default'=>(isset($settings['values'])) ? implode(", ", $settings['values']) : NULL
+			'#name'=>'values',
+			'#type'=>'text',
+			'#label'=>'Values',
+			'#help'=>"Enter a comma delimited string, such as 'A, B, C' or 'A:1, B:2' for keyed arrays.",
+			'#size'=>60,
+			'#default'=>(isset($settings['values'])) ? implode(", ", $settings['values']) : NULL
 		);
 		$elements[] = array(
-			'name'=>'layout',
-			'type'=>'radio',
-			'layout'=>array('type'=>'horizontal'),
-			'label'=>'Form Layout',
-			'values'=>array('horizontal','vertical','grid'),
-			'default'=>(isset($settings['layout']['type'])) ? $settings['layout']['type'] : 'horizontal'
+			'#name'=>'layout',
+			'#type'=>'radio',
+			'#layout'=>array('type'=>'horizontal'),
+			'#label'=>'Form Layout',
+			'#values'=>array('horizontal','vertical','grid'),
+			'#default'=>(isset($settings['layout']['type'])) ? $settings['layout']['type'] : 'horizontal'
 		);
 		$elements[] = array(
-			'name'=>'gridwidth',
-			'type'=>'text',
-			'label'=>'Grid width',
-			'help'=>'This only affects the grid layout. Default is 3.',
-			'size'=>2,
-			'maxlength'=>2,
-			'default'=>(isset($settings['layout']['width'])) ? $settings['layout']['width'] : '3'
+			'#name'=>'gridwidth',
+			'#type'=>'text',
+			'#label'=>'Grid width',
+			'#help'=>'This only affects the grid layout. Default is 3.',
+			'#size'=>2,
+			'#maxlength'=>2,
+			'#default'=>(isset($settings['layout']['width'])) ? $settings['layout']['width'] : '3'
 		);
 		$elements[] = array(
-			'name'=>'nolabel',
-			'type'=>'checkbox',
-			'label'=>'Hide labels',
-			'values'=>array('nolabel'),
-			'default'=>(isset($settings['nolabel'])) ? array('nolabel') : NULL
+			'#name'=>'nolabel',
+			'#type'=>'checkbox',
+			'#label'=>'Hide labels',
+			'#values'=>array('nolabel'),
+			'#default'=>(isset($settings['nolabel'])) ? array('nolabel') : NULL
 		);
 		return $elements;
 	}
@@ -131,4 +131,3 @@ final class field_radio extends genericField implements fieldInterface {
 	}
 	
 }
-?>

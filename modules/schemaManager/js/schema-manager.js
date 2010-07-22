@@ -66,7 +66,8 @@ function editFieldSettings(metadata) {
 	    },
 	    success: function (html) {
 			if(html) {
-				$('#field-edit-frame').html(html);
+				$('body').append("<div id='field-edit-frame'>"+html+"</div>");
+				$('#field-edit-frame').draggable();
 			}
 	    }
 	}); // /end ajax call		
@@ -118,7 +119,8 @@ function editField(metadata, mode) {
 	    },
 	    success: function (html) {
 			if(html){
-				$('body').append("<div id='field-edit-frame'>"+html+"<input id='edit-field-metadata' type='hidden' value='"+metadata+"' /></div>");
+				$('body').append("<div id='field-edit-frame'>"+html+"</div>");
+				$('#field-edit-frame').draggable();
 			}
 	    }
 	}); // /end ajax call

@@ -77,39 +77,39 @@ final class field_text extends genericField implements fieldInterface {
 	public function returnSettingsForm($settings) {
 		$elements = array();
 		$elements[] = array(
-			'name'=>'size',
-			'type'=>'text',
-			'label'=>'Size',
-			'size'=>4,
-			'maxlength'=>4,
-			'default'=>(isset($settings['size'])) ? $settings['size'] : NULL
+			'#name'=>'size',
+			'#type'=>'text',
+			'#label'=>'Size',
+			'#size'=>4,
+			'#maxlength'=>4,
+			'#default'=>(isset($settings['size'])) ? $settings['size'] : NULL
 		);
 		//validation: text
 		$elements[] = array(
-			'name'=>'validation',
-			'type'=>'multiselect',
-			'label'=>'Validation:',
-			'values'=>array('-- None --','Letters only','Alpha-numeric','Numbers only','No special chars','Email','SSN','DL','PhoneUS','PhoneINTL'),
-			'help'=>"Note: Specifying validation by default makes a field required",
-			'default'=>(isset($settings['validation'])) ? array($settings['validation']) : array("-- None --")
+			'#name'=>'validation',
+			'#type'=>'multiselect',
+			'#label'=>'Validation:',
+			'#values'=>array('-- None --','Letters only','Alpha-numeric','Numbers only','No special chars','Email','SSN','DL','PhoneUS','PhoneINTL'),
+			'#help'=>"Note: Specifying validation by default makes a field required",
+			'#default'=>(isset($settings['validation'])) ? array($settings['validation']) : array("-- None --")
 		);
 		//autosuggest: text
 		$elements[] = array(
-			'name'=>'autosuggest',
-			'type'=>'textarea',
-			'label'=>'Autosuggest',
-			'help'=>'Just explain what you want to happen... the code will write itself. :)',
-			'default'=>(isset($settings['autosuggest'])) ? $settings['autosuggest'] : NULL
+			'#name'=>'autosuggest',
+			'#type'=>'textarea',
+			'#label'=>'Autosuggest',
+			'#help'=>'Just explain what you want to happen... the code will write itself. :)',
+			'#default'=>(isset($settings['autosuggest'])) ? $settings['autosuggest'] : NULL
 		);
 		
 		//maxlength: text, textarea?
 		$elements[] = array(
-			'name'=>'maxlength',
-			'type'=>'text',
-			'label'=>'Max characters:',
-			'size'=>5,
-			'maxlength'=>5,
-			'default'=>(isset($settings['maxlength'])) ? $settings['maxlength'] : NULL
+			'#name'=>'maxlength',
+			'#type'=>'text',
+			'#label'=>'Max characters:',
+			'#size'=>5,
+			'#maxlength'=>5,
+			'#default'=>(isset($settings['maxlength'])) ? $settings['maxlength'] : NULL
 		);
 		return $elements;
 	}
@@ -123,4 +123,3 @@ final class field_text extends genericField implements fieldInterface {
 	}
 	
 }
-?>

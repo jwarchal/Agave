@@ -56,22 +56,22 @@ final class field_multiselect extends genericField implements fieldInterface {
 		$elements = array();
 		
 		$elements[] = array(
-			'name'=>'values',
-			'type'=>'text',
-			'label'=>'Values',
-			'help'=>"Enter a comma delimited string, such as 'A, B, C' or 'A:1, B:2' for keyed arrays.",
-			'size'=>60,
-			'default'=>(isset($settings['values'])) ? implode(", ", $settings['values']) : NULL
+			'#name'=>'values',
+			'#type'=>'text',
+			'#label'=>'Values',
+			'#help'=>"Enter a comma delimited string, such as 'A, B, C' or 'A:1, B:2' for keyed arrays.",
+			'#size'=>60,
+			'#default'=>(isset($settings['values'])) ? implode(", ", $settings['values']) : NULL
 		);
 		
 		//size: text, multiselect
 		$elements[] = array(
-			'name'=>'size',
-			'type'=>'text',
-			'label'=>'Size',
-			'size'=>4,
-			'maxlength'=>4,
-			'default'=>(isset($settings['size'])) ? $settings['size'] : NULL
+			'#name'=>'size',
+			'#type'=>'text',
+			'#label'=>'Size',
+			'#size'=>4,
+			'#maxlength'=>4,
+			'#default'=>(isset($settings['size'])) ? $settings['size'] : NULL
 		);
 		
 		return $elements;
@@ -87,4 +87,3 @@ final class field_multiselect extends genericField implements fieldInterface {
 	}
 	
 }
-?>

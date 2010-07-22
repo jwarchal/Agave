@@ -40,30 +40,30 @@ final class field_textarea extends genericField implements fieldInterface {
 		$elements = array();
 		//cols: textarea
 		$elements[] = array(
-			'name'=>'cols',
-			'type'=>'text',
-			'label'=>'Cols:',
-			'size'=>4,
-			'maxlength'=>4,
-			'default'=>(isset($settings['cols'])) ? $settings['cols'] : NULL
+			'#name'=>'cols',
+			'#type'=>'text',
+			'#label'=>'Cols:',
+			'#size'=>4,
+			'#maxlength'=>4,
+			'#default'=>(isset($settings['cols'])) ? $settings['cols'] : NULL
 		);
 		//rows: textarea
 		$elements[] = array(
-			'name'=>'rows',
-			'type'=>'text',
-			'label'=>'Rows:',
-			'size'=>4,
-			'maxlength'=>4,
-			'default'=>(isset($settings['rows'])) ? $settings['rows'] : NULL
+			'#name'=>'rows',
+			'#type'=>'text',
+			'#label'=>'Rows:',
+			'#size'=>4,
+			'#maxlength'=>4,
+			'#default'=>(isset($settings['rows'])) ? $settings['rows'] : NULL
 		);
 		//maxlength: text, textarea?
 		$elements[] = array(
-			'name'=>'maxlength',
-			'type'=>'text',
-			'label'=>'Max characters:',
-			'size'=>5,
-			'maxlength'=>5,
-			'default'=>(isset($settings['maxlength'])) ? $settings['maxlength'] : NULL
+			'#name'=>'maxlength',
+			'#type'=>'text',
+			'#label'=>'Max characters:',
+			'#size'=>5,
+			'#maxlength'=>5,
+			'#default'=>(isset($settings['maxlength'])) ? $settings['maxlength'] : NULL
 		);
 		
 		return $elements;
@@ -74,6 +74,4 @@ final class field_textarea extends genericField implements fieldInterface {
 		$settings = $data;
 		return $settings;
 	}
-	
 }
-?>

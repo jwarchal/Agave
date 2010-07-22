@@ -66,8 +66,8 @@ final class field_button extends genericField implements fieldInterface {
 
 	public function returnSettingsForm($settings) {$form->values = $this->cleanup($form->values);
 		$elements = array();
-		//settings for a button?
-		return $elements;
+		//settings for a button?  //TODO: add later...
+		return FALSE;
 	}
 
 	public function saveSettingsFields($data) {
@@ -77,6 +77,4 @@ final class field_button extends genericField implements fieldInterface {
 				
 		return $settings;
 	}
-	
 }
-?>

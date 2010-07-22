@@ -2,22 +2,25 @@
 function schemaManager_return_field_element_form($data=FALSE) {
 	global $agave;
 
+	//parse data for field to edit
 	$table = $data['table'];
 	$nodeKey = $data['nodeKey'];
 	$type = $data['type'];
 	if($nodeKey == 0) $nodeKey = FALSE;
 
+	//get values on requested field from db
+	if($nodeKey != '0') {
+		$query = "SELECT * FROM `".$table."_schema` WHERE `nodeKey`='$nodeKey'";
+		$field = $agave->doSQLQuery($query, 2);
+	}
+
+	//start assembling form
 	$form = array();
 	$form['action'] = $agave->base_url.'admin/schemata/save/field';
 	$form['method'] = 'post';
 	$form['cancel'] = TRUE;
 
 	//figure out which fields to add
-	if($nodeKey != '0') {
-		$query = "SELECT * FROM `".$table."_schema` WHERE `nodeKey`='$nodeKey'";
-		$field = $agave->doSQLQuery($query, 2);
-	}
-
 	$elements = array();
 	$elements[] = array(
 		'#name'=>'fieldName',
@@ -26,19 +29,21 @@ function schemaManager_return_field_element_form($data=FALSE) {
 		'#size'=>20,
 		'#weight'=>0,
 		'#default'=> ($nodeKey) ? $field['keyName'] : NULL,
+		'#disabled'=> ($nodeKey) ? TRUE : FALSE,
 	);
 	$elements[] = array(
 		'#name'=>'type',
 		'#type'=>'select',
 		'#label'=>'Form element',
-		'#values'=> returnAvailableFieldTypes(),
+		'#values'=> $agave->load('fieldManager')->fields,
 		'#default'=>($nodeKey) ? $field['type'] : 'text',
-		'#weight'=>1
+		'#weight'=>1,
+		'#disabled'=> ($nodeKey) ? TRUE : FALSE,
 	);
 	$elements[] = array(
 		'#name'=>'label',
 		'#type'=>'text',
-		'#label'=>"Label pwn3d",
+		'#label'=>"Label",
 		'#size'=>20,
 		'#weight'=>2,
 		'#default'=> ($nodeKey) ? $field['label'] : NULL,
@@ -95,10 +100,37 @@ function schemaManager_return_field_element_form($data=FALSE) {
 	return $form;
 }
 
-function schemaManager_return_field_element_settings_form($settings=FALSE) {
+function schemaManager_return_field_element_settings_form($data=FALSE) {
 	global $agave;
-die('foo');
-	$form = array();
 
+	//parse data for requested field
+	$table = $data['table'];
+	$nodeKey = $data['nodeKey'];
+	$type = $data['type'];
+	if($nodeKey == 0) $nodeKey = FALSE;
+	if(!$nodeKey) return FALSE;
+
+	//figure out what type of field this is to get settings form from fieldManager
+	$query = "SELECT `type`,`settings` FROM `".$table."_schema` WHERE `nodeKey`='$nodeKey'";
+	$data = $agave->doSQLQuery($query, 2);
+
+	if(!$data) return FALSE;
+	$field = $data['type'];
+	$settings = $data['settings'];
+
+	//define the form data
+	$form = array();
+	$form['action'] = $agave->base_url.'admin/schemata/save/field/settings';
+	$form['method'] = 'post';
+	$form['cancel'] = TRUE;
+
+	$fields = $agave->load('fieldManager')->returnSettingsForm($field, $settings);
+	$fields[] = array(
+		'#name'=>'fieldmeta',
+		'#type'=>'hidden',
+		'#value'=>implode(".", $data),
+	);
+
+	$form['fields'] = $fields;
 	return $form;
 }
