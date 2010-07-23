@@ -451,7 +451,7 @@ final class fieldManager {
 	protected function label($element) {
 		$html='';
 		$required = (isset($element['required'])) ? " <span class='fm-required-mark'>*</span> " : "";
-		if(isset($element['label']) && $element['type']!='button') {
+		if(isset($element['label']) && $element['type']!='button' && $element['type']!='fieldset') {
 			$html .= "<div class='fm-element-title'>$required<label>".$element['label']."</label></div>";
 			return $html;
 		}
