@@ -222,7 +222,9 @@ final class fieldManager {
 			if(!$this->isProp($key)){
 				$class = $value['#type'];
 				$field = $this->loadField($class);
-				$form->values[$value['#name']] = $field->format($form->values, $value['#name']);
+                                if(isset($form->values[$value['#name']])){
+                                    $form->values[$value['#name']] = $field->format($form->values, $value['#name']);
+                                }
 				$this->formatValuesWithFieldsArray($value, $form);
 			}
 		}
@@ -233,7 +235,9 @@ final class fieldManager {
 			if(!$this->isProp($key)){
 				$class = $value['#type'];
 				$field = $this->loadField($class);
-				if(isset($form->values[$value['#name']])) $form->values[$value['#name']] = $field->unformat($form->values[$value['#name']]);
+				if(isset($form->values[$value['#name']])){
+                                    $form->values[$value['#name']] = $field->unformat($form->values[$value['#name']]);
+                                }
 				$this->unformatValuesWithFieldsArray($value, $form);
 			}
 		}
