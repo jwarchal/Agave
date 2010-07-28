@@ -78,13 +78,13 @@ function confirm($action) {
 	global $agave;
 	$error = (isset($_SESSION['error'])) ? "<p><em>ERROR:</em> ".$_SESSION['error']."</p>" : NULL;
 	unset($_SESSION['error']);
-	$continue = "<a href='".$agave->base_url."install.php?confirmed=true'>Confirm and Continue</a>";
+	$continue = "<a href='".$agave->url."install.php?confirmed=true'>Confirm and Continue</a>";
 	die("$error<h1>$action</h1><p>Are you sure that you would like to perform the action <em>$action</em>?</p><p>$continue</p>");
 }
 
 function install_phase($mode) {
 	global $agave;
-	$loc = $agave->base_url."install.php";
+	$loc = $agave->url."install.php";
 	$_SESSION['completed'][] = $_SESSION['install-mode'];
 	$_SESSION['install-mode'] = $mode;
 	header("Location: $loc");
@@ -111,7 +111,7 @@ function install_finish() {
 
 	foreach($_SESSION as $key=>$value) unset($_SESSION[$key]);
 	foreach($agave->settings as $key=>$value) $admin->saveSetting($key, $value);
-	$href = $agave->base_url;
+	$href = $agave->url;
 	$html = "<h2>Instatllation complete.</h2><p>You may now continue to your site: <a href='$href'>view site</a></p>";
 	die($html);
 }
@@ -307,16 +307,16 @@ function bootstrap_agave($initFile) {
 	//core agave paths
 	$protocol = isset($_SERVER['HTTPS']) ? 'https://' : 'http://';
 	$url = $_SERVER['HTTP_HOST'].$_SERVER['SCRIPT_NAME'];
-	$agave->base_url = substr($protocol.$url, 0, -11); //chops off "install.php", it MAY get rewritten with ?dest=
-	$agave->agave_base_url = substr($protocol.$url, 0, -11); //chops off "install.php" //this one does NOT get rewritten with ?dest= - it's a URL to be used for files that are in a subdirectory of agave root
-	$agave->web_root = $_SERVER['DOCUMENT_ROOT']; //avoid using this for anything, not used anywhere, please don't use it
-	$agave->agave_root = explode("/", dirname(__FILE__));
-	array_pop($agave->agave_root);
-	$agave->agave_root = implode("/", $agave->agave_root)."/";
+	$agave->url = substr($protocol.$url, 0, -11); //chops off "install.php", it MAY get rewritten with ?dest=
+	$agave->core_url = substr($protocol.$url, 0, -11); //chops off "install.php" //this one does NOT get rewritten with ?dest= - it's a URL to be used for files that are in a subdirectory of agave root
+	$agave->web_dir = $_SERVER['DOCUMENT_ROOT']; //avoid using this for anything, not used anywhere, please don't use it
+	$agave->core_dir = explode("/", dirname(__FILE__));
+	array_pop($agave->core_dir);
+	$agave->core_dir = implode("/", $agave->core_dir)."/";
 
 	//check for special project_root
-	$agave->site_dir = (isset($agave->settings['proj_root'])) ? rtrim($agave->settings['proj_root'], "/")."/" : dirname($initFile)."/";
-	$agave->site_url = (isset($agave->settings['proj_url'])) ? rtrim($agave->settings['proj_url'], "/")."/" : $agave->agave_base_url.$agave->site_dir;
+	$agave->proj_dir = (isset($agave->settings['proj_root'])) ? rtrim($agave->settings['proj_root'], "/")."/" : dirname($initFile)."/";
+	$agave->proj_url = (isset($agave->settings['proj_url'])) ? rtrim($agave->settings['proj_url'], "/")."/" : $agave->core_url.$agave->proj_dir;
 	
 	//include core files
 	include("core/user.object");

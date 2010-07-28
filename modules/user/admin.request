@@ -99,7 +99,7 @@ function manageUser($args=NULL) {
 			'name'=>'mode',
 			'value'=>'user_types'
 		);
-		$form = $fm->startForm($agave->base_url."admin/users/manage/save/$userKey", 'post');
+		$form = $fm->startForm($agave->url."admin/users/manage/save/$userKey", 'post');
 		$form .= $fm->generateElements($elements);
 		$form .= $fm->endForm('Save Changes', TRUE);
 	}
@@ -140,7 +140,7 @@ function manageUser($args=NULL) {
 		'name'=>'mode',
 		'value'=>'user_access'
 	);
-	$form2 = $fm->startForm($agave->base_url."admin/users/manage/save/$userKey", 'post');
+	$form2 = $fm->startForm($agave->url."admin/users/manage/save/$userKey", 'post');
 	$form2 .= $fm->generateElements($elements);
 	$form2 .= $fm->endForm('Save Changes', TRUE);
 	
@@ -194,7 +194,7 @@ function confirmDeleteUser($userKey) {
 		'type'=>'hidden',
 		'value'=>'true'
 	);
-	$form = $fm->startForm($agave->base_url."admin/users/delete/$u->userKey", 'post');
+	$form = $fm->startForm($agave->url."admin/users/delete/$u->userKey", 'post');
 	$form .= "<p>Are you sure you want to delete <b>$u->firstName $u->lastName</b> from your system?  This action cannot be undone!</p>";
 	$form .= $fm->generateElements($elements);
 	$form .= $fm->endForm("Delete User", TRUE);
@@ -214,7 +214,7 @@ function confirmDeleteType($type) {
 		'type'=>'hidden',
 		'value'=>'true'
 	);
-	$form = $fm->startForm($agave->base_url."admin/users/types/delete/".$type['typeKey'], 'post');
+	$form = $fm->startForm($agave->url."admin/users/types/delete/".$type['typeKey'], 'post');
 	$form .= "<p>Are you sure you want to delete the user type <b>".$type['name']."</b>?  This action cannot be undone!</p>";
 	$form .= $fm->generateElements($elements);
 	$form .= $fm->endForm("Delete User Type", TRUE);
@@ -295,7 +295,7 @@ function editType($args=null) {
 		'type'=>'hidden',
 		'value'=> ($id) ? $sql['typeKey'] : NULL
 	);
-	$form = $fm->startForm($agave->base_url."admin/users/types/save", 'post');
+	$form = $fm->startForm($agave->url."admin/users/types/save", 'post');
 	$form .= $fm->generateElements($elements);
 	$form .= $fm->endForm("Save Changes", TRUE);
 	
@@ -432,7 +432,7 @@ function editMulti() {
 	}
 	
 	//build form
-	$form = $fm->startForm($agave->base_url."admin/users/multi/save&mappings=".$_GET['mappings'], "post");
+	$form = $fm->startForm($agave->url."admin/users/multi/save&mappings=".$_GET['mappings'], "post");
 	$form .= $fm->generateElements($elements);
 	$form .= $fm->endForm("Save Changes", TRUE);
 	
@@ -476,7 +476,7 @@ function viewMulti() {
 		'size'=>60,
 		'default'=>(isset($_GET['mappings'])) ? $_GET['mappings'] : NULL
 	);
-	$form = $fm->startForm($agave->base_url."admin/users/multi", "get");
+	$form = $fm->startForm($agave->url."admin/users/multi", "get");
 	$form .= $fm->generateElements($elements);
 	$form .= $fm->endForm("Search");
 	$themevars['form'] = $form;
@@ -538,7 +538,7 @@ function addUser($args=null) {
 	);
 	
 	//generate form
-	$form = $fm->startForm($agave->base_url."admin/users/add", "post");
+	$form = $fm->startForm($agave->url."admin/users/add", "post");
 	$form .= $fm->generateElements($elements);
 	$form .= $fm->endForm("Add User", TRUE);
 	
@@ -621,7 +621,7 @@ function messageUser($args=null) {
 		'name'=>'targetUserKey',
 		'value'=>$targetUser->userKey
 	);
-	$form = $fm->startForm($agave->base_url."admin/users/message/$targetUser->userKey", "post");
+	$form = $fm->startForm($agave->url."admin/users/message/$targetUser->userKey", "post");
 	$form .= $fm->generateElements($elements);
 	$form .= $fm->endForm("Send Message", TRUE);
 	

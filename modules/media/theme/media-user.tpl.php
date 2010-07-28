@@ -26,9 +26,9 @@
 					<?php print date("M d Y", $media['time_created']); ?>
 				</td>
 				<td>
-					<a href='<?php print $agave->base_url."media/".$media['mediaKey'] ?>'>view</a> -
-					<a href='<?php print $agave->base_url."media/".$media['mediaKey']."/edit" ?>'>edit</a> - 
-					<a href='<?php print $agave->base_url."media/".$media['mediaKey']."/delete" ?>'>delete</a>
+					<a href='<?php print $agave->url."media/".$media['mediaKey'] ?>'>view</a> -
+					<a href='<?php print $agave->url."media/".$media['mediaKey']."/edit" ?>'>edit</a> - 
+					<a href='<?php print $agave->url."media/".$media['mediaKey']."/delete" ?>'>delete</a>
 				</td>
 			</tr>
 		<?php $i++; endforeach; ?>

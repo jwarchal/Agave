@@ -1,0 +1,17 @@
+<?php
+class schema {
+	public function __construct($stem, $schema, $uniqueKey=FALSE) {
+		$this->stem = $stem;
+		$this->schema = $schema;
+		$this->uniqueKey = $uniqueKey;
+	}
+	public function __destruct() {}
+
+	public function populate() {
+
+	}
+
+	public function returnFields() {}
+
+	public function 
+}

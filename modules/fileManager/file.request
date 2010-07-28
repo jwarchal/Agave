@@ -33,7 +33,7 @@ function editFile($args=null) {
 	
 	//assemble file
 	$elements = returnEditForm($file);
-	$form = $fm->startForm($agave->base_url."files/save", "post", NULL, TRUE);
+	$form = $fm->startForm($agave->url."files/save", "post", NULL, TRUE);
 	$form .= $fm->generateElements($elements);
 	$form .= $fm->endForm("Save", TRUE);
 	

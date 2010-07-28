@@ -17,14 +17,14 @@ function user_panel_login($args=null) {
 			'label'=>'Password',
 			'type'=>'password'
 		);
-		$content = $fm->startForm($agave->base_url."user/login", "post");
+		$content = $fm->startForm($agave->url."user/login", "post");
 		$content .= $fm->generateElements($elements);
 		$content .= $fm->endForm("Login");
 		$content .= "
 			<small>
 				<ul>
-					<li><a href='".$agave->base_url."user/register'>Register for site</a></li>
-					<li><a href='".$agave->base_url."user/recover-password'>Forgot your password?</a></li>
+					<li><a href='".$agave->url."user/register'>Register for site</a></li>
+					<li><a href='".$agave->url."user/recover-password'>Forgot your password?</a></li>
 				</ul>
 			</small>
 		";

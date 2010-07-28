@@ -25,7 +25,7 @@ class session {
 		//set important session variables here in start function
 		if(!$save_path) $save_path = ($agave->setting('sess_save_path')) ? $agave->setting('sess_save_path') : "/tmp";
 		session_save_path($save_path);
-		if(!$session_name) $session_name = "agave_auth_".md5($agave->base_url);
+		if(!$session_name) $session_name = "agave_auth_".md5($agave->url);
 		session_name($session_name);
 		$sess_maxtimeout = ($agave->setting('sess_max_timeout')) ? $agave->setting('sess_max_timeout') : "43200";
 		ini_set('session.gc_maxlifetime', $sess_maxtimeout); 

@@ -20,7 +20,7 @@
 		<tr>
 			<td colspan = '2'>
 				<a href='<?php print $file->url ?>'>download</a> -
-				<a href='<?php print $agave->base_url."files/$file->fileKey/edit" ?>'>edit</a>
+				<a href='<?php print $agave->url."files/$file->fileKey/edit" ?>'>edit</a>
 			</td>
 		</tr>
 	</tbody>

@@ -12,7 +12,7 @@
 	<p>Use the links below to download the original, or web-compressed versions of this media.</p>
 	<ul>
 	<?php if($downloadOriginal): ?>
-		<li><a href='<?php print $agave->base_url."media/download&mediaKey=$media->mediaKey&version=original" ?>'>original</a></li>	
+		<li><a href='<?php print $agave->url."media/download&mediaKey=$media->mediaKey&version=original" ?>'>original</a></li>	
 	<?php endif; ?>
 	<?php if($downloadCompressed): ?>
 		<?php foreach($media->transcodedFiles as $preset=>$file): ?>

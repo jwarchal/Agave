@@ -5,7 +5,7 @@ function admin_view_access_grid($args=null) {
 	$fm = $agave->load("fieldManager");
 		
 	//build checkbox grid	
-	$form = $fm->startForm($agave->base_url."admin/access/update", "post");
+	$form = $fm->startForm($agave->url."admin/access/update", "post");
 	$form .= returnAccessCheckboxes();
 	$form .= "<input type='hidden' name='checkboxes' value='checkboxes' />";
 	$form .= $fm->endForm("Save Changes");
@@ -83,7 +83,7 @@ function editProperty($args=null) {
 	
 	//interface to add new access argument
 	$submit = ($id) ? "Save Changes" : "Add Access Property";
-	$form = $fm->startForm($agave->base_url."admin/access/save", "post");
+	$form = $fm->startForm($agave->url."admin/access/save", "post");
 	$form .= $fm->generateElements(returnPropertyForm($id));
 	$form .= $fm->endForm($submit, TRUE);
 	
@@ -121,7 +121,7 @@ function confirmDelete($sql=null) {
 		'value'=>'true'
 	);
 	
-	$form = $fm->startForm($agave->base_url."admin/access/delete/".$sql['aKey'], "post");
+	$form = $fm->startForm($agave->url."admin/access/delete/".$sql['aKey'], "post");
 	$form .= $fm->generateElements($elements);
 	$form .= $fm->endForm("Delete URL", TRUE);
 	

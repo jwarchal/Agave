@@ -101,24 +101,28 @@ function bootstrap_agave() {
 	include('./core/agave.object');
 	$agave = new agave();
 	$agave->connect($db_info);
-	//$agave->db = new db($db_info);
 
-	//TODO: check for site_offline
-	
+
+	//$agave->db = new db($db_info);
+	//TODO: check for site_offline	
 	
 	//core agave paths
 	$protocol = isset($_SERVER['HTTPS']) ? 'https://' : 'http://';
 	$url = $_SERVER['HTTP_HOST'].$_SERVER['SCRIPT_NAME'];
-	$agave->base_url = substr($protocol.$url, 0, -9); //chops off "index.php", it MAY get rewritten with ?dest=
-	$agave->agave_base_url = substr($protocol.$url, 0, -9); //chops off "index.php" //this one does NOT get rewritten with ?dest= - it's a URL to be used for files that are in a subdirectory of agave root
-	$agave->web_root = $_SERVER['DOCUMENT_ROOT']; //avoid using this for anything, not used anywhere, please don't use it
-	$agave->agave_root = explode("/", dirname(__FILE__));
-	array_pop($agave->agave_root);
-	$agave->agave_root = implode("/", $agave->agave_root)."/";
+	$agave->url = substr($protocol.$url, 0, -9); //chops off "index.php", it MAY get rewritten with ?dest=
+	$agave->web_dir = $_SERVER['DOCUMENT_ROOT']."/"; //avoid using this for anything, not used anywhere, please don't use it
+	$agave->core_url = substr($protocol.$url, 0, -9); //chops off "index.php" //this one does NOT get rewritten with ?dest= - it's a URL to be used for files that are in a subdirectory of agave root
+	$agave->core_dir = explode("/", dirname(__FILE__));
+	array_pop($agave->core_dir);
+	$agave->core_dir = implode("/", $agave->core_dir)."/";
 
-	//check for special project_root
-	$agave->site_dir = (isset($settings['proj_root'])) ? rtrim($settings['proj_root'], "/")."/" : dirname($initFile)."/";
-	$agave->site_url = (isset($settings['proj_url'])) ? rtrim($settings['proj_url'], "/")."/" : $agave->agave_base_url.$agave->site_dir;
+	//project paths
+	$agave->proj_dir = $agave->core_dir.dirname($initFile)."/";
+	$agave->proj_url = $agave->core_url.dirname($initFile)."/";
+
+	//project uploaded file paths
+	$agave->upfiles_dir = $agave->proj_dir."files/";
+	$agave->upfiles_url = $agave->proj_url."files/";
 
 	$agave->status = BOOTSTRAP_AGAVE;
 	return bootstrap(BOOTSTRAP_FAST_ROUTE);
@@ -176,20 +180,15 @@ function bootstrap_env() {
 	set_error_handler('agave_error_handler');
 	date_default_timezone_set('America/New_York');
 
-	$path = $agave->setting('file_root');
-	$agave->base_file_path = ($path[0]=="/") ? $path : $agave->agave_root.$agave->site_dir.$path;
-	$agave->site_file_path = $agave->agave_root.$agave->site_dir.$path;
-	$agave->site_file_url = ($path[0]=="/") ? $path : $agave->agave_base_url.$agave->site_dir.$path;
-
-	//add ?dest= back into $agave->base_url if clean URLS are enabled, disabled by default
-	if(!$agave->setting('clean_urls') || $agave->setting('clean_urls') == FALSE) $agave->base_url = $agave->base_url."?dest=";
+	//add ?dest= back into $agave->url if clean URLS are enabled, disabled by default
+	if(!$agave->setting('clean_urls') || $agave->setting('clean_urls') == FALSE) $agave->url = $agave->url."?dest=";
 	//if we haven't resolved the request yet, it's because we're at the home page
 	if(!$agave->destination) {
 		$agave->destination = $agave->setting('home_page');
 		$agave->current_location = $agave->destination;
 		$agave->uri = $GLOBALS['objects']['dispatcher']->resolveRequest($agave->destination);
 	}
-	$agave->current_url = $agave->base_url.$agave->destination;
+	$agave->current_url = $agave->url.$agave->destination;
 
 	//NOTE: fast_route was moved to end of ENV phase
 	if($agave->uri['validRequest'] && $agave->uri['fast_route']) {
@@ -253,7 +252,7 @@ function bootstrap_session() {
 	}
 	
 	//start the users session and set important session data
-	$_SESSION['referrer'] = (isset($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : $agave->base_url;
+	$_SESSION['referrer'] = (isset($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : $agave->url;
 	$_SESSION['agent'] = $_SERVER['HTTP_USER_AGENT'];
 	$_SESSION['destination'] = $agave->uri['absoluteDest'];
 	$_SESSION['previousLocation'] = ($_SESSION['referrer'] != $_SESSION['destination']) ? $_SESSION['referrer'] : $_SESSION['previousLocation']; //TODO: this isn't taking into account stuff in $_GET string

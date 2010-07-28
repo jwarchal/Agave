@@ -2,7 +2,7 @@
 <p>View and manage your panels below, they are organized by region.</p>
 <div id='admin-page-controls'>
 	<h4>Options</h4>
-	<a class='fm-button' href='<?php print $agave->base_url."admin/panels/add" ?>'>Add Panel</a>
+	<a class='fm-button' href='<?php print $agave->url."admin/panels/add" ?>'>Add Panel</a>
 </div>
 
 <?php foreach($panels as $region=>$data): ?>
@@ -11,8 +11,8 @@
 	<?php foreach($data as $panel): ?>
 	<div class='admin-panel-block'>
 		<?php print $panel['name'] ?> - 
-		<a href='<?php print $agave->base_url."admin/panels/edit/".$panel['id'] ?>'>configure</a> - 
-		<a href='<?php print $agave->base_url."admin/panels/delete/".$panel['id'] ?>'>delete</a>
+		<a href='<?php print $agave->url."admin/panels/edit/".$panel['id'] ?>'>configure</a> - 
+		<a href='<?php print $agave->url."admin/panels/delete/".$panel['id'] ?>'>delete</a>
 	</div>
 	<?php endforeach; ?>
 </div>

@@ -5,7 +5,7 @@ Click "add new" to add a new URL to your site.
 </p>
 <div id='admin-page-controls'>
 	<h4>Options</h4>
-	<a class='fm-button' href='<?php print $agave->base_url."admin/urls/add" ?>'>add url</a>
+	<a class='fm-button' href='<?php print $agave->url."admin/urls/add" ?>'>add url</a>
 </div>
 
 <?php if($sql): ?>
@@ -26,8 +26,8 @@ Click "add new" to add a new URL to your site.
 			<td><?php print $sql[$i]['dest'] ?></td>
 			<td><?php print $sql[$i]['alias'] ?></td>
 			<td>
-				<a href='<?php print $agave->base_url."admin/urls/edit/".$sql[$i]['uriKey'] ?>'>edit</a> - 
-				<a href='<?php print $agave->base_url."admin/urls/delete/".$sql[$i]['uriKey'] ?>'>delete</a>
+				<a href='<?php print $agave->url."admin/urls/edit/".$sql[$i]['uriKey'] ?>'>edit</a> - 
+				<a href='<?php print $agave->url."admin/urls/delete/".$sql[$i]['uriKey'] ?>'>delete</a>
 			</td>
 		</tr>
 	<?php endfor; ?>

@@ -24,7 +24,7 @@ function buildPage() {
 		'name'=>'password'
 	);
 
-	$form = $fm->startForm($agave->base_url."user/login&rd=".$agave->destination, "POST");
+	$form = $fm->startForm($agave->url."user/login&rd=".$agave->destination, "POST");
 	$form .= $fm->generateElements($formElements);
 	$form .= $fm->endForm("Login");
 	

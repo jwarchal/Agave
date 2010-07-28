@@ -4,7 +4,7 @@
 ?>
 <p>Use the crazy form below to manage your panels.</p>
 
-<?php print $fm->startForm($agave->base_url."admin/panels/save", "post"); ?>
+<?php print $fm->startForm($agave->url."admin/panels/save", "post"); ?>
 	<table>
 		<tbody>
 			<?php foreach($elements as $panel): ?>

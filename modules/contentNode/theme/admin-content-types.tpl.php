@@ -3,7 +3,7 @@
 
 <div id='admin-page-controls'>
 	<h4>Options</h4>
-	<a href='<?php print $agave->base_url."admin/content/types/add" ?>' class='fm-button'>Add Type</a>
+	<a href='<?php print $agave->url."admin/content/types/add" ?>' class='fm-button'>Add Type</a>
 </div>
 <?php if($types): ?>
 <table>
@@ -18,9 +18,9 @@
 		<td><?php print $type['label'] ?></td>
 		<td><?php print $type['desc'] ?></td>
 		<td>
-			<a href='<?php print $agave->base_url."admin/schemata&table=contentNode&type=".$type['name'] ?>'>fields</a> - 
-			<a href='<?php print $agave->base_url."admin/content/types/edit/".$type['typeKey'] ?>'>edit</a> - 
-			<a href='<?php print $agave->base_url."admin/content/types/delete/".$type['typeKey'] ?>'>delete</a>
+			<a href='<?php print $agave->url."admin/schemata&table=contentNode&type=".$type['name'] ?>'>fields</a> - 
+			<a href='<?php print $agave->url."admin/content/types/edit/".$type['typeKey'] ?>'>edit</a> - 
+			<a href='<?php print $agave->url."admin/content/types/delete/".$type['typeKey'] ?>'>delete</a>
 		</td>
 	</tr>
 <?php endforeach; ?>

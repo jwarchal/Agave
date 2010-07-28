@@ -16,7 +16,7 @@ function schemaManager_return_field_element_form($data=FALSE) {
 
 	//start assembling form
 	$form = array();
-	$form['action'] = $agave->base_url.'admin/schemata/save/field';
+	$form['action'] = $agave->url.'admin/schemata/save/field';
 	$form['method'] = 'post';
 	$form['cancel'] = TRUE;
 
@@ -120,7 +120,7 @@ function schemaManager_return_field_element_settings_form($data=FALSE) {
 
 	//define the form data
 	$form = array();
-	$form['action'] = $agave->base_url.'admin/schemata/save/field/settings';
+	$form['action'] = $agave->url.'admin/schemata/save/field/settings';
 	$form['method'] = 'post';
 	$form['cancel'] = TRUE;
 

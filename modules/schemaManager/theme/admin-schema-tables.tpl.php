@@ -3,6 +3,6 @@
 
 <ul>
 <?php foreach($tables as $table): ?>
-	<li><a class='admin-schema-table' href='<?php echo $agave->base_url."admin/schemata&table=".$table; ?>'><?php echo $table ?></a></li>
+	<li><a class='admin-schema-table' href='<?php echo $agave->url."admin/schemata&table=".$table; ?>'><?php echo $table ?></a></li>
 <?php endforeach; ?>
 </ul>

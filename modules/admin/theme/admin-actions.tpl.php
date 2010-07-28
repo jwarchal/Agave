@@ -2,7 +2,7 @@
 <p>Use the form below to manage the site's actions.</p>
 <div id='admin-page-controls'>
 	<h4>Options</h4>
-	<a class='fm-button' href='<?php print $agave->base_url."admin/actions/add" ?>'>Add Action</a>
+	<a class='fm-button' href='<?php print $agave->url."admin/actions/add" ?>'>Add Action</a>
 </div>
 
 <table>
@@ -37,8 +37,8 @@
 			<td><?php echo $actions[$i]['desc'] ?></td>
 			<td><?php echo $fm->generateElement($element) ?></td>
 			<td>
-				<a href='<?php print $agave->base_url."admin/actions/edit/".$actions[$i]['eKey'] ?>'>edit</a> - 
-				<a href='<?php print $agave->base_url."admin/actions/delete/".$actions[$i]['eKey'] ?>'>delete</a>
+				<a href='<?php print $agave->url."admin/actions/edit/".$actions[$i]['eKey'] ?>'>edit</a> - 
+				<a href='<?php print $agave->url."admin/actions/delete/".$actions[$i]['eKey'] ?>'>delete</a>
 			</td>
 		</tr>
 		<?php endfor; ?>

@@ -2,7 +2,7 @@
 	$this->addCSS('user',"theme/css/user-profile.css");
 ?>
 <?php if($editButton): ?>
-	<a href='<?php print $agave->base_url.$editHREF ?>' id='editProfile'></a>
+	<a href='<?php print $agave->url.$editHREF ?>' id='editProfile'></a>
 <?php endif; ?>
 <div class='user-block' id='user-profile-wrapper'>
 	<fieldset><legend>General</legend>

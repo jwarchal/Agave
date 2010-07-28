@@ -5,7 +5,7 @@ class stream_wrapper_public extends agaveLocalStreamWrapper {
    */
   public function getDirectoryPath() {
   	global $agave;
-    $path = ($agave->setting('file_public_path')) ? $agave->setting('file_public_path') : $agave->site_file_path."files/public";
+    $path = ($agave->setting('file_public_path')) ? $agave->setting('file_public_path') : $agave->upfiles_dir."public";
     return $path;
   }
    /**
@@ -16,7 +16,7 @@ class stream_wrapper_public extends agaveLocalStreamWrapper {
     global $agave;
     $fm = $agave->load('fileManager');
     //TODO: check for settings
-    $url = $agave->site_file_url."files/public/".$fm->get_target($this->uri);
+    $url = $agave->upfiles_url."public/".$fm->get_target($this->uri);
     return $url;
   }
 }

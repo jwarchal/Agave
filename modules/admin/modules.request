@@ -25,7 +25,7 @@ function getModuleData($loc) {
 			break;
 		}
 		case 'local' : {
-			$dir = $agave->site_dir.'modules';
+			$dir = $agave->proj_dir.'modules';
 			$location = MODULE_LOCATION_LOCAL;
 			break;
 		}
@@ -77,32 +77,32 @@ function getModuleData($loc) {
 			if($module['outdated']) {
 				$actions[] = array(
 					'name'=>'UPDATE!!',
-					'href'=>$agave->base_url."admin/modules/actions&module=".$module['machine-name']."&action=update",
+					'href'=>$agave->url."admin/modules/actions&module=".$module['machine-name']."&action=update",
 				);
 			}
 			else {
 				if($module['enabled']) {
 					$actions[] = array(
 						'name'=>'Disable',
-						'href'=>$agave->base_url."admin/modules/actions&module=".$module['machine-name']."&action=disable",
+						'href'=>$agave->url."admin/modules/actions&module=".$module['machine-name']."&action=disable",
 					);
 				}
 				else {
 					$actions[] = array(
 						'name'=>'Enable',
-						'href'=>$agave->base_url."admin/modules/actions&module=".$module['machine-name']."&action=enable",
+						'href'=>$agave->url."admin/modules/actions&module=".$module['machine-name']."&action=enable",
 					);
 				}
 			}
 			$actions[] = array(
 				'name'=>'Uninstall',
-				'href'=>$agave->base_url."admin/modules/actions&module=".$module['machine-name']."&action=uninstall",
+				'href'=>$agave->url."admin/modules/actions&module=".$module['machine-name']."&action=uninstall",
 			);
 		}
 		else {
 			$actions[] = array(
 				'name'=>'Install',
-				'href'=>$agave->base_url."admin/modules/actions&module=".$module['machine-name']."&action=install",
+				'href'=>$agave->url."admin/modules/actions&module=".$module['machine-name']."&action=install",
 			);			
 		}
 		$module['actions'] = $actions;
@@ -142,8 +142,8 @@ function modulePerformAction($args=null) {
 function confirmAction($module, $action) {
 	global $agave;
 	$t = $agave->load('themer');
-	$confirm = "<a href='".$agave->base_url."admin/modules/actions&module=$module&action=$action&confirmed=true' class='fm-button'>$action</a>";
-	$cancel = "<a href='".$agave->base_url."admin/modules"."' class='fm-button'>cancel</a>";
+	$confirm = "<a href='".$agave->url."admin/modules/actions&module=$module&action=$action&confirmed=true' class='fm-button'>$action</a>";
+	$cancel = "<a href='".$agave->url."admin/modules"."' class='fm-button'>cancel</a>";
 	$t->page['title'] = "Confirm $action for $module";
 	$t->output = "<h2>Confirm ".ucfirst($action)."</h2><p>Are you sure you want to <b>$action</b> the <em><b>$module</b></em> module?  This could have terribly devestating effects to your site's database, thus your job.  Seriously, you may want to pray about this first.</p><p>$confirm or $cancel</p>";
 	$t->theme('admin','admin');

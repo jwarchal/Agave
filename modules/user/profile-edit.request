@@ -82,9 +82,9 @@ function user_edit_profile($args=NULL) {
 	}
 	
 	//generate form
-	$form = $fm->startForm($agave->base_url."user/profile/save/$targetUser->userKey", "post");
+	$form = $fm->startForm($agave->url."user/profile/save/$targetUser->userKey", "post");
 	$form .= $fm->generateElements($elements);
-	$form .= $fm->endForm("Save", $agave->base_url."user/profile/$targetUser->userKey");
+	$form .= $fm->endForm("Save", $agave->url."user/profile/$targetUser->userKey");
 	
 	//theme output
 	$t->page['title'] = "Editing $targetUser->firstName's profile";
