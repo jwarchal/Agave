@@ -1,7 +1,7 @@
 <?php
 /**
  *  * This is taken from Drupal 7's stream wrapper support.  See http://api.drupal.org
- * Agave temporary (tmp://) stream wrapper class.
+ * system temporary (tmp://) stream wrapper class.
  */
 class stream_wrapper_tmp extends agaveLocalStreamWrapper {
   /**
