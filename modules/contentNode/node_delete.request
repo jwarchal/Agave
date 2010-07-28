@@ -22,9 +22,9 @@ function confirm($args=NULL) {
 		'value'=>'delete'
 	);
 	
-	$form = $fm->startForm($agave->base_url."content/$id/delete", "post");
+	$form = $fm->startForm($agave->url."content/$id/delete", "post");
 	$form .= $fm->generateElements($elements);
-	$form .= $fm->endForm("Delete", $agave->base_url."user/content");
+	$form .= $fm->endForm("Delete", $agave->url."user/content");
 	$t->output = $form;
 	$t->output = $t->theme('user','user');
 }

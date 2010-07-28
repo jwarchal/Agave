@@ -42,7 +42,7 @@ function editMenu($args=null) {
 	
 	$elements = returnMenuForm($menuKey);
 	
-	$form = $fm->startForm($agave->base_url."admin/menus/save", "post");
+	$form = $fm->startForm($agave->url."admin/menus/save", "post");
 	$form .= $fm->generateElements($elements);
 	$form .= $fm->endForm("Save", TRUE);
 
@@ -79,7 +79,7 @@ function confirmDeleteMenu($sql) {
 		'value'=>'true'
 	);
 	
-	$form = $fm->startForm($agave->base_url."admin/menus/delete/".$sql['menuKey'], "post");
+	$form = $fm->startForm($agave->url."admin/menus/delete/".$sql['menuKey'], "post");
 	$form .= $fm->generateElements($elements);
 	$form .= $fm->endForm("Delete Menu", TRUE);
 	
@@ -156,7 +156,7 @@ function confirmDeleteMenuItem($menuKey, $path) {
 		'value'=>'true'
 	);
 	
-	$form = $fm->startForm($agave->base_url.'admin/menus/'.$menuKey.'/items/delete/&menupath='.$path, "post");
+	$form = $fm->startForm($agave->url.'admin/menus/'.$menuKey.'/items/delete/&menupath='.$path, "post");
 	$form .= $fm->generateElements($elements);
 	$form .= $fm->endForm("Delete Item", TRUE);
 	
@@ -174,7 +174,7 @@ function editMenuItem($args=null) {
 	
 	$elements = returnMenuItemForm($menuKey, $path);
 	
-	$form = $fm->startForm($agave->base_url."admin/menus/$menuKey/items/save", "post");
+	$form = $fm->startForm($agave->url."admin/menus/$menuKey/items/save", "post");
 	$form .= $fm->generateElements($elements);
 	$form .= $fm->endForm("Save", TRUE);
 	

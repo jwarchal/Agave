@@ -12,7 +12,7 @@
 	These privilges override access properties which are based on user-level.  
 	This may cause unintended situations if you are not careful.  
 	To remove user-specific privileges, use the button below.</p>
-	<a href='<?php print $agave->base_url."admin/users/$user->userKey/drop-access/999999999999" ?>'>Clear All</a>
+	<a href='<?php print $agave->url."admin/users/$user->userKey/drop-access/999999999999" ?>'>Clear All</a>
 	
 	<table>
 		<thead>
@@ -25,7 +25,7 @@
 				<td><?php print $item['action'] ?></td>
 				<td><?php print (isset($item['value']) && $item['value']=='1') ? "ALLOW" : "DENY" ?></td>
 				<td>
-					<a href='<?php print $agave->base_url."admin/users/$user->userKey/drop-access/".$item['mKey'] ?>' class='admin-delete-item'>remove</a>
+					<a href='<?php print $agave->url."admin/users/$user->userKey/drop-access/".$item['mKey'] ?>' class='admin-delete-item'>remove</a>
 				</td>
 			</tr>
 		<?php endforeach; ?>

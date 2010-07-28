@@ -22,17 +22,17 @@
 	<?php endif; ?>
 	<?php echo $javascript ?>
 	<?php echo $styles ?>
-	<link href="<?php print $agave->agave_base_url."themes/default/css/page-admin.css" ?>" type="text/css" media="screen" rel="stylesheet" />
+	<link href="<?php print $agave->core_url."themes/default/css/page-admin.css" ?>" type="text/css" media="screen" rel="stylesheet" />
 </head>
 <body>
 	<div id='admin-header'>
 		<div id='admin-header-left'>
-			<span  id='siteName'><a href='<?php print $agave->agave_base_url ?>'><?php print $siteName ?></a></span>
+			<span  id='siteName'><a href='<?php print $agave->core_url ?>'><?php print $siteName ?></a></span>
 			<br /><span id='siteSlogan'>agave admin</span>
 		</div>
 		<div id='admin-header-right'>
 			<?php print $this->returnMenu('main'); ?>
-			<div id='user'>user: <a href='<?php print $agave->base_url."user/profile" ?>'><?php print $user->login ?></a> - <a href='<?php print $agave->base_url."user/logout" ?>'>logout</a></div>
+			<div id='user'>user: <a href='<?php print $agave->url."user/profile" ?>'><?php print $user->login ?></a> - <a href='<?php print $agave->url."user/logout" ?>'>logout</a></div>
 		</div>
 	</div>
 	<div id='admin-nav'>

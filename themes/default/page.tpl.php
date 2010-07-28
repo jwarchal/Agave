@@ -16,7 +16,7 @@
 
     <div id="header">
     	<div id='header-center'>
-			<h1><a href='<?php print $agave->agave_base_url ?>'><?php print $siteName ?></a></h1>
+			<h1><a href='<?php print $agave->core_url ?>'><?php print $siteName ?></a></h1>
         </div>
     </div><!-- header -->
     

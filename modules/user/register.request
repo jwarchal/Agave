@@ -43,7 +43,7 @@ function buildInterface($arg) {
 	);
 	
 	//generate form
-	$form = $fm->startForm($agave->base_url."user/register", "post");
+	$form = $fm->startForm($agave->url."user/register", "post");
 	$form .= $fm->generateElements($elements);
 	$form .= $fm->endForm("Register", TRUE);
 	

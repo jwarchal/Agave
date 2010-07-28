@@ -65,11 +65,11 @@ function editContentNode($args=null) {
 
 	
 	//generate form
-	$form = $fm->startForm($agave->base_url."content/save/$id", "POST", "node-edit-form", TRUE);
+	$form = $fm->startForm($agave->url."content/save/$id", "POST", "node-edit-form", TRUE);
 	$form .= $fm->generateElements($elements);
 	//$form .= "<div class='fm-element-wrapper fm-text-wrapper ' ><div class='fm-element-title'><label>Title: </lable></div><input type='text' name='saveData[1][title]'  class=' fm-text'     size='60'    /><input type='hidden' class='fm-metadata' name='metaData[1][title]' value='6Br8qo7C83g2ZZmOk3s7YXNFrgoCCW9lExFMQ20OBQVWzhvZB2X2k8_U-sqwQeQZ' /></div> <!--/element wrapper --><div class='fm-element-wrapper fm-cktext-wrapper ' ><div class='fm-element-title'><label>Body Text:</lable></div><textarea name='saveData[1][body]'  class=' fm-cktext'       '></textarea><input type='hidden' class='fm-metadata' name='metaData[1][body]' value='6Br8qo7C83g2ZZmOk3s7YXNFrgoCCW9lExFMQ20OBQWuzye-g_J5NVVzTch2IvNM' /></div> <!--/element wrapper --><div class='fm-element-wrapper fm-text-wrapper ' ><div class='fm-element-title'><label>Categories:</lable></div><input type='text' name='saveData[1][topic]'  class=' fm-text'     size='60'    /><input type='hidden' class='fm-metadata' name='metaData[1][topic]' value='6Br8qo7C83g2ZZmOk3s7YXNFrgoCCW9lExFMQ20OBQXmbTgNa6SALerbqhFR9DoY' /></div> <!--/element wrapper --><div class='fm-element-wrapper fm-file-wrapper ' ><div class='fm-element-title'><label>PDF Version:</lable></div><input type='file' name='saveData[1][pdf]'  class=' fm-file'        /><input type='hidden' class='fm-metadata' name='metaData[1][pdf]' value='_YIr6KAIo6doy-6rFtR3uPIB1JLRv8OCxvDBxSs7V9IqOrIcM4bf02lCXFOQeti-Nc6qFB6pHXkbQP2XXs7CRg~~' /></div> <!--/element wrapper --><div class='fm-element-wrapper fm-file-wrapper ' ><div class='fm-element-title'><label>Word Doc version</lable></div><input type='file' name='saveData[1][doc]'  class=' fm-file'        /><input type='hidden' class='fm-metadata' name='metaData[1][doc]' value='_YIr6KAIo6doy-6rFtR3uPIB1JLRv8OCxvDBxSs7V9IqOrIcM4bf02lCXFOQeti-SlXEx070oq594Ty3bPkeCQ~~' /></div> <!--/element wrapper --><div class='fm-element-wrapper fm-hidden-wrapper ' ><input type='hidden' value='announcement' name='saveData[1][type]'  class=' fm-hidden'        /><input type='hidden' class='fm-metadata' name='metaData[1][type]' value='9RBncPI6MopKapZm1lZBC57MHn_xpud7m2-YBuulapJLZaqn-xH5f-k0llgwdRJI' /></div> <!--/element wrapper --><input type='submit' value='Save' onclick='' />";
-	$form .= $fm->endForm("Save", $agave->base_url."content/$cancel");
-	//$form .= " or <a href='".$agave->base_url."content/$cancel'>cancel</a>";
+	$form .= $fm->endForm("Save", $agave->url."content/$cancel");
+	//$form .= " or <a href='".$agave->url."content/$cancel'>cancel</a>";
 
 	//send output to themer	
 	$themer->page['title'] = ($id) ? "Edit '".$node->fields->values->title."'" : "Create new $type";

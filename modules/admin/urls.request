@@ -35,7 +35,7 @@ function confirmDelete($id=null) {
 		'value'=>'true'
 	);
 	
-	$form = $fm->startForm($agave->base_url."admin/urls/delete/".$id, "post");
+	$form = $fm->startForm($agave->url."admin/urls/delete/".$id, "post");
 	$form .= $fm->generateElements($elements);
 	$form .= $fm->endForm("Delete URL", TRUE);
 	
@@ -63,7 +63,7 @@ function edit($args=null) {
 	$id = (isset($args[0])) ? $args[0] : NULL;
 	$elements = returnEditForm($id);
 	
-	$form = $fm->startForm($agave->base_url."admin/urls/save", "post");
+	$form = $fm->startForm($agave->url."admin/urls/save", "post");
 	$form .= $fm->generateElements($elements);
 	$form .= $fm->endForm("Save", TRUE);
 	

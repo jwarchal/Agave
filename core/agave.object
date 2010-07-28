@@ -109,9 +109,9 @@ class agave extends olddb {
 
 	public function redirect($path=NULL) {
 		//if($path==TRUE) $path=$this->current_location;
-		if(isset($path)) $path = $this->base_url.$path;
+		if(isset($path)) $path = $this->url.$path;
 		else {
-			$url = explode("?", $this->base_url); //get rid of blank ?dest=
+			$url = explode("?", $this->url); //get rid of blank ?dest=
 			$path = $url[0];
 		}
 		$this->cleanup();

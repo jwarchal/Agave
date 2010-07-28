@@ -2,8 +2,8 @@
 <p>Use the table below to manage the access properties available in your project.  Be careful not to delete access properties which are in use in menus and URLs, as they will become inaccessible</p>
 <div id='admin-page-controls'>
 	<h4>Options</h4>
-	<p><a class='fm-button' href='<?php print $agave->base_url."admin/access/add" ?>'>Add Property</a></p>
-	<p><a class='fm-button' href='<?php print $agave->base_url."admin/access" ?>'>Map Privileges</a></p>
+	<p><a class='fm-button' href='<?php print $agave->url."admin/access/add" ?>'>Add Property</a></p>
+	<p><a class='fm-button' href='<?php print $agave->url."admin/access" ?>'>Map Privileges</a></p>
 </div>
 
 <table>
@@ -23,8 +23,8 @@
 			<td><?php print $properties[$i]['desc'] ?></td>
 			<td><?php print (isset($properties[$i]['default']) && $properties[$i]['default']=='1') ? "Allow" : "Deny" ?></td>
 			<td>
-				<a href='<?php print $agave->base_url."admin/access/edit/".$properties[$i]['aKey'] ?>'>edit</a> - 
-				<a href='<?php print $agave->base_url."admin/access/delete/".$properties[$i]['aKey'] ?>'>delete</a> 
+				<a href='<?php print $agave->url."admin/access/edit/".$properties[$i]['aKey'] ?>'>edit</a> - 
+				<a href='<?php print $agave->url."admin/access/delete/".$properties[$i]['aKey'] ?>'>delete</a> 
 			</td>
 		</tr>
 	<?php endfor; ?>

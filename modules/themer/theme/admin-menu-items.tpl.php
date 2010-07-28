@@ -2,7 +2,7 @@
 <p>Use the table below to edit the menu items for the <b><?php print $menuName ?></b> menu.</p>
 <div id='admin-page-controls'>
 	<h4>Options</h4>
-	<a class='fm-button' href='<?php print $agave->base_url."admin/menus/$menuKey/items/add" ?>'>Add Item</a>
+	<a class='fm-button' href='<?php print $agave->url."admin/menus/$menuKey/items/add" ?>'>Add Item</a>
 </div>
 <?php 
 function throughMenuArray($menuArray, $pathsofar, $menuKey){
@@ -17,7 +17,7 @@ function throughMenuArray($menuArray, $pathsofar, $menuKey){
 			print "<td>".$value['^visible']."</td>";
 			print "<td>".$value['^expanded']."</td>";
 			print "<td>".$value['^access']."</td>";
-			print "<td><a href='".$agave->base_url."admin/menus/$menuKey/items/edit/&menupath=".$pathsofar."/".$key."'>EDIT</a>&nbsp;<a href='".$agave->base_url."admin/menus/$menuKey/items/delete/&menupath=".$pathsofar."/".$key."'>DELETE</a></td>";
+			print "<td><a href='".$agave->url."admin/menus/$menuKey/items/edit/&menupath=".$pathsofar."/".$key."'>EDIT</a>&nbsp;<a href='".$agave->url."admin/menus/$menuKey/items/delete/&menupath=".$pathsofar."/".$key."'>DELETE</a></td>";
 			print "</tr>";
 			throughMenuArray($value,$pathsofar."/".$key,$menuKey);
 		}

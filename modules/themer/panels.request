@@ -53,7 +53,7 @@ function editPanel($args=NULL) {
 	
 	$elements = returnPanelElements($data);
 	
-	$form = $fm->startForm($agave->base_url."admin/panels/save", "post");
+	$form = $fm->startForm($agave->url."admin/panels/save", "post");
 	$form .= $fm->generateElements($elements);
 	$form .= $fm->endForm("Save Panel", TRUE);
 	
@@ -96,7 +96,7 @@ function confirmDeletePanel($id) {
 		'value'=>'true'
 	);
 	
-	$form = $fm->startForm($agave->base_url."admin/panels/delete/".$id, "post");
+	$form = $fm->startForm($agave->url."admin/panels/delete/".$id, "post");
 	$form .= $fm->generateElements($elements);
 	$form .= $fm->endForm("Delete panel", TRUE);
 	

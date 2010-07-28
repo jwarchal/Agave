@@ -9,7 +9,7 @@
 <?php foreach($data as $datum): ?>
 	<?php if($user->access("create_content") && $user->access("create_content_".$datum['name'])): ?>
 	<li>
-		<a href='<?php echo $agave->base_url."content/create/".$datum['name'] ?>'>
+		<a href='<?php echo $agave->url."content/create/".$datum['name'] ?>'>
 			<?php echo $datum['label'] ?>
 		</a> - <?php echo $datum['desc'] ?>
 	</li>

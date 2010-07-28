@@ -47,7 +47,7 @@ function editType($args=NULL) {
 	
 	$elements = returnEditTypeForm($id);
 	
-	$form = $fm->startForm($agave->base_url."admin/content/types/save", "post");
+	$form = $fm->startForm($agave->url."admin/content/types/save", "post");
 	$form .= $fm->generateElements($elements);
 	$form .= $fm->endForm("Save", TRUE);
 	
@@ -172,7 +172,7 @@ function confirmDeleteType($id) {
 		'value'=>'true'
 	);
 	
-	$form = $fm->startForm($agave->base_url."admin/content/types/delete/$id", "post");
+	$form = $fm->startForm($agave->url."admin/content/types/delete/$id", "post");
 	$form .= $fm->generateElements($elements);
 	$form .= $fm->endForm("Delete Type", TRUE);
 	

@@ -6,7 +6,7 @@
 	<ul>
 	<?php foreach($types as $type): ?>
 		<li>
-			<a href='<?php echo $agave->base_url."admin/schemata&table=$table&type=".$type['name']?>'><?php echo $type['label'] ?></a>
+			<a href='<?php echo $agave->url."admin/schemata&table=$table&type=".$type['name']?>'><?php echo $type['label'] ?></a>
 			 - <?php print $type['desc'] ?>
 		</li>
 	<?php endforeach; ?>

@@ -27,9 +27,9 @@
 					<?php print ($node->published) ? "yes" : "no"; ?>
 				</td>
 				<td>
-					<a href='<?php print $agave->base_url."content/".$node->contentNodeKey ?>'>view</a> -
-					<a href='<?php print $agave->base_url."content/".$node->contentNodeKey."/edit" ?>'>edit</a> - 
-					<a href='<?php print $agave->base_url."content/".$node->contentNodeKey."/delete" ?>'>delete</a>
+					<a href='<?php print $agave->url."content/".$node->contentNodeKey ?>'>view</a> -
+					<a href='<?php print $agave->url."content/".$node->contentNodeKey."/edit" ?>'>edit</a> - 
+					<a href='<?php print $agave->url."content/".$node->contentNodeKey."/delete" ?>'>delete</a>
 				</td>
 			</tr>
 		<?php endforeach; ?>

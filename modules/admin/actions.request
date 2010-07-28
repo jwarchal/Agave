@@ -7,7 +7,7 @@ function view($args=null) {
 	$query = "SELECT * FROM `actions` ORDER BY `module`";
 	$actions = $agave->doSQLQuery($query, 3);
 	
-	$form = $fm->startForm($agave->base_url."admin/actions/update", 'post');
+	$form = $fm->startForm($agave->url."admin/actions/update", 'post');
 	$form .= $t->theme('admin','admin-actions', array('actions'=>$actions));
 	$form .= "<input type='hidden' name='forceSave'/>";
 	$form .= $fm->endForm("Save Changes");
@@ -36,7 +36,7 @@ function edit($args=null) {
 	
 	$elements = returnEditForm($id);
 	
-	$form = $fm->startForm($agave->base_url."admin/actions/save", "post");
+	$form = $fm->startForm($agave->url."admin/actions/save", "post");
 	$form .= $fm->generateElements($elements);
 	$form .= $fm->endForm("Save", TRUE);
 	
@@ -81,7 +81,7 @@ function confirmDelete($id=null) {
 		'value'=>'true'
 	);
 	
-	$form = $fm->startForm($agave->base_url."admin/actions/delete/".$id, "post");
+	$form = $fm->startForm($agave->url."admin/actions/delete/".$id, "post");
 	$form .= $fm->generateElements($elements);
 	$form .= $fm->endForm("Delete Action", TRUE);
 	
