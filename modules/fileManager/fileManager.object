@@ -402,7 +402,7 @@ final class fileManager {
 	/* adding new files to db via upload or uri */
 	public function save_file_upload($name, $tmp_name, $size, $error, $mime, $destination=FALSE, $replace=FILE_EXISTS_RENAME) {
 		global $agave;
-		$user = $agave->load('user');
+		$user = $agave->user;
 		$funcArgs = func_get_args();
 		
 		//check for uploaded file

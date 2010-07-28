@@ -12,7 +12,7 @@ final class themer {
 	public function __construct() {
 		global $agave;
 		$this->agave = $agave;
-		$user = $agave->load('user');
+		$user = $agave->user;
 		$this->js = array();
 		$this->format = 'html';
 
@@ -98,7 +98,7 @@ final class themer {
 
 	private function loadPageVars() {
 		global $agave;
-		$this->page['user'] = $agave->load('user');
+		$this->page['user'] = $agave->user;
 		$this->page['siteName'] = $agave->setting('siteName');
 		$this->page['footer_message'] = $agave->setting('footer_message');
 		
@@ -245,7 +245,7 @@ final class themer {
 		
 	public function loadPanels() {
 		global $agave;
-		$user = $agave->load('user');
+		$user = $agave->user;
 		$query = "SELECT * FROM `panels` WHERE `enabled`='1'";
 		$panels = $agave->doSQLQuery($query, 3);
 
@@ -324,7 +324,7 @@ final class themer {
 	
 	private function markupMenuItems($arr) {
 		global $agave;
-		$user = $agave->load('user');
+		$user = $agave->user;
 		$html = "";
                 $htmlarr = array();
 		

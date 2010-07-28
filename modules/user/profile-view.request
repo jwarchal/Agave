@@ -2,7 +2,7 @@
 function user_view_profile($args=null) {
 	global $agave;
 	$themer = $agave->load('themer');
-	$user = $agave->load('user');
+	$user = $agave->user;
 	
 	//get unique key
 	$userKey = (isset($args[0])) ? $args[0] : $user->userKey;
@@ -17,7 +17,7 @@ function user_view_profile($args=null) {
 	if($user->userKey==$userKey || $user->access('administer-users')) $user->access('edit-profile', TRUE);
 		
 	//get user data for profile
-	$targetUser = $agave->load('user', TRUE);
+	$targetUser = new user;
 	if(!$targetUser->build($userKey)) {
 		agave_error_page('404');
 	}

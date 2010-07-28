@@ -1,7 +1,7 @@
 <?php
 function user_save_profile($args=NULL) {
 	global $agave;
-	$user = $agave->load('user');
+	$user = $agave->user;
 	
 	//get data submitted from forms
 	$agave->addFormData($_POST['saveData'], $_POST['metaData']);

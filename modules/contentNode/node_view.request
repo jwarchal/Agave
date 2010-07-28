@@ -4,7 +4,7 @@ function viewContentNode($args=null) {
 	$contentID = $args[0];
 
 	//load stuff and build node
-	$user = $agave->load('user');	
+	$user = $agave->user;	
 	$themer = $agave->load('themer');
 	$node = new contentNode();
 	

@@ -2,7 +2,7 @@
 function user_edit_profile($args=NULL) {
 	global $agave;
 	$t = $agave->load('themer');
-	$user = $agave->load('user');
+	$user = $agave->user;
 	$fm = $agave->load('fieldManager');
 	$user->buildPrefs();
 	//determine userKey on which we will be editing
@@ -16,7 +16,7 @@ function user_edit_profile($args=NULL) {
 	}
 
 	//get user data for profile
-	$targetUser = $agave->load('user', TRUE);
+	$targetUser = new user;
 	if(!$targetUser->build($userKey)) {
 		agave_error_page('404');
 	}

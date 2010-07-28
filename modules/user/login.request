@@ -8,7 +8,7 @@ function login() {
 
 function buildPage() {
 	global $agave;
-	$user = $agave->load('user');
+	$user = $agave->user;
 	$themer = $agave->load('themer');
 	$fm = $agave->load('fieldManager');	
 	
@@ -34,7 +34,7 @@ function buildPage() {
 
 function processLogin() {
 	global $agave;
-	$user = $agave->load('user');
+	$user = $agave->user;
 	$session = $agave->load('session');
 	
 	$login = $_POST['login'];
@@ -61,7 +61,7 @@ function processLogin() {
 			$agave->invoke("user_login", $userKey);
 			
 			//TESTING
-			$u = $agave->load('user', TRUE);
+			$u = new user;
 			$u->build($userKey);
 			//END TESTING
 						

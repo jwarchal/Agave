@@ -1,7 +1,7 @@
 <?php
 function user_view_user_files($args=null) {
 	global $agave;
-	$user = $agave->load('user');
+	$user = $agave->user;
 	$t = $agave->load('themer');
 	$fm = $agave->load('fileManager');
 	

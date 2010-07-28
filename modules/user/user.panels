@@ -1,7 +1,7 @@
 <?php
 function user_panel_login($args=null) {
 	global $agave;
-	$user = $agave->load('user');
+	$user = $agave->user;
 
 	if($user->isAnon) {
 		$fm = $agave->load('fieldManager');

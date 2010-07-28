@@ -2,7 +2,7 @@
 function editContentNode($args=null) {
 	global $agave;
 		
-	$user = $agave->load('user');
+	$user = $agave->user;
 	$node = $agave->load('contentNode');
 	$sm = $agave->load('schemaManager');
 	$fm = $agave->load('fieldManager');

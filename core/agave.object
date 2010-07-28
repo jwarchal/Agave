@@ -200,19 +200,20 @@ class agave extends olddb {
 	}
 	
 	public function writeLogs() {
-		if(isset($_SESSION['logs'])) {
-			$u = $this->load('user');
-			if(!$u->isAnon) { //don't log anything for anonymous users - waste of db storage
-				$events = array();
-				foreach($_SESSION['logs'] as $item) {
-					if(!isset($item['userKey'])) $item['userKey'] = $u->userKey;
-					$events[] = "('".$item['type']."','".$item['event']."','".$item['time']."','".$item['userKey']."','".$item['location']."')";
+		if($this->user) {
+			if(isset($_SESSION['logs'])) {
+				if(!$this->user->isAnon) { //TODO: we're not logging anything for anonymous users right now, continue this??
+					$events = array();
+					foreach($_SESSION['logs'] as $item) {
+						if(!isset($item['userKey'])) $item['userKey'] = $this->user->userKey;
+						$events[] = "('".$item['type']."','".$item['event']."','".$item['time']."','".$item['userKey']."','".$item['location']."')";
+					}
+					$values = implode(", ", $events);
+					$query = "INSERT INTO `logs` (`type`,`event`,`time`,`userKey`,`location`) VALUES $values";
+					$this->doSQLQuery($query);
 				}
-				$values = implode(", ", $events);
-				$query = "INSERT INTO `logs` (`type`,`event`,`time`,`userKey`,`location`) VALUES $values";
-				$this->doSQLQuery($query);
+				unset($_SESSION['logs']);
 			}
-			unset($_SESSION['logs']);
 		}
 	}
 	
@@ -300,7 +301,6 @@ class agave extends olddb {
 	}
 	
 	public function inc($module, $file) {
-		$location = $this->modules[$module];
 		$file = $this->modulePath($module).$file;
 		include_once($file);
 	}
@@ -506,6 +506,6 @@ class agave extends olddb {
 	public function cleanup() {
 		//TODO: write user messages
 		$this->writeLogs();
-		session_write_close();		
+		if($this->user) session_write_close();
 	}
 }

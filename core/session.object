@@ -1,6 +1,9 @@
 <?php
 class session {
 
+	//TODO: add generateOneTimeKey - will add entry in DB
+	//TODO: add authenticateOneTimeKey($key) - will remove key from DB
+
 	public function __construct() {		
 		$open = array(&$this, "open");
 		$close = array(&$this, "close");
@@ -47,7 +50,7 @@ class session {
 	//read is what used to be the authenticate function (it is called automatically when "start" is called)
 	public function read($id) {
 		global $agave;
-		$user = $agave->load('user'); //global user is created when the session is read
+		$agave->user = new user; //agave user is created when the session is read
 		
 		//look for session in DB to determine whether or not user is logged in
 		if(!isset($_COOKIE[session_name()])) $_COOKIE[session_name()] = "NULL";
@@ -58,7 +61,7 @@ class session {
 		if (!$userKey) {
 			//if a session file exists, return it, otherwise return empty string
 			$this->method = 'file';
-			$user->createAnonymousUser();
+			$agave->user->createAnonymousUser();
 			$file = $this->save_path."/sess_".$id;
 
 			$data = (file_exists($file)) ? (string) @file_get_contents($file) : '';
@@ -66,27 +69,23 @@ class session {
 		}
 		else {
 			$sessionData = unserialize($sqlData['data']);
-			$user->build($userKey);
-			$user->buildMappings();
-			$user->sessionID = $sqlData['sessionID'];
-			
-			//TODO: check for timeout
-			//$user->timedOut = () ? TRUE : FALSE;
-			
+			$agave->user->build($userKey);
+			$agave->user->buildMappings();
+			$agave->user->sessionID = $sqlData['sessionID'];
+						
 			return $sessionData;
 		}
 	}
 	
 	public function write($sess_id, $data) {
 		global $agave;
-		$user = $agave->load('user');
-		if($user->isAnon || $this->method=='file') {
+		if($agave->user->isAnon || $agave->this->method=='file') {
 			$file = "$this->save_path/sess_$sess_id";
 			if($fp = @fopen($file, "w")) {
 				$return = fwrite($fp, $data);
 				fclose($fp);
 				
-				if(!$user->isAnon) {
+				if(!$agave->user->isAnon) {
 					$query = "UPDATE `sessions` SET `time_refreshed`='".time()."' WHERE `sessionID`='".$sess_id."'";
 					$agave->doSQLQuery($query);	
 				}
@@ -105,8 +104,7 @@ class session {
 	public function destroy($id=NULL) {
 		$id = ($id) ? $id : $_COOKIE[session_name()];
 		global $agave;
-		$user = $agave->load('user');
-		if(!$user->isAnon && $this->method=='database') {
+		if(!$agave->user->isAnon && $this->method=='database') {
 			$query = "DELETE FROM `sessions` WHERE `sessionID`='".mysql_real_escape_string($id)."'";
 			$agave->doSQLQuery($query);
 		}

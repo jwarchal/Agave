@@ -2,7 +2,7 @@
 function createContentNode($args=null) {
 	global $agave;
 	$t = $agave->load('themer');
-	$user = $agave->load('user');
+	$user = $agave->user;
 	
 	if(!$user->access("create_content")) {
 		$agave->message('error', "You do not have access to perform the action you requested.");

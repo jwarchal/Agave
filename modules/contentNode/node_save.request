@@ -2,7 +2,7 @@
 function saveContentNode($args=null) {
 	global $agave;
 
-	$user = $agave->load('user');
+	$user = $agave->user;
 	$id = (isset($args[0])) ? $args[0] : NULL; //we either received the contentNodeKey in the URL, or it's NULL because we're saving a new one
 
 	//register save/metaData

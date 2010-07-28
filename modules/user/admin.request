@@ -30,7 +30,7 @@ function mapUserToTypes($userKey) {
 function saveUserAccess($userKey) {
 	global $agave;
 
-	$u = $agave->load('user', TRUE);
+	$u = new user;
 	$u->buildAll($userKey);
 	
 	//get all user types, build access grid based on what users user_types allow
@@ -63,7 +63,7 @@ function manageUser($args=NULL) {
 	$userKey = $args[0];
 	$t = $agave->load('themer');
 	$fm = $agave->load('fieldManager');
-	$u = $agave->load('user', TRUE);
+	$u = new user;
 	$u->buildAll($userKey);
 	
 	//user_types selection form
@@ -185,7 +185,7 @@ function confirmDeleteUser($userKey) {
 	global $agave;
 	$t = $agave->load("themer");
 	$fm = $agave->load('fieldManager');
-	$u = $agave->load('user', TRUE);
+	$u = new user;
 	$u->build($userKey);
 
 	$elements = array();
@@ -357,7 +357,7 @@ function editMulti() {
 	//build users for submitted keys
 	$users = array();
 	for($i=0; $i<count($userKeys); $i++) {
-		$users[$i] = $agave->load('user', TRUE);
+		$users[$i] = new user;
 		$users[$i]->build($userKeys[$i]);
 		$users[$i]->buildPrefs();
 	}
@@ -443,7 +443,7 @@ function editMulti() {
 
 function viewMulti() {
 	global $agave;
-	$user = $agave->load('user');
+	$user = $agave->user;
 	$um = $agave->load('userManager');
 	$fm = $agave->load('fieldManager');
 	$t = $agave->load('themer');
@@ -595,9 +595,9 @@ function messageUser($args=null) {
 	
 	$t = $agave->load('themer');
 	$fm = $agave->load('fieldManager');
-	$user = $agave->load('user');
+	$user = $agave->user;
 	$key = $args[0];
-	$targetUser = $agave->load('user', TRUE);
+	$targetUser = new user;
 	if(!$targetUser->build($key)) agave_error_page('404');
 	
 	//assemble form
@@ -635,7 +635,7 @@ function messageUser($args=null) {
 function saveMessage($post) {
 	global $agave;
 	foreach($post as $key=>$value) $$key = (!empty($value)) ? mysql_real_escape_string($value) : NULL;
-	$user = $agave->load('user');
+	$user = $agave->user;
 	$message = "<em>Message from <b>$user->firstName $user->lastName</b></em>:<br/>".$message;
 	//$agave->message($type, $message, $targetUserKey);
 	//$agave->message('general', NULL, "Sent message to user.");

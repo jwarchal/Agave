@@ -7,7 +7,7 @@ function register($args=null) {
 function buildInterface($arg) {
 	global $agave;
 	$fm = $agave->load('fieldManager');
-	$user = $agave->load('user');
+	$user = $agave->user;
 	$t = $agave->load('themer');
 	
 	$elements = array();
