@@ -1,22 +1,16 @@
 <?php
 /**
  *  * This is taken from Drupal 7's stream wrapper support.  See http://api.drupal.org
- * Agave temporary (tmp://) stream wrapper class.
+ * agave temporary (temp://) stream wrapper class.
  */
-class stream_wrapper_tmp extends agaveLocalStreamWrapper {
+class stream_wrapper_temp extends agaveLocalStreamWrapper {
   /**
    * Implements abstract public function getDirectoryPath()
    */
 	public function getDirectoryPath() {
-                //global $agave;
-                //$agave->death(ini_get('upload_tmp_dir'));
-		//return ini_get('upload_tmp_dir');
-
-                $tmpfile = tempnam("dummy","");
-                $path = dirname($tmpfile);
-                unlink($tmpfile);
+                global $agave;
+                $path = $agave->upfiles_dir."temp/";
                 return $path;
-
 	}
    /**
    * Overrides getExternalUrl().
