@@ -5,18 +5,15 @@ class stream_wrapper_public extends agaveLocalStreamWrapper {
    */
   public function getDirectoryPath() {
   	global $agave;
-    $path = ($agave->setting('file_public_path')) ? $agave->setting('file_public_path') : $agave->upfiles_dir."public";
-    return $path;
+        $path = $agave->upfiles_dir."public/";
+        return $path;
   }
    /**
    * Overrides getExternalUrl().
    */
   public function getExternalUrl() {
-  	//TODO: tmp files probably should not return a URL, they shouldn't be downloadable
-    global $agave;
-    $fm = $agave->load('fileManager');
-    //TODO: check for settings
-    $url = $agave->upfiles_url."public/".$fm->get_target($this->uri);
-    return $url;
+                global $agave;
+                $url = $agave->upfiles_url."public/";
+                return $url;
   }
 }

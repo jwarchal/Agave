@@ -13,7 +13,9 @@ abstract class stream_wrapper_private extends agaveLocalStreamWrapper {
    * Implements abstract public function getDirectoryPath()
    */
   public function getDirectoryPath() {
-    return variable_get('file_private_path', conf_path() . '/private/files');
+                global $agave;
+                $path = $agave->upfiles_dir."private/";
+                return $path;
   }
 
   /**
