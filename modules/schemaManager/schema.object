@@ -1,12 +1,11 @@
 <?php
 class schema {
-	//QUESTION: does getFields need to look for possible matchFields and assign them internally, only receiving matchFields to limit the query?
-
 	private $fieldKeys = FALSE; //all fieldKeys for this schema
 	private $fields = FALSE; //all field data from schema_fields table
-	private $fieldOrderedList = FALSE; //fields ordered by weight
+	public $fieldOrderedList = FALSE; //fields ordered by weight
 	private $fieldElements = FALSE; //array of fieldElements for fieldManager
 	private $values = FALSE; //may be flat array, may be multilayered if matchFields
+	private $fieldTypes = FALSE; //flat array of fieldKeys and their field type (checkbox, textarea, etc... used for formatting/unformatting values)
 
 	public function __construct($stem, $schema, $uniqueKey=FALSE, $matchFields=FALSE) {
 		global $agave;
@@ -16,58 +15,82 @@ class schema {
 		$this->uniqueKey = $uniqueKey;
 		$this->matchFields = $matchFields;
 
+		//matchKeys will RESTRICT to only the given; if none present, all values are loaded into values array based on available matchkeys
 		$this->populate();
 	}
 	
-	//public API methods
+	/*
+	 * PUBLIC API METHODS
+	 */
 	public function returnFieldElements($parentElement=FALSE, $matchFields=FALSE) {
 		//if matchkeys were received, set default field values based on matchkeys
-		//return ordered by weight
+		if(!$this->fields) return;
+		$elements = array();
+		foreach($this->fieldOrderedList as $field) $elements[] = $this->returnFieldElement($field, $parentElement, $matchFields);
+		return $elements;
 	}
 
-	public function returnFieldElement($field, $parentElement=FALSE, $matchFields=FALSE) {
-		//return given field, prefilled with specific matchKey if given
-		//set metadata matchkey if necessary
-		//set parent element if necessary
-		//set default value based on any given matchkeys
+	public function returnFieldElement($fieldName, $parentElement=FALSE, $matchFields=FALSE) {
+		$element = $this->fieldElements[$fieldName];
+		if(!$matchFields) $matchFields = $this->matchFields; //inherit matchfields from constructor if none explicit
+		if($parentElement) $element['#name'] = $parentElement."/".$element['#name']; //TODO: is this the correct syntax for element parents?
+		if($matchFields) $element['#metadata']['matchFields'] = $matchFields;
+
+		if($this->uniqueKey) {
+			$valRow = $this->getValueRow($fieldName, $matchFields);
+			$element['#default'] = $valRow['value'];
+			$element['#metadata']['valueKey'] = $valRow['valueKey'];
+		}
+
+		return $element;
 	}
 
-	public function displayFields($field, $matchKeys=FALSE) {
-		//foreach in fieldList, displayField(list['field'], $matchKeys);
+	public function displayFields($matchFields=FALSE) {
+		if($this->fields) {
+			$html = NULL;
+			foreach($this->fieldOrderedList as $field) $html .= $this->displayField($field, $matchFields);
+			return $html;
+		}
 	}
 	
-	public function displayField($field, $matchKeys=FALSE) {
-		//check user access if present
+	public function displayField($field, $matchFields=FALSE) {
+		$value = $this->getValue($field, $matchFields);
+		return ($value) ? $this->agave->load('fieldManager')->displayFormat($value, $this->fields[$field]) : NULL;
 	}
 
-	public function getValue($field, $matchFields=FALSE) {}
+	public function getValue($field, $matchFields = FALSE) {
+		$row = $this->getValueRow($field, $matchFields);
+		return $row['value'];
+	}
 
-	//private utility methods
+	/*
+	 * PRIVATE UTILITY METHODS
+	 */
 	private function populate() {
-		//matchKeys will RESTRICT to only the given; if no present, all values are loaded into values array based on available matchkeys
-
 		//the following must be called in this order
 		$this->getFields();
-		$this->organizeFieldElements();
 		$this->organizeValues();
 	}
 
 	private function getFields() {
-		$query = "SELECT `fieldKey` FROM `".$this->stem."_schema_fields` WHERE `schema`='".$this->schema."' ";
-		$fieldData = $this->agave->doSQLQuery($query, 1);
+		$query = "SELECT * FROM `".$this->stem."_schema_fields` WHERE `schema`='".$this->schema."' ";
+		$fieldData = $this->agave->doSQLQuery($query, 3);
 		if(!$fieldData) return FALSE;
 
 		$fieldKeys = array();
 		$fields = array();
 		$fieldOrderedList = array();
 		$elements = array();
+		$fieldTypes = array();
 
 		//set fieldKeys, fields and fieldList
 		foreach($fieldData as $field) {
+			$field['settings'] = unserialize($field['settings']);
 			$fieldOrderedList[(50000+$field['weight'])."_".$field['keyName']."_".$field['fieldKey']] = $field['keyName'];
 			$fields[$field['keyName']] = $field;
 			$fieldKeys[] = $field['fieldKey'];
 			$elements[$field['keyName']] = $this->unpackElement($field);
+			$fieldTypes[$field['fieldKey']] = $field['type'];
 		}
 		ksort($fieldOrderedList);
 
@@ -75,6 +98,18 @@ class schema {
 		$this->fieldKeys = $fieldKeys;
 		$this->fieldOrderedList = $fieldOrderedList;
 		$this->fieldElements = $elements;
+		$this->fieldTypes = $fieldTypes;
+	}
+
+	private function getValueRow($field, $matchFields=FALSE) {
+		if(!$matchFields) $matchFields = $this->matchFields; //this takes into account the fact that matchFields could have been set in the constructor
+		if(!$this->values) return FALSE;
+		foreach($this->values[$this->fields[$field]['fieldKey']] as $row) {
+			if(!$matchFields && !$row['matchFields']) return $row;
+			else if($matchFields) {
+				if($matchFields == $row['matchFields']) return $row;
+			}
+		}
 	}
 
 	private function unpackElement($field) {
@@ -85,21 +120,49 @@ class schema {
 			'#help'=>$field['help'],
 			'#access'=>$field['access'],
 			'#weight'=>$field['weight'],
-			'#settings'=>unserialize($field['settings']),
 			'#metadata'=>array(
 				'stem'=>$this->stem,
 				'schema'=>$this->schema,
 				'uniqueKey'=>$this->uniqueKey,
+				'fieldKey'=>$field['fieldKey'],
 			),
 		);
 
+		//if the schema was built with matchField restrictions, but them in the metadata even if there are no values, they'll be used on save
+		if($this->matchFields) $element['#metadata']['matchFields'] = $this->matchFields;
+
 		//unpack field settings
-		if(!empty($field['settings'])) foreach($field['settings'] as $key=>$value) $elements[$field['name']]["#".$key] = $value;
+		if(!empty($settings)) foreach($settings as $key=>$value) $element[$field['keyName']]["#".$key] = $value;
+
+		return $element;
 	}
 
 	private function organizeValues() {
-		if(!$this->uniqueKey) return FALSE;
+		if(!$this->uniqueKey || !$this->fieldKeys) return FALSE;
+		$query = "SELECT * FROM `".$this->stem."_schema_values` WHERE `uniqueKey`='".$this->uniqueKey."'";
+		$valueData = $this->agave->doSQLQuery($query, 3);
 
-		//TODO: start here
+		//This part is a little tricky, we create a big array of all the values, keyed by their fieldKey.
+		//Each entry could have multiple value rows, depending on the presence of matchKeys
+		//each row for each fieldKey contains the value, valueKey and matchFields if they were present,
+		//note that matchField columns must begin with "mf_" in the database to be seen
+
+		$values = array();
+
+		foreach($valueData as $row) {
+			$matchFields = array();
+
+			//this search for possible matchfields could be optimized more?  .... probably?
+			foreach($row as $key=>$value) if(substr($key, 0, 3) == 'mf_') $matchFields[substr($key, 3, strlen($key)-3)] = $value;
+			
+			$values[$row['fieldKey']][] = array(
+				'value'=>$this->agave->load('fieldManager')->unformat($this->fieldTypes[$row['fieldKey']], $row['value']),
+				'matchFields' => (!empty($matchFields)) ? $matchFields : FALSE,
+				'valueKey'=>$row['valueKey'],
+				'fieldKey'=>$row['fieldKey'],
+			);
+		}
+
+		$this->values = (!empty($values)) ? $values : FALSE;
 	}
 }

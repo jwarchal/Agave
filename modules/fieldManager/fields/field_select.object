@@ -24,16 +24,16 @@ final class field_select extends genericField implements fieldInterface {
 		$disabled = $attributes['disabled'];
 		$html = "<select name='".$this->generateName($element)."' $attributes $disabled>";
 		if(isset($element['values'][0])) {
-			$values = $element['values'];
-			$default = isset($element['default']) ? $element['default'] : NULL;
+			$values = $element['#values'];
+			$default = isset($element['#default']) ? $element['#default'] : NULL;
 			foreach($values as $value) {
 				$selected = $value == $default ? "selected='selected'" : "";
 				$html .= "<option value='".$value."' $selected >".$value."</option>";
 			}
 		}
 		else {
-			$values = $element['values'];
-			$default = $element['default'];
+			$values = $element['#values'];
+			$default = $element['#default'];
 			foreach($values as $key=>$value) {
 				$selected = $value == $default ? "selected='selected'" : "";
 				$html .= "<option value='".$value."' $selected >".$key."</option>";

@@ -26,7 +26,7 @@ final class field_button extends genericField implements fieldInterface {
 		$classes = $attributes['classes'];
 		$id = $attributes['id'];
                 $href = $attributes['href'];
-                $label = $element['label'];
+                $label = $element['#label'];
 		
 		$html = "<a ".$href." name='".$name."' $classes $id >".$label."</a>";
 		

@@ -13,11 +13,11 @@ final class field_fieldset extends genericField implements fieldInterface {
             //$agave->death($attributes);
             $classes = $attributes['classes'];
             $id = $attributes['id'];
-            $legend = $element['label'];
+            $legend = $element['#label'];
             return "<fieldset $classes $id><legend>$legend</legend>";
         }
 	public function display($values, $settings){ //format value as it should be displayed on page
-            return "";
+            return NULL;
         }
 	public function validate($values, $metaData) { return true; } //special validation before formating for save
 	public function returnSettingsForm($settings) { return null; } //return form elements for editing settings specific to the field

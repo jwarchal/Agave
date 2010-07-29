@@ -21,8 +21,8 @@ final class field_checkbox extends genericField implements fieldInterface {
 
 	public function edit($element) {
 		$attributes = implode(" ", $this->generateAttributes($element));
-		if(isset($element['layout']['type'])) {
-			switch($element['layout']['type']) {
+		if(isset($element['#layout']['type'])) {
+			switch($element['#layout']['type']) {
 				case 'horizontal' : $html = $this->returnHorizontal($element, $attributes); break;
 				case 'vertical' : $html = $this->returnVertical($element, $attributes); break;
 				case 'grid' : $html = $this->returnGrid($element, $attributes); break;
@@ -34,7 +34,7 @@ final class field_checkbox extends genericField implements fieldInterface {
 
 	private function returnHorizontal($element, $attributes) {
 		$html = '';
-		foreach($element['values'] as $key=>$value) {
+		foreach($element['#values'] as $key=>$value) {
 			$html .= $this->generateCheckbox($element, $attributes, $key, $value);
 		}
 		return $html;
@@ -42,7 +42,7 @@ final class field_checkbox extends genericField implements fieldInterface {
 
 	private function returnVertical($element, $attributes) {
 		$html = '';
-		foreach($element['values'] as $key=>$value) {
+		foreach($element['#values'] as $key=>$value) {
 			$html .= $this->generateCheckbox($element, $attributes, $key, $value)."<br />";
 		}
 		return $html;
@@ -50,11 +50,11 @@ final class field_checkbox extends genericField implements fieldInterface {
 
 	private function returnGrid($element, $attributes) {
 		//default grid width is 3
-		$width = isset($element['layout']['width']) ? $element['layout']['width'] : 3;
+		$width = isset($element['#layout']['width']) ? $element['#layout']['width'] : 3;
 				
 		$i=0;
 		$html = "<table></tbody>";
-		foreach($element['values'] as $key=>$value) {
+		foreach($element['#values'] as $key=>$value) {
 			if($i == 0) $html .= "<tr>";
 			$html .= "<td>".$this->generateCheckbox($element, $attributes, $key, $value)."</td>";
 			if($i >= ($width-1)) {
@@ -71,8 +71,8 @@ final class field_checkbox extends genericField implements fieldInterface {
 	private function generateCheckbox($element, $attributes, $key=NULL, $value=NULL) {
 		$checked = '';
 		if(!is_string($key)) $key = $value;	//TODO: what to do about difference between keyed and numeric arrays?
-		if(!empty($element['default'])) $checked = in_array($value, $element['default']) ? "checked='checked'" : "";
-		$label = (isset($element['nolabel']) && $element['nolabel']==TRUE) ? "" : "<span class='fm-checkbox-label'>".$key."</span>";
+		if(!empty($element['#default'])) $checked = in_array($value, $element['#default']) ? "checked='checked'" : "";
+		$label = (isset($element['#nolabel']) && $element['#nolabel']==TRUE) ? "" : "<span class='fm-checkbox-label'>".$key."</span>";
 		$name = $this->generateName($element);
 		$html = "<input type='checkbox' name='".$name."[]' value='".$value."' $attributes $checked />$label";
 		return $html;

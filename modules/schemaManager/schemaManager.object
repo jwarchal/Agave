@@ -11,7 +11,7 @@ class schemaManager {
 	public function get_node_keys($stem, $matchFields) {
 		global $agave;
 		$args = func_get_args();
-		$query = "SELECT DISTINCT s.`nodeKey` FROM `". $stem . "_schema` s WHERE ";
+		$query = "SELECT DISTINCT s.`fieldKey` FROM `". $stem . "_schema_fields` s WHERE ";
 		$and = '';
 		foreach ($matchFields as $matchField) {
 			while (list($key,$value) = each ($matchField)) {
@@ -19,24 +19,24 @@ class schemaManager {
 			}
 			$and = "AND ";
 		}
-		$nodeKeys = $agave->doSQLQuery($query, 1);
-		$this->nodeKeys = $nodeKeys;
-		$agave->debug("Returning nodeKeys", __METHOD__, $args, __LINE__, __FILE__, $this->debugFilter);
-		return $nodeKeys;
+		$fieldKeys = $agave->doSQLQuery($query, 1);
+		$this->fieldKeys = $fieldKeys;
+		$agave->debug("Returning fieldKeys", __METHOD__, $args, __LINE__, __FILE__, $this->debugFilter);
+		return $fieldKeys;
 	}
 	
 	public function get_form_elements($stem=NULL, $schemata=NULL, $matchKey=NULL, $block=NULL, $parent=NULL) {
 		global $agave;
-		$nodeKeys = '';
+		$fieldKeys = '';
 		$comma = '';
 		foreach($schemata as $schema) {
-			$nodeKeys .= $comma.implode(",", $schema);
+			$fieldKeys .= $comma.implode(",", $schema);
 			$comma = ",";
 		}
 
-		$query = "SELECT s.*, v.`value`, v.`valueKey` FROM `".$stem."_schema` s
-				LEFT JOIN `".$stem."_values` v ON ( s.`nodeKey` = v.`nodeKey` AND v.`".$stem."Key` = '".$matchKey."' )
-				WHERE s.`nodeKey` IN(".$nodeKeys.")
+		$query = "SELECT s.*, v.`value`, v.`valueKey` FROM `".$stem."_schema_fields` s
+				LEFT JOIN `".$stem."_schema_values` v ON ( s.`fieldKey` = v.`fieldKey` AND v.`".$stem."Key` = '".$matchKey."' )
+				WHERE s.`fieldKey` IN(".$fieldKeys.")
 		";
 		$results = $agave->doSQLQuery($query, 3);
                 //$agave->death($results);
@@ -54,18 +54,18 @@ class schemaManager {
 	public function get_schema_values($stem, $matchKey, $schemata) {
 		global $agave;
 		if($schemata) {
-			$nodeKeys = '';
+			$fieldKeys = '';
 			$comma = '';
 			foreach($schemata as $schema) {
-				$nodeKeys .= $comma.implode(",", $schema);
+				$fieldKeys .= $comma.implode(",", $schema);
 				$comma = ",";
 			}
 			
-			if($nodeKeys) {
-				$query = "SELECT DISTINCT s.*, v.`value`	 FROM `".$stem."_schema` s
-					INNER JOIN `".$stem."_values` v ON s.`nodeKey` = v.`nodeKey`
+			if($fieldKeys) {
+				$query = "SELECT DISTINCT s.*, v.`value`	 FROM `".$stem."_schema_fields` s
+					INNER JOIN `".$stem."_schema_values` v ON s.`fieldKey` = v.`fieldKey`
 					WHERE v.`".$stem."Key`='". $matchKey."'
-					AND v.`nodeKey` IN(".$nodeKeys.")";
+					AND v.`fieldKey` IN(".$fieldKeys.")";
 				$sqlData = $agave->doSQLQuery($query, 3);
 	
 				//TODO change this to return whole schema row - need that data in the object
@@ -99,7 +99,7 @@ class schemaManager {
 		$element['metaData']['name'] = $row['keyName'];
 		$element['metaData']['type'] = $row['type'];
 		$element['metaData']['stem'] = $stem;
-		$element['metaData']['nodeKey'] = $row['nodeKey'];
+		$element['metaData']['fieldKey'] = $row['fieldKey'];
 		$element['metaData']['matchKeyName'] = $matchKeyName;
 		$element['metaData']['matchKeyValue'] = $matchKeyValue;
 		if(isset($row['settings']['db'])) $element['metaData']['db'] = $row['settings']['db'];
@@ -134,9 +134,9 @@ class schemaManager {
 //TODO: consider moving following functions out into new object for others to extend
 
 	//utility function for objects that extend schemaManager
-	public function returnNodeKeys($key) {
+	public function returnfieldKeys($key) {
 		global $agave;
-		$query = "SELECT DISTINCT s.`nodeKey` FROM `". $this->stem . "_schema` s WHERE `".$this->matchKeyName."`='$key'";
+		$query = "SELECT DISTINCT s.`fieldKey` FROM `". $this->stem . "_schema_fields` s WHERE `".$this->matchKeyName."`='$key'";
 		$keys = $agave->doSQLQuery($query, 1);
 
 		return ($keys) ? $keys : NULL;
@@ -145,13 +145,13 @@ class schemaManager {
 	public function buildSchema() {
 		global $agave;
 		$args = func_get_args();
-		//$agave->death($this->nodeKeys);
-		if($this->nodeKeys) {
+		//$agave->death($this->fieldKeys);
+		if($this->fieldKeys) {
 			$query = "SELECT DISTINCT s.*, v.`value` , v.`valueKey` 
-				FROM `".$this->stem."_schema` s 
-				LEFT OUTER JOIN `".$this->stem."_values` v 
-				ON (s.`nodeKey` = v.`nodeKey` AND v.`".$this->matchKeyName."`='".$this->matchKeyValue."')
-				WHERE s.`nodeKey` IN(".implode(",",$this->nodeKeys).")";
+				FROM `".$this->stem."_schema_fields` s
+				LEFT OUTER JOIN `".$this->stem."_schema_values` v
+				ON (s.`fieldKey` = v.`fieldKey` AND v.`".$this->matchKeyName."`='".$this->matchKeyValue."')
+				WHERE s.`fieldKey` IN(".implode(",",$this->fieldKeys).")";
 			$result = $agave->doSQLQuery($query, 3);
 
 			if($result) {
@@ -160,7 +160,7 @@ class schemaManager {
 				foreach($result as $row) {
 					if(!$row['weight']) $row['weight'] = 0;
 					$hash = 50000 + $row['weight'];
-					$id = $hash."_".$row['keyName']."_".$row['nodeKey'];
+					$id = $hash."_".$row['keyName']."_".$row['fieldKey'];
 					$organized[$id] = $row;
 					$this->schemaList[$row['keyName']] = $id;
 				}
@@ -172,13 +172,13 @@ class schemaManager {
 			$this->schema = $organized;
 		}
 		else {
-			$agave->debug("No schema to return for object (no nodekeys to process)", __METHOD__, $args, __LINE__, __FILE__, $this->debugFilter);
+			$agave->debug("No schema to return for object (no fieldKeys to process)", __METHOD__, $args, __LINE__, __FILE__, $this->debugFilter);
 			$this->schema = FALSE;
 		}
 	}
 
 	public function populate() {
-		if(!isset($this->nodeKeys)) $this->get_node_keys($this->stem, $this->matchFields);
+		if(!isset($this->fieldKeys)) $this->get_node_keys($this->stem, $this->matchFields);
 		$this->buildSchema();
 		$this->buildValues();
 	}

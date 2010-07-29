@@ -128,10 +128,10 @@ function returnCreationForm($form_values, $step) {  //you and me baby ain't noth
 				//'#validation'=>array('alphanumeric','/^[a-zA-Z]+$/'),
 				//'#errormessage'=>'that is not legitimaaaate...',
 			);
-                        $options = array();
-                        foreach($agave->module_env['extensions']['transcoder']['plugin'] as $plugin){
-                                $options[] = $plugin['data']['name'];
-                        }
+			$options = array();
+			foreach($agave->module_env['extensions']['transcoder']['plugin'] as $plugin){
+				$options[] = $plugin['data']['name'];
+			}
 			$formarr['fields']['plugin'] = array(
 				'#name'=>'plugin',
 				'#label'=>'Select which plugin your transcoding preset will use:',

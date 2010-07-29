@@ -28,7 +28,7 @@ final class field_hidden extends genericField implements fieldInterface {
 		
 		$name = $this->generateName($element);
 		//no need to unformat the value, was done when the element was generated
-		$value = (isset($element['value'])) ? "value='".$element['value']."'" : "";
+		$value = (isset($element['#value'])) ? "value='".$element['#value']."'" : "";
 		$html = "<input type='hidden' name='".$name."' $attributes $value />";		
 		
 		return $html;		

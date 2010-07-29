@@ -1,4 +1,5 @@
 <?php
+/*
 function saveContentNode($args=null) {
 	global $agave;
 
@@ -31,14 +32,5 @@ function saveContentNode($args=null) {
 	//redirect user to content that was just created/edited
 	$agave->redirect("content/".$id);
 }
+*/
 
-function saveContentNode2($args=null) {
-	global $agave;
-        
-	$fm = $agave->load('fieldManager');
-	
-	$form = $fm->getForm('nodeForm');
-	
-	$new = isset($form->values->nodeID) ? TRUE : FALSE;
-	$nodeID = $fm->saveForm($form);
-}

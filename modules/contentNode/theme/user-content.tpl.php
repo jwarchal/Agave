@@ -12,7 +12,7 @@
 		<?php foreach($nodes as $node): ?>
 			<tr class='user-row'>
 				<td>
-					<?php print substr($node->fields->values->title, 0, 20); ?>
+					<?php print substr($node->fields->getValue('title'), 0, 20); ?>
 				</td>
 				<td>
 					<?php print $node->type; ?>

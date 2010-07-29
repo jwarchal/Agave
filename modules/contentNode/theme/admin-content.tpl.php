@@ -20,7 +20,7 @@
 				</tr>
 				<?php foreach($nodes as $node): ?>
 				<tr>
-					<td><a href='<?php print $agave->url."content/".$node->contentNodeKey ?>'><?php print $node->fields->values->title ?></a></td>
+					<td><a href='<?php print $agave->url."content/".$node->contentNodeKey ?>'><?php print $node->fields->getValue('title') ?></a></td>
 					<td><?php print $node->type ?></td>
 					<td><?php print date("M d Y", $node->time_created) ?></td>
 					<td><?php print date("M d Y", $node->time_modified) ?></td>

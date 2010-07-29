@@ -20,7 +20,7 @@ final class field_cktext extends genericField implements fieldInterface {
 	}
 	
 	public function edit($element) {
-		$user = $this->agave->load('user');
+		$user = $this->agave->user;
 		
 		//TODO add array handling
 		$attributes = $this->generateAttributes($element);
@@ -29,7 +29,7 @@ final class field_cktext extends genericField implements fieldInterface {
 		$name = $this->generateName($element);
 		
 		//no need to unformat the value, was done when the element was generated
-		$value = (isset($element['default'])) ? "value='".$element['default']."'" : "";
+		$value = (isset($element['#default'])) ? "value='".$element['#default']."'" : "";
 
 		//TODO make aware of CKeditor profiles based on user_type
 
@@ -42,7 +42,7 @@ final class field_cktext extends genericField implements fieldInterface {
 			}
 		");
 		
-		$default = (isset($element['default'])) ? $element['default'] : NULL;
+		$default = (isset($element['#default'])) ? $element['#default'] : NULL;
 		$html = "<textarea name='".$name."' $attributes'>".$default."</textarea>";
 		
 		

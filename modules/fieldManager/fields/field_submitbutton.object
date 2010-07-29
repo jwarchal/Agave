@@ -25,7 +25,7 @@ final class field_submitbutton extends genericField implements fieldInterface {
                 $name = $this->generateName($element);
 		$classes = $attributes['classes'];
 		$id = $attributes['id'];
-                $value = $element['value'];
+                $value = $element['#value'];
                 //$label = $element['label'];
 		
 		$html = "<input type='submit' name='".$name."' value='".$value."' $classes $id />";

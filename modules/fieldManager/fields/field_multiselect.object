@@ -24,9 +24,9 @@ final class field_multiselect extends genericField implements fieldInterface {
 	public function edit($element) {
 		$attributes = implode(" ", $this->generateAttributes($element));
 		$html = "<select multiple='multiple' name='".$this->generateName($element)."[]' $attributes >";
-			if(isset($element['values'][0])) {
-				$values = $element['values'];
-				$defaults = $element['default'];
+			if(isset($element['#values'][0])) {
+				$values = $element['#values'];
+				$defaults = $element['#default'];
 				foreach($values as $value) {
 					if($defaults) $selected = in_array($value, $defaults) ? "selected='selected'" : NULL;
 					else $selected=NULL;
@@ -34,8 +34,8 @@ final class field_multiselect extends genericField implements fieldInterface {
 				}
 			}
 			else {
-				$values = $element['values'];
-				$defaults = $element['default'];
+				$values = $element['#values'];
+				$defaults = $element['#default'];
 				foreach($values as $key=>$value) {
 					$selected = in_array($value, $defaults) ? "selected='selected'" : "";
 					$html .= "<option value='".$value."' $selected >".$key."</option>";

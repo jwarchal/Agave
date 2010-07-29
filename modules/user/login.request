@@ -14,14 +14,14 @@ function buildPage() {
 	
 	$formElements = array();
 	$formElements[] = array(
-		'type'=>'text',
-		'label'=>'Login: ',
-		'name'=>'login'
+		'#type'=>'text',
+		'#label'=>'Login: ',
+		'#name'=>'login'
 	);
 	$formElements[] = array(
-		'type'=>'password',
-		'label'=>'Password: ',
-		'name'=>'password'
+		'#type'=>'password',
+		'#label'=>'Password: ',
+		'#name'=>'password'
 	);
 
 	$form = $fm->startForm($agave->url."user/login&rd=".$agave->destination, "POST");

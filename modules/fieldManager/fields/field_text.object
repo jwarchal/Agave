@@ -35,7 +35,7 @@ final class field_text extends genericField implements fieldInterface {
 		$name = $this->generateName($element);
 		
 		//no need to unformat the value, was done when the element was generated
-		$value = (isset($element['default'])) ? "value='".$element['default']."'" : "";
+		$value = (isset($element['#default'])) ? "value='".$element['#default']."'" : "";
 		$html = "<input type='text' name='".$name."' $classes $maxlength $id $title $onchange $disabled $value $size />";
 		
 		return $html;		

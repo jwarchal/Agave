@@ -7,9 +7,9 @@
 		<a class='node-edit-button' href='<?php echo $agave->url."content/$node->contentNodeKey/edit" ?>'></a>
 	<?php endif; ?>
 
-	<?php foreach($node->fields->schema as $row): if(($row['access'] && $user->access($row['access']) || !$row['access']) && $row['value']): ?>
-		<div class='node-field node-field-<?php echo $row['keyName'] ?>'>
-			<?php print $row['value'] ?>
+	<?php foreach($node->fields->fieldOrderedList as $field): ?>
+		<div class='node-field node-field-<?php echo $field ?>'>
+			<?php print $node->fields->displayField($field); ?>
 		</div>
-	<?php endif; endforeach; ?>
+	<?php endforeach; ?>
 </div>

@@ -22,7 +22,7 @@ final class field_textarea extends genericField implements fieldInterface {
 	
 	public function edit($element) {
 		$attributes = implode(" ", $this->generateAttributes($element));
-		$value = (isset($element['default'])) ? $element['default'] : NULL;
+		$value = (isset($element['#default'])) ? $element['#default'] : NULL;
 		$html = "<textarea name='".$this->generateName($element)."' $attributes>$value</textarea>";
 		return $html;
 	}

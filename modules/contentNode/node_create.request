@@ -9,7 +9,7 @@ function createContentNode($args=null) {
 		$agave->redirect();
 	}
 	
-	$query = "SELECT * from `contentNode_types`";
+	$query = "SELECT * from `contentNode_schemata`";
 	$data = $agave->doSQLQuery($query, 3);
 	
 	$themevars = array(
