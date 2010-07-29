@@ -29,7 +29,7 @@ class contentNode {
 		 */
 
 		//TODO: delete this as soon as new schema object is finalized
-		$this->buildFields($matchFields);
+		$this->buildFields();
 
 		return TRUE;
 	}

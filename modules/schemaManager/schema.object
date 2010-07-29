@@ -1,8 +1,10 @@
 <?php
 class schema {
+	//QUESTION: does getFields need to look for possible matchFields and assign them internally, only receiving matchFields to limit the query?
+
 	private $fieldKeys = FALSE; //all fieldKeys for this schema
 	private $fields = FALSE; //all field data from schema_fields table
-	private $fieldList = FALSE; //fields ordered by weight
+	private $fieldOrderedList = FALSE; //fields ordered by weight
 	private $fieldElements = FALSE; //array of fieldElements for fieldManager
 	private $values = FALSE; //may be flat array, may be multilayered if matchFields
 
@@ -18,18 +20,22 @@ class schema {
 	}
 	
 	//public API methods
-	public function returnFieldElements($matchFields=FALSE) {
+	public function returnFieldElements($parentElement=FALSE, $matchFields=FALSE) {
 		//if matchkeys were received, set default field values based on matchkeys
 		//return ordered by weight
 	}
 
-	public function returnFieldElement($field, $matchFields=FALSE) {
+	public function returnFieldElement($field, $parentElement=FALSE, $matchFields=FALSE) {
 		//return given field, prefilled with specific matchKey if given
+		//set metadata matchkey if necessary
+		//set parent element if necessary
+		//set default value based on any given matchkeys
 	}
 
 	public function displayFields($field, $matchKeys=FALSE) {
 		//foreach in fieldList, displayField(list['field'], $matchKeys);
 	}
+	
 	public function displayField($field, $matchKeys=FALSE) {
 		//check user access if present
 	}
@@ -41,20 +47,59 @@ class schema {
 		//matchKeys will RESTRICT to only the given; if no present, all values are loaded into values array based on available matchkeys
 
 		//the following must be called in this order
-		$this->getFieldKeys();
-		$this->organizeFields();
-		$this->organizeFieldList();
+		$this->getFields();
 		$this->organizeFieldElements();
 		$this->organizeValues();
 	}
 
-	private function getFieldKeys() {}
-	private function organizeFields() {}
-	private function organizeFieldList() {}
-	private function organizeFieldElements() {}
-	private function organizeValues() {}
+	private function getFields() {
+		$query = "SELECT `fieldKey` FROM `".$this->stem."_schema_fields` WHERE `schema`='".$this->schema."' ";
+		$fieldData = $this->agave->doSQLQuery($query, 1);
+		if(!$fieldData) return FALSE;
 
-	private function unpackFieldElement($row) {
+		$fieldKeys = array();
+		$fields = array();
+		$fieldOrderedList = array();
+		$elements = array();
 
+		//set fieldKeys, fields and fieldList
+		foreach($fieldData as $field) {
+			$fieldOrderedList[(50000+$field['weight'])."_".$field['keyName']."_".$field['fieldKey']] = $field['keyName'];
+			$fields[$field['keyName']] = $field;
+			$fieldKeys[] = $field['fieldKey'];
+			$elements[$field['keyName']] = $this->unpackElement($field);
+		}
+		ksort($fieldOrderedList);
+
+		$this->fields = $fields;
+		$this->fieldKeys = $fieldKeys;
+		$this->fieldOrderedList = $fieldOrderedList;
+		$this->fieldElements = $elements;
+	}
+
+	private function unpackElement($field) {
+		$element = array(
+			'#name'=>$field['keyName'],
+			'#type'=>$field['type'],
+			'#label'=>$field['label'],
+			'#help'=>$field['help'],
+			'#access'=>$field['access'],
+			'#weight'=>$field['weight'],
+			'#settings'=>unserialize($field['settings']),
+			'#metadata'=>array(
+				'stem'=>$this->stem,
+				'schema'=>$this->schema,
+				'uniqueKey'=>$this->uniqueKey,
+			),
+		);
+
+		//unpack field settings
+		if(!empty($field['settings'])) foreach($field['settings'] as $key=>$value) $elements[$field['name']]["#".$key] = $value;
+	}
+
+	private function organizeValues() {
+		if(!$this->uniqueKey) return FALSE;
+
+		//TODO: start here
 	}
 }
