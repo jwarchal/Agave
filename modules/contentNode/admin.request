@@ -84,7 +84,7 @@ function saveType($args=NULL) {
 		$admin = $agave->load('admin');
 
 		//add access checks for new content type
-		$admin->addAccessArgument('view_content_'.$type['name'],'View '.$type['label'], "Allows users to view this type of content.", 0, 'contentNode-autogen');
+		$admin->addAccessArgument('view_content_'.$type['name'],'View '.$type['label'], "Allows users to view this type of content.", 1, 'contentNode-autogen');
 		$admin->addAccessArgument('create_content_'.$type['name'],'Create '.$type['label'], "Allows users to create this type of content.", 0, 'contentNode-autogen');
 		$admin->addAccessArgument('edit_content_'.$type['name'],'Edit '.$type['label'], "Allows users to edit this type of content.", 0, 'contentNode-autogen');
 		$admin->addAccessArgument('delete_content_'.$type['name'],'Delete '.$type['label'], "Allows users to delete this type of content.", 0, 'contentNode-autogen');

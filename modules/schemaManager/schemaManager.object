@@ -4,6 +4,10 @@ class schemaManager {
 
 	public function __construct() {	}
 
+	public function addValueMatchKey($stem, $column) {
+
+	}
+
 	public function get_node_keys($stem, $matchFields) {
 		global $agave;
 		$args = func_get_args();

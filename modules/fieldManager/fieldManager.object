@@ -1,5 +1,7 @@
 <?php
 final class fieldManager {
+	//TODO: make sure we're adding page-level JS when forms are rendered, for example, adding the necessary js for collapsible fieldsets
+
 	private $extensionsLoaded = FALSE;
 	public $fields = array();
 	public $forms = array();
@@ -23,6 +25,7 @@ final class fieldManager {
 		}
 		$firstpass = TRUE;
 	}
+
 	public function __destruct() {}
 	
 	/**

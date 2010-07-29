@@ -22,13 +22,19 @@ class contentNode {
 
 		if(!isset($this->published)) $this->published = FALSE;
 
-		//get nodeKeys
-		$matchFields = array( array('contentNode_type'=>$this->type) );
+		/* TO ADD:
+		//populate schema
+		$this->fields = new schema('contentNode', $this->type, $this->contentNodeKey);
+		$this->fields->populate();
+		 */
+
+		//TODO: delete this as soon as new schema object is finalized
 		$this->buildFields($matchFields);
 
 		return TRUE;
 	}
 
+	//TODO: slated for deletion upon completion of new schema object
 	public function buildFields($matchFields=NULL) {
 		$this->fields = $this->agave->load('schemaManager');
 		$this->fields->stem = "contentNode";

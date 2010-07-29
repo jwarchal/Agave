@@ -1,18 +1,28 @@
 <?php
 class contentNodeManager {
+	//TODO: write this AFTER you've figured out the whole schema/schemaManager mess
+
 	public function __construct() {}
 	public function __destruct() {}
 	
 	public function addContentType($machine_name, $label, $description) {
-		
+
+		return TRUE;
 	}
 	
 	public function removeContentType($machine_name) {
-		
+
+		return TRUE;
 	}
 	
 	public function returnContentNodesBasic($keys) {
-		
+		$nodes = array();
+		foreach($keys as $key) {
+			$node = new node;
+			$node->build($key);
+			$nodes[] = $node;
+		}
+		return $nodes;
 	}
 	
 }
