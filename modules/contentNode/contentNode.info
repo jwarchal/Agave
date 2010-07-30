@@ -100,47 +100,13 @@ function contentNode_info_install() {
 			  UNIQUE KEY `nodeID` (`contentNodeKey`)
 			) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
 	$agave->doSQLQuery($query, 0);
-			
-	$query = "CREATE TABLE IF NOT EXISTS `contentNode_schema` (
-			  `nodeKey` int(11) NOT NULL auto_increment,
-			  `contentNode_type` varchar(255) collate utf8_unicode_ci NOT NULL,
-			  `keyName` varchar(60) collate utf8_unicode_ci NOT NULL,
-			  `type` varchar(60) collate utf8_unicode_ci default NULL,
-			  `label` varchar(255) collate utf8_unicode_ci default NULL,
-			  `help` varchar(2000) collate utf8_unicode_ci default NULL,
-			  `showLabel` tinyint(1) NOT NULL default '1',
-			  `weight` int(4) default NULL,
-			  `access` varchar(60) collate utf8_unicode_ci default NULL,
-			  `settings` text collate utf8_unicode_ci NOT NULL,
-			  PRIMARY KEY  (`nodeKey`),
-			  KEY `elementKey` (`settings`(255))
-			) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;";
-	$agave->doSQLQuery($query, 0);
-			
-	$query = "CREATE TABLE IF NOT EXISTS `contentNode_types` (
-			  `typeKey` int(11) NOT NULL auto_increment,
-			  `name` varchar(60) character set utf8 collate utf8_unicode_ci NOT NULL,
-			  `label` varchar(255) character set utf8 collate utf8_unicode_ci NOT NULL,
-			  `desc` text character set utf8 collate utf8_unicode_ci NOT NULL,
-			  PRIMARY KEY  (`typeKey`)
-			) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
-	$agave->doSQLQuery($query, 0);
-			
-	$query = "CREATE TABLE IF NOT EXISTS `contentNode_values` (
-			  `valueKey` int(11) NOT NULL auto_increment,
-			  `contentNodeKey` int(11) NOT NULL,
-			  `nodeKey` int(20) NOT NULL,
-			  `value` text NOT NULL,
-			  PRIMARY KEY  (`valueKey`),
-			  KEY `codeKey` (`nodeKey`),
-			  KEY `parentKey` (`contentNodeKey`)
-			) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
-	$agave->doSQLQuery($query, 0);
-			
-	$query = "ALTER TABLE `contentNode_values`
-			  ADD CONSTRAINT `contentNode_values_ibfk_1` FOREIGN KEY (`contentNodeKey`) REFERENCES `contentNode` (`contentNodeKey`),
-			  ADD CONSTRAINT `contentNode_values_ibfk_2` FOREIGN KEY (`nodeKey`) REFERENCES `contentNode_schema` (`nodeKey`);";
-	$agave->doSQLQuery($query, 0);
+
+    $sm = $agave->load('schemaManager');
+    $sm->createSchemaTables('contentNode');
+
+    $agave->inc('contentNode', 'contentNodeManager.object');
+    $nodeManager = $agave->load('contentNodeManager');
+    $nodeManager->createContentType("page", "Page", "A general page for basic needs.  By default contains only a title and body.");
 	
 	//TODO: add content type for page
 }
