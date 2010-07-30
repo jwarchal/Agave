@@ -3,7 +3,9 @@ class olddb {
 	public function __construct() {}
 	public function __destruct() {}
 
-	public function disconnect() {}
+	public function disconnect() {
+		mysql_close($this->dbcnx);
+	}
 
 	public function connect($db_info) {
 		$this->db_info = $db_info;
@@ -88,5 +90,33 @@ class olddb {
 		if ($debug) echo ("<-----------[/RESULTS]-----------><BR>");
 		return $queryVals;
 	} // /doSQLQuery()
-	
+
+	public function mergeRow($table, $data) {
+		$fields = array();
+		$values = array();
+		$duplicates = array();
+
+		foreach($data as $field=>$value) {
+			$value = $this->sanitizeValue($value);
+			$fields[] = $field;
+			$values[] = $value;
+			$duplicates[] = "`".$field."`=VALUES(`".$field."`)";
+		}
+
+		$fields = implode("`, `", $fields);
+		$values = implode("', '", $values);
+		$duplicates = implode(", ", $duplicates);
+
+		$query = "INSERT INTO `".$table."` (`".$fields."`) VALUES('".$values."') ON DUPLICATE KEY UPDATE ".$duplicates;
+		$this->doSQLQuery($query, 0);
+
+		return mysql_insert_id();
+	}
+
+	public function sanitizeValue($value) {
+		if(is_string($value)) $value = mysql_real_escape_string($value);
+		if(is_array($value)) $value = mysql_real_escape_string(serialize($value));
+		if(is_object($value)) $value = mysql_real_escape_string(serialize($value));
+		return $value;
+	}
 }

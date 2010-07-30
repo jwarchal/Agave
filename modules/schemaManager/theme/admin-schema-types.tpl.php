@@ -1,16 +1,16 @@
 <h2>Edit Schemata</h2>
 
 
-<?php if($types): ?>
-	<p>Select which type you would like to edit from the list below.</p>
+<?php if($schemata): ?>
+	<p>Select which schema you would like to edit from the list below.</p>
 	<ul>
-	<?php foreach($types as $type): ?>
+	<?php foreach($schemata as $schema): ?>
 		<li>
-			<a href='<?php echo $agave->url."admin/schemata&table=$table&type=".$type['name']?>'><?php echo $type['label'] ?></a>
-			 - <?php print $type['desc'] ?>
+			<a href='<?php echo $agave->url."admin/schemata&stem=$stem&schema=".$schema['schema']?>'><?php echo $schema['label'] ?></a>
+			 - <?php print $schema['desc'] ?>
 		</li>
 	<?php endforeach; ?>
 	</ul>
 <?php else: ?>
-	<p>You have no types to manage in this set of schema tables.</p>
+	<p>You have no schemata to manage in this set of schema stems.</p>
 <?php endif; ?>

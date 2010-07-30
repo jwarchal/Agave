@@ -2,11 +2,13 @@
 final class fieldManager {
 	//TODO: make sure we're adding page-level JS when forms are rendered, for example, adding the necessary js for collapsible fieldsets
 
+	//TODO: metadata needs to be defined on a per-element basis, not as a top-level form property
+
+	private $fields = array();
+	private $forms = array();
+	private $validators = array();
+	private $alterers = array();
 	private $extensionsLoaded = FALSE;
-	public $fields = array();
-	public $forms = array();
-	public $validators = array();
-	public $alterers = array();
 	private $fieldLocations = array();
 	private $validatorLocations = array();
 	private $firstpass = TRUE; // for multistep forms upon which getForm may be called twice before rendering
@@ -83,7 +85,14 @@ final class fieldManager {
 			}
 		}
 	}
-	
+
+	/*
+	 * Public utility methods
+	 */
+	public function getAvailableFields() {
+		return $this->fields;
+	}
+
 	/**
 	 * Methods for loading extension class objects
 	 */
@@ -227,22 +236,22 @@ final class fieldManager {
 			if(!$this->isProp($key)){
 				$class = $value['#type'];
 				$field = $this->loadField($class);
-                                if(isset($form->values[$value['#name']])){
-                                    $form->values[$value['#name']] = $field->format($form->values, $value['#name']);
-                                }
+				if(isset($form->values[$value['#name']])){
+					$form->values[$value['#name']] = $field->format($form->values, $value['#name']);
+				}
 				$this->formatValuesWithFieldsArray($value, $form);
 			}
 		}
 	}
 
-        private function unformatValuesWithFieldsArray($array, &$form){
+	private function unformatValuesWithFieldsArray($array, &$form){
 		foreach($array as $key=>$value){
 			if(!$this->isProp($key)){
 				$class = $value['#type'];
 				$field = $this->loadField($class);
 				if(isset($form->values[$value['#name']])){
-                                    $form->values[$value['#name']] = $field->unformat($form->values[$value['#name']]);
-                                }
+					$form->values[$value['#name']] = $field->unformat($form->values[$value['#name']]);
+				}
 				$this->unformatValuesWithFieldsArray($value, $form);
 			}
 		}
@@ -261,6 +270,7 @@ final class fieldManager {
 	}
 	
 	private function validateFieldsArray($array, &$bool, &$form){
+
 		foreach($array as $key=>$value){
 			if(!$this->isProp($key)){
 				if(isset($value['#validation'])){
@@ -284,8 +294,7 @@ final class fieldManager {
 									}
 								}
 								else {
-									global $agave;
-									$agave->death("Error during validation: The form has declared a nonexistant validator class or invalid regexp for validation");
+									agave_error_page('500', "Error during validation: The form has declared a nonexistant validator class or invalid regexp for validation");
 								}
 							}
 						}
@@ -309,12 +318,13 @@ final class fieldManager {
 								}
 							}
 							else {
-								global $agave;
-								$agave->death("Error during validation: The form has declared a nonexistant validator class or invalid regexp for validation");
+								//TODO: Julian help! Why is my form crashing here? sm_field_element
+								agave_error_page('500', "Error during validation: The form has declared a nonexistant validator class or invalid regexp for validation");
 							}
 						}
 					}
 				}
+				//TODO: Julian help!  Why recursive?
 				$this->validateFieldsArray($value, $bool, $form);
 			}
 		}
@@ -360,7 +370,7 @@ final class fieldManager {
 	}
 	
 	private function renderFieldsArray($array, $form) {
-                $html = "";
+		$html = "";
 
                 //DO UNFORMATS
 		$this->unformatValuesWithFieldsArray($form->fields, $form);
@@ -378,7 +388,7 @@ final class fieldManager {
 				}
 			}
 		}
-                $isfieldset = false;
+        $isfieldset = false;
 		if(!empty($props)){
 			if(isset($form->values[$props['#name']])){
 				$props['#default']=$form->values[$props['#name']]; // Insert previously entered values.
@@ -386,11 +396,11 @@ final class fieldManager {
 			if(isset($form->errors[$props['#name']])){
 				$props['#error']=$form->errors[$props['#name']];
 			}
-                        if($props['#type'] == "fieldset") {
-                            //global $agave;
-                            //$agave->death("giga dorill breaku");
-                            $isfieldset = true;
-                        }
+			if($props['#type'] == "fieldset") {
+				//global $agave;
+				//$agave->death("giga dorill breaku");
+				$isfieldset = true;
+			}
 			$html .= $this->generateElement($props);
 		}
 		if(!empty($children)){
@@ -398,9 +408,9 @@ final class fieldManager {
 				$html .= $this->renderFieldsArray($child, $form);
 			}
 		}
-                if($isfieldset) {
-                    $html .= '</fieldset>';
-                }
+		if($isfieldset) {
+			$html .= '</fieldset>';
+		}
 		//$html .= '</div>';
 		return $html;
 	}
@@ -428,28 +438,28 @@ final class fieldManager {
 		return ($field) ? $this->wrap($field->edit($element), $element) : FALSE;
 	}
 
-        public function generateElements($elements) {
-            $html = "";
-            foreach($elements as $element){
-                $html .= $this->generateElement($element);
-            }
-            return $html;
-        }
+	public function generateElements($elements) {
+		$html = "";
+		foreach($elements as $element){
+			$html .= $this->generateElement($element);
+		}
+		return $html;
+	}
 	
 	private function wrap($content=null, $element=null) {
 		if($content && $element) {
 			$html = '';
 			if(isset($element['#preHTML'])) $html .= $element['#preHTML'];
-                        if($element['#type'] != "fieldset") {
-                            $html .= "<div class='fm-element-wrapper field-edit-wrapper field-".$element['#type']."-edit-wrapper'>";
-                        }
+			if($element['#type'] != "fieldset") {
+				$html .= "<div class='fm-element-wrapper field-edit-wrapper field-".$element['#type']."-edit-wrapper'>";
+			}
 			$html .= $this->label($element);
 			$html .= $content;
 			$html .= isset($element['#error']) ? "<div class='fm-error-text'>".$element['#error']."</div>" : "";
 			$html .= isset($element['#help']) ? "<div class='fm-help-text'>".$element['#help']."</div>" : "";
-                        if($element['#type'] != "fieldset") {
-                            $html .= "</div>";
-                        }
+			if($element['#type'] != "fieldset") {
+				$html .= "</div>";
+			}
 			if(isset($element['#postHTML'])) $html .= $element['#postHTML'];
 			return $html;
 		}
@@ -498,12 +508,18 @@ final class fieldManager {
 
 	//TODO: implement following field methods in the field interface and all core fields
 	public function schemaFormat($value, $field) {}
+
 	public function schemaUnformat($value, $field) {}
+
 	public function phpFormat($value, $field) {}
+
 	public function phpUnformat($value, $field) {}
+
 	public function displayFormat($value, $field) {
 		return $this->loadField($field['type'])->display($value, $field['settings']);
 	}
+
+	//the following format methods are probably not necessary...
 	public function displayUnformat($value, $field) {} //necessary?
 	public function formFormat($value, $field) {} //necessary?
 	public function formUnformat($value, $field) {} //necessary?

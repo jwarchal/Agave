@@ -47,7 +47,12 @@ class schemaManager {
     }
 
     public function deleteSchemaTables($stem) {
-
+		$query = "DROP TABLE `".$stem."_schemata`";
+		$this->agave->doSQLQuery($query, 0);
+		$query = "DROP TABLE `".$stem."_schema_fields`";
+		$this->agave->doSQLQuery($query, 0);
+		$query = "DROP TABLE `".$stem."_schema_values`";
+		$this->agave->doSQLQuery($query, 0);
     }
 
     public function addSchema($stem, $schema, $label, $desc) {
@@ -69,8 +74,8 @@ class schemaManager {
         }
     }
 
-    public function addSchemaField($stem, $data1, $data2, $etc ) {
-
+    public function saveSchemaField($stem, $data) {
+		return $this->agave->mergeRow($stem."_schema_fields", $data);
     }
 
     public function deleteSchemaField($stem, $field) {
@@ -86,4 +91,48 @@ class schemaManager {
         //delete where mf_$column != NULL
         //remove column
     }
+
+	public function saveSchemaFormValues($uniqueKey, $form) {
+		$schemaFields = array();
+
+		//check for metadata denoting schema field, if it's there, build the query and save the field data
+		foreach($form->fields as $field) if(isset($field["#metadata"]['schema'])) {
+			$data = array();
+			$stem = $field['#metadata']['stem'];
+			$data['uniqueKey'] = $uniqueKey;
+			$data['valueKey'] = (isset($field['#metadata']['valueKey'])) ? $field['#metadata']['valueKey'] : NULL;
+			$data['value'] = $form->values[$field["#name"]];
+			$data['fieldKey'] = $field['#metadata']['fieldKey'];
+			if(!empty($field['#metadata']['matchFields'])) {
+				foreach($field['#metadata']['matchFields'] as $key=>$value) {
+					$data[$key] = $value;
+				}
+			}
+			$this->agave->mergeRow($stem."_schema_values", $data);
+		}
+	}
+
+	public function searchSchema($stem, $schema, $field, $value) {
+		//get data for requested field
+		$query = "SELECT `fieldKey`,`type` FROM `".$stem."_schema_fields` WHERE `keyName`='$field' AND `schema`='$schema'";
+		$fieldData = $this->agave->doSQLQuery($query, 2);
+		if(!$fieldData) return FALSE;
+
+		$fm = $this->agave->load('fieldManager');
+
+		$query = "";
+		//load fieldManager to format search string based on type of field
+		//search all rows where fieldKey=fieldKey and value=$fm->format($type, $value)
+		//return array of unique keys that match the field=>value
+	}
+
+	public function getFieldName($stem, $fieldKey) {
+		$query = "SELECT `keyName` from `".$stem."_schema_fields` WHERE `fieldKey`='$fieldKey'";
+		return $this->doSQLQuery($query, 0);
+	}
+
+	public function availableSchemata($stem) {
+		$query = "SELECT `schema` FROM `".$stem."_schemata`";
+		return $this->agave->doSQLQuery($query, 1);
+	}
 } //end of class

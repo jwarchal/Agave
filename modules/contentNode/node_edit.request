@@ -11,79 +11,48 @@ function editContentNode($args=null) {
 	
 	//access checks for editing existing or creating
 	if($id) {
+		$node = new contentNode;
 		if(!$node->build($id)) agave_error_page("404");
-		elseif($user->userKey != $node->userKey && !$user->access("edit_content_".$node->type)) agave_error_page("403");
+		elseif($agave->user->userKey != $node->userKey && !$agave->user->access("edit_content_".$node->type)) agave_error_page("403");
 	}
 	else $node = $type;
 
+	//get the form
 	$fm = $agave->load('fieldManager');
-	$t = $agave->load('themer');
-
 	$form = $fm->getForm('contentNode_edit', FALSE, $node);
 
-	if($form->submitted) saveContentNode($form);
-	else $t->output = $fm->renderForm($form);
+	//render the form, or process submission
+	if($form->submitted && $form->validateOK) saveContentNode($form);
+	else {
+		$t = $agave->load('themer');
+		$t->output = $fm->renderForm($form);
+	}
 }
 
 function saveContentNode($form) {
 	global $agave;
 
-	$agave->death($form);
+	//figure out new/old save
+	$new = (empty($form->values['contentNodeKey'])) ? TRUE : FALSE;
 
-	$new = isset($form->values->nodeID) ? TRUE : FALSE;
-	$nodeID = $fm->saveForm($form);
-}
-
-function contentNode_return_edit_form($node=NULL) {
-	global $agave;
-	if(!$node) agave_error_page('404', "dude wtf?");
-	$newItem = (is_object($node)) ? FALSE : TRUE;
-	$nodeKey = ($newItem) ? NULL : $node->contentNodeKey;
-	$nodeType = ($newItem) ? $node : $node->type;
-
-	//define basic form attributes
-	$form = array();
-	$form['method'] = 'post';
-	$form['files'] = TRUE;
-	
-	//get form elements
-	if($newItem) {
-		//if new, load blank schema
-		$schema = new schema("contentNode", $node);
-	}
-	$fields = ($newItem) ? $schema->returnFieldElements() : $node->fields->returnFieldElements();
-
-	//append other elements
-	$fields[] = array(
-		'#type'=>'hidden',
-		'#name'=>'type',
-		'#value'=>$nodeType,
-		'#metadata'=> array(
-			'table'=>'contentNode',
-			'field'=>'type'
-		)
+	//assemble data for parent table "contentNode"
+	$time = time();
+	$data = array();
+	$data = array(
+		'contentNodeKey'=>$form->values['contentNodeKey'],
+		'time_modified'=>$time,
+		'published'=>$form->values['published'],
 	);
-	$fields[] = array(
-		'#type'=>'fieldset',
-		'#name'=>'meta',
-		'#label'=>'Metadata',
-		'#weight'=>50,
-		'#collapsible'=>TRUE,
-		'#collapsed'=>TRUE
-	);
-	$fields[] = array(
-		'#type'=>'radio',
-		'#name'=>'meta/published',
-		'#label'=>'Published?',
-		'#values'=>array('yes'=>'1', 'no'=>'0'),
-		'#default'=>(isset($node->published)) ? '1' : '0',
-		'#metadata'=>array (
-			'table'=>'contentNode',
-			'field'=>'published'
-		)
-	);
+	if($new) $data['type'] = $form->values['type'];
+	if($new) $data['time_created'] = $time;
+	if($new) $data['userKey'] = $agave->user->userKey;
 
-	$form['fields'] = $fields;
+	//save contentNode table
+	$id = $agave->mergeRow('contentNode', $data);
 
-	return $form;
+	//use schemaManager to save schema fields
+	$agave->load('schemaManager')->saveSchemaFormValues($id, $form);
+
+	//redirect to view edited/created item
+	$agave->redirect("content/$id");
 }

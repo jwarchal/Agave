@@ -149,18 +149,20 @@ class schema {
 
 		$values = array();
 
-		foreach($valueData as $row) {
-			$matchFields = array();
+		if($valueData) {
+			foreach($valueData as $row) {
+				$matchFields = array();
 
-			//this search for possible matchfields could be optimized more?  .... probably?
-			foreach($row as $key=>$value) if(substr($key, 0, 3) == 'mf_') $matchFields[substr($key, 3, strlen($key)-3)] = $value;
-			
-			$values[$row['fieldKey']][] = array(
-				'value'=>$this->agave->load('fieldManager')->unformat($this->fieldTypes[$row['fieldKey']], $row['value']),
-				'matchFields' => (!empty($matchFields)) ? $matchFields : FALSE,
-				'valueKey'=>$row['valueKey'],
-				'fieldKey'=>$row['fieldKey'],
-			);
+				//this search for possible matchfields could be optimized more?  .... probably?
+				foreach($row as $key=>$value) if(substr($key, 0, 3) == 'mf_') $matchFields[substr($key, 3, strlen($key)-3)] = $value;
+
+				$values[$row['fieldKey']][] = array(
+					'value'=>$this->agave->load('fieldManager')->unformat($this->fieldTypes[$row['fieldKey']], $row['value']),
+					'matchFields' => (!empty($matchFields)) ? $matchFields : FALSE,
+					'valueKey'=>$row['valueKey'],
+					'fieldKey'=>$row['fieldKey'],
+				);
+			}
 		}
 
 		$this->values = (!empty($values)) ? $values : FALSE;

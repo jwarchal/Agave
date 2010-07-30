@@ -24,7 +24,7 @@ function contentNode_info_extensions() {
 	$extensions[] = array(
 		'module'=>'fieldManager',
 		'type'=>'form',
-		'location'=>'node_edit.request',
+		'location'=>'forms.inc',
 		'data'=>array('name'=>'contentNode_edit','func'=>'contentNode_return_edit_form'),
 	);
 	return $extensions;
