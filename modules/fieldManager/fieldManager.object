@@ -131,7 +131,7 @@ final class fieldManager {
 		
 		//For multistep forms which need $form_values
 		$form_values = $_POST;
-		array_unshift($args,$form_values);
+		array_unshift($args,$form_values); // TODO: change all form creations to take ($form_values, $arg1, $arg2, ...)
 
 		//run necessary function to build form properties
 		$func = $this->forms[$id]['data']['func'];
