@@ -99,17 +99,17 @@ function schemaManager_return_field_element_settings_form($form_values = null, $
 	//parse data for requested field
 	$stem = $data['stem'];
 	$fieldKey = $data['fieldKey'];
-	$type = $data['type'];
+	$schema = $data['schema'];
+
 	if($fieldKey == 0) $fieldKey = FALSE;
 	if(!$fieldKey) return FALSE;
 
 	//figure out what type of field this is to get settings form from fieldManager
-	$query = "SELECT `type`,`settings` FROM `".$stem."_schema` WHERE `fieldKey`='$fieldKey'";
+	$query = "SELECT `type`,`settings` FROM `".$stem."_schema_fields` WHERE `fieldKey`='$fieldKey'";
 	$data = $agave->doSQLQuery($query, 2);
 
-	if(!$data) return FALSE;
-	$field = $data['type'];
-	$settings = $data['settings'];
+	$fieldType = $data['type'];
+	$settings = unserialize($data['settings']);
 
 	//define the form data
 	$form = array();
@@ -117,7 +117,8 @@ function schemaManager_return_field_element_settings_form($form_values = null, $
 	$form['method'] = 'post';
 	$form['cancel'] = TRUE;
 
-	$fields = $agave->load('fieldManager')->returnSettingsForm($field, $settings);
+	$fields = $agave->load('fieldManager')->returnSettingsFields($fieldType, $settings);
+
 	$fields[] = array(
 		'#name'=>'fieldmeta',
 		'#type'=>'hidden',

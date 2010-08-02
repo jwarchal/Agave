@@ -11,7 +11,7 @@
 	//schemaManager js
 	$this->addJS('schemaManager','js/schema-manager.js');
 ?>
-<h2>Edit Schemata</h2>
+<h2>Editing <em><b><?php print $stem ?></b></em> Schema "<?php print $schema ?>"</h2>
 <p>You can add/delete/modify fields for the chosen schema below.  Drag and drop the fields to reorder their position on the page/edit form.</p>
 
 <small>
@@ -35,7 +35,7 @@
 				<span class='schema-field-keyName'><?php echo $field['keyName'] ?></span>
 				<a class='schema-field-delete schema-field-control'>delete</a>
 				<a class='schema-field-edit schema-field-control'>edit</a>
-				<a class='schema-field-control show-field-settings' val=<?php print $field['type'] ?>>settings</a>
+				<a class='schema-field-control show-field-settings'>settings</a>
 				<input class='schema-field-metadata' type='hidden' value='<?php echo $stem.".".$field['fieldKey'].".".$field['schema'] ?>' />
 			</li>
 		<?php endforeach; else: print "No fields :("; endif; ?>

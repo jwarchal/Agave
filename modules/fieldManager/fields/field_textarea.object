@@ -39,8 +39,7 @@ final class field_textarea extends genericField implements fieldInterface {
 	public function returnSettingsForm($settings) {
 		$elements = array();
 		//cols: textarea
-		$elements[] = array(
-			'#name'=>'cols',
+		$elements['cols'] = array(
 			'#type'=>'text',
 			'#label'=>'Cols:',
 			'#size'=>4,
@@ -48,8 +47,7 @@ final class field_textarea extends genericField implements fieldInterface {
 			'#default'=>(isset($settings['cols'])) ? $settings['cols'] : NULL
 		);
 		//rows: textarea
-		$elements[] = array(
-			'#name'=>'rows',
+		$elements['rows'] = array(
 			'#type'=>'text',
 			'#label'=>'Rows:',
 			'#size'=>4,
@@ -57,8 +55,7 @@ final class field_textarea extends genericField implements fieldInterface {
 			'#default'=>(isset($settings['rows'])) ? $settings['rows'] : NULL
 		);
 		//maxlength: text, textarea?
-		$elements[] = array(
-			'#name'=>'maxlength',
+		$elements['maxlength'] = array(
 			'#type'=>'text',
 			'#label'=>'Max characters:',
 			'#size'=>5,

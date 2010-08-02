@@ -44,7 +44,7 @@ $(document).ready(function() {
 	
 	//field settings button
 	$('.show-field-settings').live('click', function() {
-		var metadata = $('#edit-field-metadata').val();
+		var metadata = $(this).siblings('.schema-field-metadata').val();
 		editFieldSettings(metadata);
 	});
 	

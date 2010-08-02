@@ -31,6 +31,7 @@ function presentTables() {
 	$processedTables = array();
 	foreach($tables as $table) if(preg_match("/(_schemata)/", $table)) $schemaTables[] = $table;
 	foreach($schemaTables as $table) $processedTables[] = substr($table, 0, -9); //chops off '_schemata' from table name
+
 	//theme page
 	$themevars = array(
 		'stems' => $processedTables
@@ -74,9 +75,12 @@ function editFieldSettings($args=null) {
 	global $agave;
 	$fm = $agave->load('fieldManager');
 
-	$md = $_POST['metadata'];
+	$md = explode(".", $_POST['metadata']);
+	$data['stem'] = $md[0];
+	$data['fieldKey'] = $md[1];
+	$data['schema'] = $md[2];
 
-	$form = $fm->getForm('sm_field_element_settings');
+	$form = $fm->getForm('sm_field_element_settings', $data);
 
 	exit($fm->renderForm($form));
 }
@@ -90,8 +94,7 @@ function deleteField($args=null) {
 	$fieldKey = $meta[1];
 	
 	//first delete any values stored for this field - NOTE that this only deletes info from the database, doesn't look for stray files etc...
-	$sm = $agave->load('schemaManager');
-	$sm->deleteSchemaField($stem, $sm->getFieldName($fieldKey));
+	$agave->load('schemaManager')->deleteSchemaField($stem, $fieldKey);
 }
 
 function updateWeights($args=null) {
@@ -138,7 +141,9 @@ function saveField($args=NULL) {
 function saveFieldSettings($data) {
 	global $agave;
 	$fm = $agave->load('fieldManager');
-die("settings save");
+
+	//TODO: start here
+
 	$metadata = explode(".", $data['fieldmeta']);
 	$stem = $metadata[0];
 	$fieldKey = $metadata[1];

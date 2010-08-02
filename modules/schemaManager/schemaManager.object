@@ -75,9 +75,11 @@ class schemaManager {
 		return $this->agave->mergeRow($stem."_schema_fields", $data);
     }
 
-    public function deleteSchemaField($stem, $field) {
-        //delete from _schema_values first
-        //delete from _schema_fields
+    public function deleteSchemaField($stem, $fieldKey) {
+        $query = "DELETE FROM `".$stem."_schema_values` WHERE `fieldKey`='$fieldKey'";
+		$this->agave->doSQLQuery($query, 0);
+		$query = "DELETE FROM `".$stem."_schema_fields` WHERE `fieldKey`='$fieldKey'";
+		$this->agave->doSQLQuery($query, 0);
     }
 
     public function addValueMatchField($stem, $column) {

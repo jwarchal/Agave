@@ -76,8 +76,7 @@ final class field_text extends genericField implements fieldInterface {
 
 	public function returnSettingsForm($settings) {
 		$elements = array();
-		$elements[] = array(
-			'#name'=>'size',
+		$elements['size'] = array(
 			'#type'=>'text',
 			'#label'=>'Size',
 			'#size'=>4,
@@ -85,8 +84,7 @@ final class field_text extends genericField implements fieldInterface {
 			'#default'=>(isset($settings['size'])) ? $settings['size'] : NULL
 		);
 		//validation: text
-		$elements[] = array(
-			'#name'=>'validation',
+		$elements['validation'] = array(
 			'#type'=>'multiselect',
 			'#label'=>'Validation:',
 			'#values'=>array('-- None --','Letters only','Alpha-numeric','Numbers only','No special chars','Email','SSN','DL','PhoneUS','PhoneINTL'),
@@ -94,8 +92,7 @@ final class field_text extends genericField implements fieldInterface {
 			'#default'=>(isset($settings['validation'])) ? array($settings['validation']) : array("-- None --")
 		);
 		//autosuggest: text
-		$elements[] = array(
-			'#name'=>'autosuggest',
+		$elements['autosuggest'] = array(
 			'#type'=>'textarea',
 			'#label'=>'Autosuggest',
 			'#help'=>'Just explain what you want to happen... the code will write itself. :)',
@@ -103,8 +100,7 @@ final class field_text extends genericField implements fieldInterface {
 		);
 		
 		//maxlength: text, textarea?
-		$elements[] = array(
-			'#name'=>'maxlength',
+		$elements['maxlength'] = array(
 			'#type'=>'text',
 			'#label'=>'Max characters:',
 			'#size'=>5,
