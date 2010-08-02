@@ -134,17 +134,13 @@ final class fieldManager {
 		include_once($this->forms[$id]['file']);
 	}
 
-	public function getForm() { // Give it arguments like: getForm($formname, $multistep, $argtopass1, $argstopass2, ...)
+	public function getForm() { // Give it arguments like: getForm($formname, $argtopass1, $argstopass2, ...)
 		$args= func_get_args();
 		$id = array_shift($args);
-		$multistep = array_shift($args);
-
+		
 		//For multistep forms which need $form_values
-		if($multistep){
-			$form_values = $_POST;
-			//if(!empty($_POST)){ global $agave; $agave->death($_POST); }
-			array_unshift($args,$form_values);
-		}
+		$form_values = $_POST;
+		array_unshift($args,$form_values); // TODO: change all form creations to take ($form_values, $arg1, $arg2, ...)
 
 		//run necessary function to build form properties
 		$func = $this->forms[$id]['data']['func'];

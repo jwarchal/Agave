@@ -1,5 +1,5 @@
 <?php
-function schemaManager_return_field_element_form($data=FALSE) {
+function schemaManager_return_field_element_form($form_values = null, $data=FALSE) {
 	global $agave;
 
 	//parse data for field to edit
@@ -101,7 +101,7 @@ function schemaManager_return_field_element_form($data=FALSE) {
 	return $form;
 }
 
-function schemaManager_return_field_element_settings_form($data=FALSE) {
+function schemaManager_return_field_element_settings_form($form_values = null, $data=FALSE) {
 	global $agave;
 
 	//parse data for requested field
