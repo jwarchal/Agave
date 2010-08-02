@@ -232,6 +232,7 @@ final class fieldManager {
         private function addNameAttributes(&$array){
             foreach($array as $key=>&$value){
                 if(!$this->isProp($key)){
+					if(!is_array($value)) agave_error_page("500", "<h3>Your form is improperly defined!!</h3>");
                     if(!isset($value['#name'])){
                         $value['#name'] = $key;
                     }
@@ -327,19 +328,18 @@ final class fieldManager {
 								}
 							}
 							else {
-								//TODO: Julian help! Why is my form crashing here? sm_field_element
 								agave_error_page('500', "Error during validation: The form has declared a nonexistant validator class or invalid regexp for validation");
 							}
 						}
 					}
 				}
-				//TODO: Julian help!  Why recursive?
 				$this->validateFieldsArray($value, $bool, $form);
 			}
 		}
 	}
 	
 	public function saveForm($form) { //TODO: Make saveform do more complicated automated saving?
+		//TODO: write saveForm to look at metadata on per-element basis
 		foreach($this->alterers as $classname => $arr) { // call possible alterers' save functions to save altered stuff that the form may not know about
 			if($arr['targetform'] == $form->id){
 				include_once($arr['location']);
@@ -431,10 +431,6 @@ final class fieldManager {
 		else {
 			return false;
 		}
-	}
-	
-	private function stripPound($key) {
-		return substr($key,1);
 	}
 	
 	/**

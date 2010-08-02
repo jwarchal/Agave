@@ -9,9 +9,11 @@ function schemaManager_return_field_element_form($form_values = null, $data=FALS
 	if($fieldKey == 0) $fieldKey = FALSE;
 
 	//get values on requested field from db
-	if($fieldKey != '0') {
-		$query = "SELECT * FROM `".$stem."_schema_fields` WHERE `fieldKey`='$fieldKey'";
-		$field = $agave->doSQLQuery($query, 2);
+	if($data) {
+		if($fieldKey != '0') {
+			$query = "SELECT * FROM `".$stem."_schema_fields` WHERE `fieldKey`='$fieldKey'";
+			$field = $agave->doSQLQuery($query, 2);
+		}
 	}
 
 	//start assembling form
@@ -22,8 +24,7 @@ function schemaManager_return_field_element_form($form_values = null, $data=FALS
 
 	//figure out which fields to add
 	$elements = array();
-	$elements[] = array(
-		'#name'=>'fieldName',
+	$elements['fieldName'] = array(
 		'#type'=>'text',
 		'#label'=>'Name of field',
 		'#size'=>20,
@@ -31,8 +32,7 @@ function schemaManager_return_field_element_form($form_values = null, $data=FALS
 		'#default'=> ($fieldKey) ? $field['keyName'] : NULL,
 		'#disabled'=> ($fieldKey) ? TRUE : FALSE,
 	);
-	$elements[] = array(
-		'#name'=>'type',
+	$elements['type'] = array(
 		'#type'=>'select',
 		'#label'=>'Form element',
 		'#values'=> $agave->load('fieldManager')->getAvailableFields(),
@@ -40,8 +40,7 @@ function schemaManager_return_field_element_form($form_values = null, $data=FALS
 		'#weight'=>1,
 		'#disabled'=> ($fieldKey) ? TRUE : FALSE,
 	);
-	$elements[] = array(
-		'#name'=>'label',
+	$elements['label'] = array(
 		'#type'=>'text',
 		'#label'=>"Label",
 		'#size'=>20,
@@ -49,8 +48,7 @@ function schemaManager_return_field_element_form($form_values = null, $data=FALS
 		'#default'=> ($fieldKey) ? $field['label'] : NULL,
 	);
 	$label = (isset($field['showLabel'])) ? array('show') : NULL; //figure true/false for showlabel
-	$elements[] = array(
-		'#name'=>'showLabel',
+	$elements['showLabel'] = array(
 		'#type'=>'checkbox',
 		'#label'=>'Show label',
 		'#values'=>array('show'),
@@ -58,42 +56,36 @@ function schemaManager_return_field_element_form($form_values = null, $data=FALS
 		'#weight'=>3,
 		'#default'=> ($fieldKey) ? $label : array('show'),
 	);
-	$elements[] = array(
-		'#name'=>'helpText',
+	$elements['helpText'] = array(
 		'#type'=>'text',
 		'#size'=>20,
 		'#label'=>'Help text',
 		'#default'=> ($fieldKey) ? $field['help'] : NULL,
 	);
-	$elements[] = array(
-		'#name'=>'access',
+	$elements['access'] = array(
 		'#type'=>'text',
 		'#label'=>"Access argument",
 		'#size'=>20,
 		'#weight'=>4,
 		'#default'=> ($fieldKey) ? $field['access'] : NULL,
 	);
-	$elements[] = array(
-		'#name'=>'schema',
+	$elements['schema'] = array(
 		'#type'=>'select',
 		'#label'=>"Schema",
 		'#help'=>'Select which schemata this field applies to.',
 		'#size'=>20,
 		'#weight'=>4,
-		//'#values'=>$agave->load('schemaManager')->availableSchemata($stem),
-		'#default'=> ($fieldKey) ? $field['schema'] : ",", $schema,
+		'#values'=>($data) ? $agave->load('schemaManager')->availableSchemata($stem) : NULL,
+		'#default'=> ($fieldKey) ? $field['schema'] : $schema,
 	);
-
 	//add hidden elements for stem/fieldKey
-	$elements[] = array(
+	$elements['stem'] = array(
 		'#type'=>'hidden',
-		'#name'=>'stem',
 		'#value'=>$stem,
 	);
 
-	$elements[] = array(
+	$elements['fieldKey'] = array(
 		'#type'=>'hidden',
-		'#name'=>'fieldKey',
 		'#value'=>$fieldKey,
 	);
 

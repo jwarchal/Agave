@@ -115,27 +115,30 @@ function saveField($args=NULL) {
 	$fm = $agave->load('fieldManager');
 
 	$form = $fm->getForm('sm_field_element');
-	
+	$stem = $form->values['stem'];
+	$new = ($form->values['fieldKey'] == '0') ? TRUE : FALSE;
+
 	//define data to save
 	$data = array(
 		'fieldKey'=>$form->values['fieldKey'],
 		'schema' => $form->values['schema'],
-		'keyName' => $form->values['fieldName'],
-		'type' => $form->values['type'],
 		'label' => $form->values['label'],
 		'showLabel' => !empty($form->values['showLabel']) ? $form->values['showLabel'] : 0,
 		'help' => $form->values['helpText'],
 		'access' => $form->values['access'],
 	);
+	//following fields can only be saved for new fields
+	if($new) $data['keyName'] = $form->values['fieldName'];
+	if($new) $data['type'] = $form->values['type'];
 
 	$agave->mergeRow($stem."_schema_fields", $data);
-	$agave->redirect("admin/schemata&table=$stem&schema=".$form->values['schema']);
+	$agave->redirect("admin/schemata&stem=$stem&schema=".$form->values['schema']);
 }
 
 function saveFieldSettings($data) {
 	global $agave;
 	$fm = $agave->load('fieldManager');
-
+die("settings save");
 	$metadata = explode(".", $data['fieldmeta']);
 	$stem = $metadata[0];
 	$fieldKey = $metadata[1];
