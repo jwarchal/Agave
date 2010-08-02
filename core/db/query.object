@@ -2,6 +2,25 @@
 class query extends PDOStatement {
 	private $table_prefix;
 	private $db_target;
+
+        public function test(){
+            try {
+                $dbh = new PDO('mysql:host=localhost;dbname=test', $user, $pass);
+            } catch (PDOException $e) {
+                print "Error!: " . $e->getMessage() . "<br/>";
+                die();
+            }
+        }
 	
-	
+	public function getPDOConstantType( $var )
+        {
+          if( is_int( $var ) )
+            return PDO::PARAM_INT;
+          if( is_bool( $var ) )
+            return PDO::PARAM_BOOL;
+          if( is_null( $var ) )
+            return PDO::PARAM_NULL;
+          //Default
+          return PDO::PARAM_STR;
+        }
 }
