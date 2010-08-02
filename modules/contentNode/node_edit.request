@@ -34,7 +34,7 @@ function saveContentNode($form) {
 	$nodeID = $fm->saveForm($form);
 }
 
-function contentNode_return_edit_form($node=NULL) {
+function contentNode_return_edit_form($form_values = null, $node=NULL) {
 	global $agave;
 	if(!$node) agave_error_page('404', "dude wtf?");
 	$newItem = (is_object($node)) ? FALSE : TRUE;

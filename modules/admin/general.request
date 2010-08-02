@@ -29,7 +29,7 @@ function view() {
 	$t->output = $t->theme('admin', 'admin');
 }
 
-function returnGeneralForm($args = null) {
+function returnGeneralForm($form_values = null, $args = null) {
         global $agave;
 
         $formarr = array();
