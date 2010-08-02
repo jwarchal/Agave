@@ -1,6 +1,7 @@
 <?php
 function contentNode_return_edit_form($form_values, $node=NULL) {
 	global $agave;
+
 	if(!$node) agave_error_page('404', "Trying to load the <em>contentNode_edit</em> form with NO DATA!  Inconceivable!");
 	$newItem = (is_object($node)) ? FALSE : TRUE;
 	$nodeKey = ($newItem) ? NULL : $node->contentNodeKey;
@@ -11,7 +12,6 @@ function contentNode_return_edit_form($form_values, $node=NULL) {
 	$form['method'] = 'post';
 	$form['files'] = TRUE;
 	$form['cancel'] = TRUE;
-	//$form['multistep'] = TRUE;  //TODO: Julian help! - Is there any reason we can't define multistep here? instead of passing it via getFrorm?
 
 	//get form elements from schema
 	if($newItem) {
@@ -23,12 +23,10 @@ function contentNode_return_edit_form($form_values, $node=NULL) {
 	//append other elements
 	$fields['contentNodeKey'] = array(
 		'#type'=>'hidden',
-		'#name'=>'contentNodeKey',
 		'#value'=>$nodeKey,
 	);
 	$fields['type'] = array(
 		'#type'=>'hidden',
-		'#name'=>'type',
 		'#value'=>$nodeType,
 		'#metadata'=> array(
 			'table'=>'contentNode',
@@ -37,7 +35,6 @@ function contentNode_return_edit_form($form_values, $node=NULL) {
 	);
 	$fields['meta'] = array(
 		'#type'=>'fieldset',
-		'#name'=>'meta',
 		'#label'=>'Metadata',
 		'#weight'=>50,
 		'#collapsible'=>TRUE,
@@ -45,7 +42,6 @@ function contentNode_return_edit_form($form_values, $node=NULL) {
 	);
 	$fields['meta']['published'] = array(
 		'#type'=>'radio',
-		'#name'=>'published',
 		'#label'=>'Published?',
 		'#values'=>array('yes'=>'1', 'no'=>'0'),
 		'#default'=>(isset($node->published)) ? '1' : '0',

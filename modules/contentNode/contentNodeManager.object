@@ -2,27 +2,29 @@
 class contentNodeManager {
 	//TODO: write this AFTER you've figured out the whole schema/schemaManager mess
 
-	public function __construct() {}
+	public function __construct() {
+		global $agave;
+		$this->agave = $agave;
+	}
 	public function __destruct() {}
 	
-	public function addContentType($machine_name, $label, $description) {
+	public function createContentType($machine_name, $label, $description) {
 
 		return TRUE;
 	}
 	
-	public function removeContentType($machine_name) {
+	public function deleteContentType($machine_name) {
 
 		return TRUE;
 	}
 	
-	public function returnContentNodesBasic($keys) {
+	public function returnContentNodes($keys) {
 		$nodes = array();
 		foreach($keys as $key) {
-			$node = new node;
+			$node = new contentNode;
 			$node->build($key);
 			$nodes[] = $node;
 		}
 		return $nodes;
 	}
-	
 }

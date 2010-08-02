@@ -107,14 +107,12 @@ function contentNode_info_install() {
     $agave->inc('contentNode', 'contentNodeManager.object');
     $nodeManager = $agave->load('contentNodeManager');
     $nodeManager->createContentType("page", "Page", "A general page for basic needs.  By default contains only a title and body.");
-	
-	//TODO: add content type for page
 }
 
 function contentNode_info_uninstall() {
 	global $agave;
 	$admin = $agave->load('admin');
-	$query = "DROP TABLE `contentNode_values`, `contentNode_schema`, `contentNode_types`, `contentNode`";
+	$query = "DROP TABLE `contentNode_schema_values`, `contentNode_schema_fields`, `contentNode_schemata`, `contentNode`";
 	$admin->uninstallMenuItems('contentNode-autogen');
 	$admin->uninstallUserAccess('contentNode-autogen');
 	$agave->doSQLQuery($query, 0);

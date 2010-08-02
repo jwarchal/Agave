@@ -185,8 +185,8 @@ final class fieldManager {
 		$form->block = FALSE;
 		$form->errors = FALSE; // populate with errors to render
 
-                $this->addNameAttributes($form->fields);
-		
+		$this->addNameAttributes($form->fields);
+
 		if( ($form->multistep && $this->firstpass) || !$form->multistep){
 			//if the form was just submitted, populate values/files, mark as submitted
 			if($form->method == "post" && !empty($_POST)) $form->values = $_POST;
@@ -230,7 +230,7 @@ final class fieldManager {
 	}
 
         private function addNameAttributes(&$array){
-            foreach($array as $key=>$value){
+            foreach($array as $key=>&$value){
                 if(!$this->isProp($key)){
                     if(!isset($value['#name'])){
                         $value['#name'] = $key;
