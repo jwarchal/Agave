@@ -30,7 +30,7 @@ function schemaManager_return_field_element_form($form_values = null, $data=FALS
 		'#size'=>20,
 		'#weight'=>0,
 		'#default'=> ($fieldKey) ? $field['keyName'] : NULL,
-		'#disabled'=> ($fieldKey) ? TRUE : FALSE,
+		'#disabled'=> ($fieldKey) ? TRUE : NULL,
 	);
 	$elements['type'] = array(
 		'#type'=>'select',
@@ -38,7 +38,7 @@ function schemaManager_return_field_element_form($form_values = null, $data=FALS
 		'#values'=> $agave->load('fieldManager')->getAvailableFields(),
 		'#default'=>($fieldKey) ? $field['type'] : 'text',
 		'#weight'=>1,
-		'#disabled'=> ($fieldKey) ? TRUE : FALSE,
+		'#disabled'=> ($fieldKey) ? TRUE : NULL,
 	);
 	$elements['label'] = array(
 		'#type'=>'text',

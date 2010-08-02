@@ -15,7 +15,7 @@ class user {
 
 	public function access($action, $value=NULL) {
 		$args = func_get_args();
-		
+	
 		if(!$value) {
 			if($this->userKey == '1') return TRUE; //site root user cannot have access restrictions
 			else if(isset($this->access[$action])) return $this->access[$action];
@@ -89,24 +89,10 @@ class user {
 	public function buildPrefs() {
 		if(!$this->isAnon) {
 			if(!$this->mappingsAvailable) $this->buildMappings();
-			$this->prefs = $this->agave->load('schemaManager');
-			$this->prefs->stem = "user";
-			$this->prefs->matchKeyName = "userKey";
-			$this->prefs->matchKeyValue = $this->userKey;
-			//get unique array of nodekeys based on multiple user levels
-			$this->prefs->nodeKeys = array();
-			for ($i=0; $i<count($this->user_types); $i++) {
-				$matchFields = array( array('user_type'=>$this->user_types[$i]) );
-				$nodeKeys = $this->prefs->get_node_keys('user', $matchFields);
-				if($nodeKeys != NULL && $nodeKeys!='') $this->prefs->nodeKeys[] = implode(",", $nodeKeys);
+				foreach($this->user_types as $type) {
+					if($type != 'anon') $this->prefs = new schema('user', $type);
+				}
 			}
-			if(!empty($this->prefs->nodeKeys)) {
-				$this->prefs->nodeKeys = implode(",", $this->prefs->nodeKeys);
-				$this->prefs->nodeKeys = ($this->prefs->nodeKeys != '') ? explode(",", $this->prefs->nodeKeys): NULL;
-				$this->prefs->nodeKeys = ($this->prefs->nodeKeys) ? array_unique($this->prefs->nodeKeys) : NULL; //zap duplicate entries from shared fields
-				$this->prefs->populate();
-			}
-		}
 		$this->prefsAvailable = TRUE;
 		return TRUE;
 	}
@@ -127,6 +113,7 @@ class user {
 	}
 	
 	public function buildAccess() {
+		//TODO: optimize this - 1 query
 		
 		if(!$this->mappingsAvailable) $this->buildMappings();
 		
@@ -149,7 +136,7 @@ class user {
 			}
 		}
 
-		$this->accessAvailable = TRUE;		
+		$this->accessAvailable = TRUE;
 	}
 
 }

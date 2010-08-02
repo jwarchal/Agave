@@ -5,7 +5,7 @@
 
 <head>
 	<meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>
-	<title><?php print $title." | ".$siteName ?></title>
+	<title><?php print $title." | ".$site_name ?></title>
 	<?php print $styles ?>
 	<?php print $javascript ?>
 </head>
@@ -16,7 +16,7 @@
 
     <div id="header">
     	<div id='header-center'>
-			<h1><a href='<?php print $agave->core_url ?>'><?php print $siteName ?></a></h1>
+			<h1><a href='<?php print $agave->core_url ?>'><?php print $site_name ?></a></h1>
         </div>
     </div><!-- header -->
     

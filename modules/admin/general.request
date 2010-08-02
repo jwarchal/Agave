@@ -30,9 +30,9 @@ function view() {
 }
 
 function returnGeneralForm($form_values = null, $args = null) {
-        global $agave;
+	global $agave;
 
-        $formarr = array();
+	$formarr = array();
 	$formarr['method']='post';
 	$formarr['action']='';
 	$formarr['alter']=FALSE;
@@ -48,11 +48,11 @@ function returnGeneralForm($form_values = null, $args = null) {
 		'#collapsible'=>TRUE,
 		'#collapsed'=>TRUE
 	);
-	$formarr['fields']['general']['siteName'] = array(
-		'#name'=>'siteName',
+	$formarr['fields']['general']['site_name'] = array(
+		'#name'=>'site_name',
 		'#type'=>'text',
 		'#label'=>"Site's name:",
-		'#default'=>$agave->setting('siteName')
+		'#default'=>$agave->setting('site_name')
 	);
 	$formarr['fields']['general']['home_page'] = array(
 		'#name'=>'home_page',

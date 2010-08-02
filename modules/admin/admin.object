@@ -480,6 +480,8 @@ final class admin {
 				$this->agave->doSQLQuery($query);
 			}
 		}
+
+		$this->agave->load('schemaManager')->addSchema('user', $name, $label, $desc);
 	}
 	
 	public function deleteUserType($name) {

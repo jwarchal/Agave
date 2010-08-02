@@ -116,7 +116,7 @@ function saveField($args=NULL) {
 
 	$form = $fm->getForm('sm_field_element');
 	$stem = $form->values['stem'];
-	$new = ($form->values['fieldKey'] == '0') ? TRUE : FALSE;
+	$new = (empty($form->values['fieldKey'])) ? TRUE : FALSE;
 
 	//define data to save
 	$data = array(

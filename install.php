@@ -98,7 +98,7 @@ function install_begin() {
 
 function install_user() {
 	if(!confirmed()) confirm('Create Admin User');
-	
+
 	if($_POST) create_admin_user();
 	else write_admin_user_form();
 }
@@ -127,39 +127,39 @@ function install_site_info() {
 		$fm = $agave->load('fieldManager');
 		
 		$elements = array();
-		$elements[] = array(
-			'name'=>'general/siteName',
-			'type'=>'text',
-			'label'=>"Site's name:",
-			'default'=>$agave->setting('siteName')
+		$elements['site_name'] = array(
+			'#name'=>'site_name',
+			'#type'=>'text',
+			'#label'=>"Site's name:",
+			'#default'=>$agave->setting('site_name'),
 		);
-		$elements[] = array(
-			'name'=>'general/footer_message',
-			'type'=>'textarea',
-			'cols'=>'40',
-			'rows'=>'5',
-			'label'=>'Footer text',
-			'default'=>$agave->setting('footer_message')
+		$elements['footer_message'] = array(
+			'#name'=>'footer_message',
+			'#type'=>'textarea',
+			'#cols'=>'40',
+			'#rows'=>'5',
+			'#label'=>'Footer text',
+			'#default'=>$agave->setting('footer_message'),
 		);
-		$elements[] = array(
-			'name'=>'contact/admin_name',
-			'type'=>'text',
-			'label'=>"Site admin's name:",
-			'default'=>$agave->setting("admin_name")
+		$elements['admin_name'] = array(
+			'#name'=>'admin_name',
+			'#type'=>'text',
+			'#label'=>"Site admin's name:",
+			'#default'=>$agave->setting("admin_name"),
 		);
-		$elements[] = array(
-			'name'=>'contact/admin_email',
-			'type'=>'text',
-			'label'=>"Site admin's email:",
-			'default'=>$agave->setting("admin_email")
+		$elements['admin_email'] = array(
+			'#name'=>'admin_email',
+			'#type'=>'text',
+			'#label'=>"Site admin's email:",
+			'#default'=>$agave->setting("admin_email"),
 		);
-		$elements[] = array(
-			'name'=>'security/SALT',
-			'label'=>"SALT string",
-			'type'=>'text',
-			'help'=>"Setting a SALT string will greatly increase the security of your site",
-			'size'=>60,
-			'default'=>$agave->setting('SALT')
+		$elements['SALT'] = array(
+			'#name'=>'SALT',
+			'#label'=>"SALT string",
+			'#type'=>'text',
+			'#help'=>"Setting a SALT string will greatly increase the security of your site",
+			'#size'=>60,
+			'#default'=>$agave->setting('SALT'),
 		);
 		
 		$form = $fm->startForm(NULL, "post");
@@ -172,7 +172,7 @@ function install_site_info() {
 
 function create_admin_user() {
 	global $agave;
-	
+
 	foreach($_POST as $key=>$value) $$key = mysql_real_escape_string($value);
 	
 	if(!$lname || !$fname || !$login || !$email || !$pword || !$pwordConfirm) {
@@ -196,35 +196,35 @@ function write_admin_user_form() {
 	$fm = $agave->load('fieldManager');
 	
 	$elements = array();
-	$elements[] = array(
-		'name'=>'fname',
-		'type'=>'text',
-		'label'=>'First name'
+	$elements['fname'] = array(
+		'#name'=>'fname',
+		'#type'=>'text',
+		'#label'=>'First name'
 	);
-	$elements[] = array(
-		'name'=>'lname',
-		'type'=>'text',
-		'label'=>'Last name'
+	$elements['lname'] = array(
+		'#name'=>'lname',
+		'#type'=>'text',
+		'#label'=>'Last name'
 	);
-	$elements[] = array(
-		'name'=>'email',
-		'type'=>'text',
-		'label'=>'Email'
+	$elements['email'] = array(
+		'#name'=>'email',
+		'#type'=>'text',
+		'#label'=>'Email'
 	);
-	$elements[] = array(
-		'name'=>'login',
-		'type'=>'text',
-		'label'=>'Login'
+	$elements['login'] = array(
+		'#name'=>'login',
+		'#type'=>'text',
+		'#label'=>'Login'
 	);
-	$elements[] = array(
-		'name'=>'pword',
-		'type'=>'password',
-		'label'=>'Password'
+	$elements['pword'] = array(
+		'#name'=>'pword',
+		'#type'=>'password',
+		'#label'=>'Password'
 	);
-	$elements[] = array(
-		'name'=>'pwordConfirm',
-		'type'=>'password',
-		'label'=>'Confirm password'
+	$elements['pwordConfirm'] = array(
+		'#name'=>'pwordConfirm',
+		'#type'=>'password',
+		'#label'=>'Confirm password'
 	);
 	
 	//generate form

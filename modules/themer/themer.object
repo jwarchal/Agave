@@ -99,7 +99,7 @@ final class themer {
 	private function loadPageVars() {
 		global $agave;
 		$this->page['user'] = $agave->user;
-		$this->page['siteName'] = $agave->setting('siteName');
+		$this->page['site_name'] = $agave->setting('site_name');
 		$this->page['footer_message'] = $agave->setting('footer_message');
 		
 		//if panels should be loaded, load them here
@@ -107,13 +107,8 @@ final class themer {
 		if(isset($agave->uri['panels']) || (isset($_SESSION['agave_error_page']) && $_SESSION['agave_error_page']==TRUE && $agave->setting('message-panels'))) $this->loadPanels();
 		$agave->invoke('post_panel_render');
 
-//$agave->death($_SESSION);
-
 		//call themes post_process function
 		if(function_exists('theme_postProcess')) call_user_func('theme_postProcess');
-
-		//load optional core functionality, like user messaging
-		$this->loadAgaveOptionals();
 
 		//unpack page level messages
 		$this->page['messages'] = $agave->getMessages();
@@ -124,22 +119,7 @@ final class themer {
 		$this->page['styles'] = $this->unpackCSS();
 		$this->page['javascript'] = $this->unpackJS();
 	}
-	
-	private function loadAgaveOptionals() {
-		global $agave;
-
-		//add user messaging?
-		if($agave->setting('user-messaging')) {
-			$this->js['user']['userMessageInterval'] = $agave->setting('user-message-interval');
-			$this->js['user']['userMessageAsync'] = $agave->setting('user-messaging-async');
-			$this->js['user']['userMessaging'] = $agave->setting('user-messaging');
-			//TODO: check user for types of viewable messages 
-			//$this->js['user']['messages']['types'] = array();
-			$this->addJS('user','js/agave-user-messages.js');
-			$this->addCSS('user','theme/css/agave-user-messages.css');
-		}	
-	}
-	
+		
 	private function loadTemplate($module=NULL, $template) {
 		//$template can be be overriden from either a local or global theme
 		//if it's not found there, we look for it in the specified module, local first, global second
@@ -231,7 +211,7 @@ final class themer {
 			if(!isset($this->page['javascript'])) $this->page['javascript'] = null;
 			if(!isset($this->page['title'])) $this->page['title'] = null;
 			if(!isset($this->page['footer'])) $this->page['footer'] = null;
-			if(!isset($this->page['siteName'])) $this->page['siteName'] = null;
+			if(!isset($this->page['site_name'])) $this->page['site_name'] = null;
 			if(!isset($this->styles)) $this->styles = array();
 			if(!isset($this->javascript)) $this->javascript = array();
 			
@@ -260,7 +240,7 @@ final class themer {
 			
 			if($continue) {
 				$themevars['title'] = $panel['title'];
-				$themevars['id'] = $panel;
+				$themevars['id'] = $panel['id'];
 				$themevars['module'] = $panel['module'];
 				$themevars['region'] = $panel['region'];
 				$themevars['name'] = $panel['name'];
@@ -276,7 +256,8 @@ final class themer {
 				}
 				elseif(!empty($panel['func'])) {
 					if(!function_exists($panel['func'])) $this->loadPanelFile($panel['module']);
-					$themevars['content'] = call_user_func_array($panel['func'], array($agave->uri));
+//$agave->death($panel);
+					$themevars['content'] = (function_exists($panel['func'])) ? call_user_func_array($panel['func'], array($agave->uri)) : NULL;
 				}
 				
 				//add themed panel to array for designated region based on weight				

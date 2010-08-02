@@ -8,14 +8,14 @@ function user_panel_login($args=null) {
 
 		$elements = array();
 		$elements[] = array(
-			'name'=>'login',
-			'label'=>'Login',
-			'type'=>'text'
+			'#name'=>'login',
+			'#label'=>'Login',
+			'#type'=>'text'
 		);
 		$elements[] = array(
-			'name'=>'password',
-			'label'=>'Password',
-			'type'=>'password'
+			'#name'=>'password',
+			'#label'=>'Password',
+			'#type'=>'password'
 		);
 		$content = $fm->startForm($agave->url."user/login", "post");
 		$content .= $fm->generateElements($elements);

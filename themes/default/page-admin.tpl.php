@@ -18,7 +18,7 @@
 		<meta name='description' content='<?php echo $description ?>' />
 	<?php endif; ?>
 	<?php if(isset($title)): ?>
-		<title><?php echo $siteName ?> | <?php echo $title ?></title>
+		<title><?php echo $site_name ?> | <?php echo $title ?></title>
 	<?php endif; ?>
 	<?php echo $javascript ?>
 	<?php echo $styles ?>
@@ -27,7 +27,7 @@
 <body>
 	<div id='admin-header'>
 		<div id='admin-header-left'>
-			<span  id='siteName'><a href='<?php print $agave->core_url ?>'><?php print $siteName ?></a></span>
+			<span  id='siteName'><a href='<?php print $agave->core_url ?>'><?php print $site_name ?></a></span>
 			<br /><span id='siteSlogan'>agave admin</span>
 		</div>
 		<div id='admin-header-right'>

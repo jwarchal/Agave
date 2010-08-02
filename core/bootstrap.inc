@@ -218,6 +218,7 @@ function bootstrap_session() {
 
 function bootstrap_access() {
 	global $agave;
+
 	if(!empty($agave->uri['access']) && !$agave->user->access($agave->uri['access'])) return ACCESS_DENIED;
 	
 	$agave->status = BOOTSTRAP_ACCESS;

@@ -8,7 +8,16 @@ class schemaManager {
     }
 
     public function createSchemaTables($stem) {
-        $query = "CREATE TABLE IF NOT EXISTS `".$stem."_schema_fields` (
+        $query = "CREATE TABLE IF NOT EXISTS `".$stem."_schemata` (
+          `schemaKey` int(11) NOT NULL auto_increment,
+          `schema` varchar(60) character set utf8 collate utf8_unicode_ci NOT NULL,
+          `label` varchar(255) character set utf8 collate utf8_unicode_ci NOT NULL,
+          `desc` text character set utf8 collate utf8_unicode_ci NOT NULL,
+          PRIMARY KEY  (`schemaKey`)
+        ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+        $this->agave->doSQLQuery($query, 0);
+
+		$query = "CREATE TABLE IF NOT EXISTS `".$stem."_schema_fields` (
           `fieldKey` int(11) NOT NULL auto_increment,
           `schema` varchar(255) collate utf8_unicode_ci NOT NULL,
           `keyName` varchar(60) collate utf8_unicode_ci NOT NULL,
@@ -20,18 +29,8 @@ class schemaManager {
           `access` varchar(60) collate utf8_unicode_ci default NULL,
           `settings` text collate utf8_unicode_ci NOT NULL,
           `locked` tinyint(1) NOT NULL default '0',
-          PRIMARY KEY  (`nodeKey`),
-          KEY `elementKey` (`settings`(255))
+          PRIMARY KEY  (`fieldKey`)
         ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;";
-        $this->agave->doSQLQuery($query, 0);
-
-        $query = "CREATE TABLE IF NOT EXISTS `".$stem."_schemata`
-          `schemaKey` int(11) NOT NULL auto_increment,
-          `schema` varchar(60) character set utf8 collate utf8_unicode_ci NOT NULL,
-          `label` varchar(255) character set utf8 collate utf8_unicode_ci NOT NULL,
-          `desc` text character set utf8 collate utf8_unicode_ci NOT NULL,
-          PRIMARY KEY  (`typeKey`)
-        ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
         $this->agave->doSQLQuery($query, 0);
 
         $query = "CREATE TABLE IF NOT EXISTS `".$stem."_schema_values` (
@@ -39,9 +38,7 @@ class schemaManager {
           `fieldKey` int(20) NOT NULL,
           `uniqueKey` int(11) NOT NULL,
           `value` text NOT NULL,
-          PRIMARY KEY  (`valueKey`),
-          KEY `codeKey` (`nodeKey`),
-          KEY `parentKey` (`contentNodeKey`)
+          PRIMARY KEY  (`valueKey`)
         ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
         $this->agave->doSQLQuery($query, 0);
     }
@@ -56,8 +53,8 @@ class schemaManager {
     }
 
     public function addSchema($stem, $schema, $label, $desc) {
-        $query = "INSER INTO `".$stem."_schemata` (`schema`,`label`,`desc`) VALUES('".$schema."', '".mysql_real_escape_string($label)."', '".mysql_real_escape_string($desc)."')";
-        $this->doSQLQuery($query, 0);
+        $query = "INSERT INTO `".$stem."_schemata` (`schema`,`label`,`desc`) VALUES('".$schema."', '".mysql_real_escape_string($label)."', '".mysql_real_escape_string($desc)."')";
+        $this->agave->doSQLQuery($query, 0);
     }
 
     public function deleteSchema($stem, $schema) {
@@ -136,4 +133,5 @@ class schemaManager {
 		$query = "SELECT `schema` FROM `".$stem."_schemata`";
 		return $this->agave->doSQLQuery($query, 1);
 	}
+	
 } //end of class
