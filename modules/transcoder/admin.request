@@ -44,12 +44,12 @@ function presetCreate($args = null){
 
 	//$agave->death($step);
 
-	$form = $fm2->getForm('preset_create', true, $step);
+	$form = $fm2->getForm('preset_create', $step);
 
 	if($form->submitted && $form->validateOK){
 		if(!isset($_POST['laststep'])){ //Move on to next step while steps still exist
 			//$agave->death((int)$step);
-			$form = $fm2->getForm('preset_create', true, (int)$step + 1);
+			$form = $fm2->getForm('preset_create', (int)$step + 1);
 		}
 		else{ //Success of entire form (all steps) and time to redirect with values
 			$_SESSION['form'] = $form;

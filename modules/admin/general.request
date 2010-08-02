@@ -21,7 +21,7 @@ function view() {
 	$t = $agave->load('themer');
 	$fm = $agave->load('fieldManager');
 
-        $form = $fm->getForm('admin_general', false);
+        $form = $fm->getForm('admin_general');
 
 	$themevars['form'] = $fm->renderForm($form);
 	$t->page['title'] = "General Admin";

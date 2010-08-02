@@ -65,7 +65,7 @@ function editField($args=null) {
 	$data['nodeKey'] = $md[1];
 	$data['type'] = $md[2];
 
-	$form = $fm->getForm('sm_field_element', FALSE, $data);
+	$form = $fm->getForm('sm_field_element', $data);
 
 	$agave->stop($fm->renderForm($form));
 }

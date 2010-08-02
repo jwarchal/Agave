@@ -19,7 +19,7 @@ function editContentNode($args=null) {
 	$fm = $agave->load('fieldManager');
 	$t = $agave->load('themer');
 
-	$form = $fm->getForm('contentNode_edit', FALSE, $node);
+	$form = $fm->getForm('contentNode_edit', $node);
 
 	if($form->submitted) saveContentNode($form);
 	else $t->output = $fm->renderForm($form);
