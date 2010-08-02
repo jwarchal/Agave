@@ -1,5 +1,5 @@
 <?php
-function contentNode_return_edit_form($node=NULL) {
+function contentNode_return_edit_form($form_values, $node=NULL) {
 	global $agave;
 	if(!$node) agave_error_page('404', "Trying to load the <em>contentNode_edit</em> form with NO DATA!  Inconceivable!");
 	$newItem = (is_object($node)) ? FALSE : TRUE;
@@ -18,15 +18,15 @@ function contentNode_return_edit_form($node=NULL) {
 		//if new, load blank schema
 		$schema = new schema("contentNode", $nodeType);
 	}
-	$fields = ($newItem) ? $schema->returnFieldElements() : $node->fields->returnFieldElements();
+	$fields = ($newItem) ? $schema->returnFormElements() : $node->fields->returnFormElements();
 
 	//append other elements
-	$fields[] = array(
+	$fields['contentNodeKey'] = array(
 		'#type'=>'hidden',
 		'#name'=>'contentNodeKey',
 		'#value'=>$nodeKey,
 	);
-	$fields[] = array(
+	$fields['type'] = array(
 		'#type'=>'hidden',
 		'#name'=>'type',
 		'#value'=>$nodeType,
@@ -35,7 +35,7 @@ function contentNode_return_edit_form($node=NULL) {
 			'field'=>'type'
 		)
 	);
-	$fields[] = array(
+	$fields['meta'] = array(
 		'#type'=>'fieldset',
 		'#name'=>'meta',
 		'#label'=>'Metadata',
@@ -43,9 +43,7 @@ function contentNode_return_edit_form($node=NULL) {
 		'#collapsible'=>TRUE,
 		'#collapsed'=>TRUE
 	);
-
-//TODO: Julian help! How do I control the structure?  I want published to be a child of meta...
-	$fields[] = array(
+	$fields['meta']['published'] = array(
 		'#type'=>'radio',
 		'#name'=>'published',
 		'#label'=>'Published?',

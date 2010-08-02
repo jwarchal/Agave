@@ -120,14 +120,15 @@ class schemaManager {
 
 		$fm = $this->agave->load('fieldManager');
 
-		$query = "";
+		$query = ""; //TODO: finish writing this search thingy...
+
 		//load fieldManager to format search string based on type of field
 		//search all rows where fieldKey=fieldKey and value=$fm->format($type, $value)
 		//return array of unique keys that match the field=>value
 	}
 
 	public function getFieldName($stem, $fieldKey) {
-		$query = "SELECT `keyName` from `".$stem."_schema_fields` WHERE `fieldKey`='$fieldKey'";
+		$query = "SELECT `keyName` from `".$this->stem."_schema_fields` WHERE `fieldKey`='$fieldKey'";
 		return $this->doSQLQuery($query, 0);
 	}
 
