@@ -22,15 +22,15 @@ class schema {
 	/*
 	 * PUBLIC API METHODS
 	 */
-	public function returnFieldElements($parentElement=FALSE, $matchFields=FALSE) {
+	public function returnFormElements($parentElement=FALSE, $matchFields=FALSE) {
 		//if matchkeys were received, set default field values based on matchkeys
 		if(!$this->fields) return;
 		$elements = array();
-		foreach($this->fieldOrderedList as $field) $elements[] = $this->returnFieldElement($field, $parentElement, $matchFields);
+		foreach($this->fieldOrderedList as $field) $elements[$field] = $this->returnFormElement($field, $parentElement, $matchFields);
 		return $elements;
 	}
 
-	public function returnFieldElement($fieldName, $parentElement=FALSE, $matchFields=FALSE) {
+	public function returnFormElement($fieldName, $parentElement=FALSE, $matchFields=FALSE) {
 		$element = $this->fieldElements[$fieldName];
 		if(!$matchFields) $matchFields = $this->matchFields; //inherit matchfields from constructor if none explicit
 		if($parentElement) $element['#name'] = $parentElement."/".$element['#name']; //TODO: is this the correct syntax for element parents?
@@ -149,18 +149,20 @@ class schema {
 
 		$values = array();
 
-		foreach($valueData as $row) {
-			$matchFields = array();
+		if($valueData) {
+			foreach($valueData as $row) {
+				$matchFields = array();
 
-			//this search for possible matchfields could be optimized more?  .... probably?
-			foreach($row as $key=>$value) if(substr($key, 0, 3) == 'mf_') $matchFields[substr($key, 3, strlen($key)-3)] = $value;
-			
-			$values[$row['fieldKey']][] = array(
-				'value'=>$this->agave->load('fieldManager')->unformat($this->fieldTypes[$row['fieldKey']], $row['value']),
-				'matchFields' => (!empty($matchFields)) ? $matchFields : FALSE,
-				'valueKey'=>$row['valueKey'],
-				'fieldKey'=>$row['fieldKey'],
-			);
+				//this search for possible matchfields could be optimized more?  .... probably?
+				foreach($row as $key=>$value) if(substr($key, 0, 3) == 'mf_') $matchFields[substr($key, 3, strlen($key)-3)] = $value;
+
+				$values[$row['fieldKey']][] = array(
+					'value'=>$this->agave->load('fieldManager')->unformat($this->fieldTypes[$row['fieldKey']], $row['value']),
+					'matchFields' => (!empty($matchFields)) ? $matchFields : FALSE,
+					'valueKey'=>$row['valueKey'],
+					'fieldKey'=>$row['fieldKey'],
+				);
+			}
 		}
 
 		$this->values = (!empty($values)) ? $values : FALSE;

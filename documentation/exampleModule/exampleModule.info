@@ -17,6 +17,19 @@ function exampleModule_info_meta() {
 	);
 }
 
+function exampleModule_info_objects() {
+	$objects = array();
+	$objects['myCoolObject'] = "mycool.object";
+	return $objects;
+}
+
+function exampleModule_info_extensions() {
+	$extensions = array();
+	//TODO: add example extension
+
+	return $extensions;
+}
+
 function exampleModule_info_actions() {
 	$actions = array();
 	//$actions[] = array('name','action','description','function','file','enabled?');
@@ -43,14 +56,6 @@ function exampleModule_info_menu_items() {
 	//$items[] = array('menu','path','weight','desc','href','visible?','expanded?','access');
 	
 	return $items;
-}
-
-function exampleModule_info_messages() {
-	$msgs = array();
-//	$msgs[] = array('type','handle','message');
-	
-	return $msgs;
-
 }
 
 function exampleModule_info_panels() {

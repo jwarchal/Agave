@@ -115,10 +115,10 @@ function confirmDelete($sql=null) {
 	$fm = $agave->load('fieldManager');
 	
 	$elements[] = array(
-		'preHTML'=>"<p>Are you sure you want to delete the access property <b>".$sql['action']."</b>? Once you press delete, all information related to this access property will be removed, and this action cannot be undone.</p>",
-		'type'=>'hidden',
-		'name'=>'confirm',
-		'value'=>'true'
+		'#preHTML'=>"<p>Are you sure you want to delete the access property <b>".$sql['action']."</b>? Once you press delete, all information related to this access property will be removed, and this action cannot be undone.</p>",
+		'#type'=>'hidden',
+		'#name'=>'confirm',
+		'#value'=>'true'
 	);
 	
 	$form = $fm->startForm($agave->url."admin/access/delete/".$sql['aKey'], "post");
@@ -159,12 +159,12 @@ function returnAccessCheckboxes() {
 			$name = $user_types[$j]['name']."_".$actions[$i]['action'];
 			$default = ($currentVals[$name]['value']=='1') ? array($user_types[$j]['name']."_".$actions[$i]['action']) : NULL;
 			$element = array(
-				'name'=>'access_args',
-				'type'=>'checkbox',
-				'nolabel'=>TRUE,
-				'title'=>$actions[$i]['desc'],
-				'values'=>array($user_types[$j]['name']."_".$actions[$i]['action']),
-				'default'=>$default
+				'#name'=>'access_args',
+				'#type'=>'checkbox',
+				'#nolabel'=>TRUE,
+				'#title'=>$actions[$i]['desc'],
+				'#values'=>array($user_types[$j]['name']."_".$actions[$i]['action']),
+				'#default'=>$default
 			);
 			$content .= "<td class='admin-access-cell'>".$fm->generateElement($element)."</td>";
 			unset($name);
@@ -186,51 +186,49 @@ function returnPropertyForm($id=null) {
 	
 	$elements = array();
 	$elements[] = array(
-		'name'=>'action',
-		'label'=>'Action:',
-		'type'=>'text',
-		'disabled'=> ($id) ? TRUE : NULL,
-		'default'=> ($id) ? $item['action'] : NULL,
-		'help'=>"Example: edit_content"
+		'#name'=>'action',
+		'#label'=>'Action:',
+		'#type'=>'text',
+		'#disabled'=> ($id) ? TRUE : NULL,
+		'#default'=> ($id) ? $item['action'] : NULL,
+		'#help'=>"Example: edit_content"
 	);
 	$elements[] = array(
-		'name'=>'label',
-		'label'=>'Label:',
-		'type'=>'text',
-		'default'=> ($id) ? $item['label'] : NULL,
-		'help'=>'Example: Edit Content'
+		'#name'=>'label',
+		'#label'=>'Label:',
+		'#type'=>'text',
+		'#default'=> ($id) ? $item['label'] : NULL,
+		'#help'=>'Example: Edit Content'
 	);
 	$elements[] = array(
-		'name'=>'desc',
-		'label'=>'Description:',
-		'type'=>'textarea',
-		'default'=> ($id) ? $item['desc'] : NULL,
-		'cols'=>'20',
-		'rows'=>'10'
+		'#name'=>'desc',
+		'#label'=>'Description:',
+		'#type'=>'textarea',
+		'#default'=> ($id) ? $item['desc'] : NULL,
+		'#cols'=>'20',
+		'#rows'=>'10'
 	);
 	$elements[] = array(
-		'name'=>'default',
-		'label'=>'Default:',
-		'default'=> ($id) ? $item['default'] : NULL,
-		'type'=>'text',
-		'help'=>'1 or 0',
-		'size'=>'1',
-		'maxlength'=>'1'
+		'#name'=>'default',
+		'#label'=>'Default:',
+		'#default'=> ($id) ? $item['default'] : NULL,
+		'#type'=>'text',
+		'#help'=>'1 or 0',
+		'#size'=>'1',
+		'#maxlength'=>'1'
 	);
 	$elements[] = array(
-		'name'=>'module',
-		'label'=>'Module:',
-		'default'=> ($id) ? $item['module'] : NULL,
-		'type'=>'text',
-		'help'=>'Example: contentNode'
+		'#name'=>'module',
+		'#label'=>'Module:',
+		'#default'=> ($id) ? $item['module'] : NULL,
+		'#type'=>'text',
+		'#help'=>'Example: contentNode'
 	);
 	$elements[] = array(
-		'name'=>'aKey',
-		'type'=>'hidden',
-		'value'=> ($id) ? $item['aKey'] : NULL
+		'#name'=>'aKey',
+		'#type'=>'hidden',
+		'#value'=> ($id) ? $item['aKey'] : NULL
 	);
 
 	return $elements;
 }
-
-?>
