@@ -1,0 +1,43 @@
+<?php
+class newdb {
+	public function __construct() {}
+	public function __destruct() {}
+
+	public function disconnect() {
+
+		$this->dbh = null;
+	}
+
+	public function connect($db_info) {
+
+		$this->db_info = $db_info;
+		//set database properties needed for establishing connection
+		$username = $db_info['default']["username"];
+		$password = $db_info['default']["password"];
+		$databasename = $db_info['default']["database"];
+		$hostname = $db_info['default']["host"];
+                $port = $db_info['default']["port"];
+                $driver = $db_info['default']["driver"];
+
+                try {
+                    $this->dbh = new PDO($driver.':host='.$hostname.';port='.$port.';dbname='.$databasename, $username, $password, array(PDO::ATTR_PERSISTENT => TRUE) );
+                    $this->dbh->query("SET NAMES 'utf8'");
+                }
+                catch (PDOException $e) {
+                    die("Error in connecting to database: ".$e->getMessage()." <br/>");
+                }
+	}
+	
+	function doQuery($queryText) {
+
+		if(!$this->dbh){
+                    die("DB query attempted without established PDO DB connection.");
+                }
+                try {
+                    return $this->dbh->query($queryText);
+                }
+                catch (PDOException $e) {
+                    die("Error in query execution: ".$e->getMessage()." <br/>");
+                }
+	}
+}
