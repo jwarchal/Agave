@@ -59,17 +59,8 @@ final class field_cktext extends genericField implements fieldInterface {
 	}
 	public function returnSettingsForm($settings) {
 		$elements = array();
-		//maxlength
-		$elements[] = array(
-			'#name'=>'maxlength',
-			'#type'=>'text',
-			'#label'=>'Max characters:',
-			'#size'=>5,
-			'#maxlength'=>5,
-			'#default'=>(isset($settings['maxlength'])) ? $settings['maxlength'] : NULL
-		);
 		//cols: textarea
-		$elements[] = array(
+		$elements['cols'] = array(
 			'#name'=>'cols',
 			'#type'=>'text',
 			'#label'=>'Cols:',
@@ -78,13 +69,22 @@ final class field_cktext extends genericField implements fieldInterface {
 			'#default'=>(isset($settings['cols'])) ? $settings['cols'] : NULL
 		);
 		//rows: textarea
-		$elements[] = array(
+		$elements['rows'] = array(
 			'#name'=>'rows',
 			'#type'=>'text',
 			'#label'=>'Rows:',
 			'#size'=>4,
 			'#maxlength'=>4,
 			'#default'=>(isset($settings['rows'])) ? $settings['rows'] : NULL
+		);
+		//maxlength
+		$elements['maxlength'] = array(
+			'#name'=>'maxlength',
+			'#type'=>'text',
+			'#label'=>'Max characters:',
+			'#size'=>5,
+			'#maxlength'=>5,
+			'#default'=>(isset($settings['maxlength'])) ? $settings['maxlength'] : NULL
 		);
 		
 		return $elements;

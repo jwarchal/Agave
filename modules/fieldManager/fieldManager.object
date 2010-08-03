@@ -544,4 +544,8 @@ final class fieldManager {
 		return $this->loadField($field)->returnSettingsForm($data);
 	}
 
+	public function formatFieldSettings($field, $data) {
+		return $this->loadField($field)->saveSettingsFields($data); //TODO: rename saveSettingsFields to formatFieldSettings in all the fields
+	}
+
 } //endfieldManager class

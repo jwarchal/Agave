@@ -38,7 +38,7 @@ function schemaManager_return_field_element_form($form_values = null, $data=FALS
 		'#values'=> $agave->load('fieldManager')->getAvailableFields(),
 		'#default'=>($fieldKey) ? $field['type'] : 'text',
 		'#weight'=>1,
-		'#disabled'=> ($fieldKey) ? TRUE : NULL,
+//		'#disabled'=> ($fieldKey) ? TRUE : NULL,
 	);
 	$elements['label'] = array(
 		'#type'=>'text',
@@ -106,10 +106,10 @@ function schemaManager_return_field_element_settings_form($form_values = null, $
 
 	//figure out what type of field this is to get settings form from fieldManager
 	$query = "SELECT `type`,`settings` FROM `".$stem."_schema_fields` WHERE `fieldKey`='$fieldKey'";
-	$data = $agave->doSQLQuery($query, 2);
+	$sql = $agave->doSQLQuery($query, 2);
 
-	$fieldType = $data['type'];
-	$settings = unserialize($data['settings']);
+	$fieldType = $sql['type'];
+	$settings = unserialize($sql['settings']);
 
 	//define the form data
 	$form = array();
@@ -120,7 +120,7 @@ function schemaManager_return_field_element_settings_form($form_values = null, $
 	$fields = $agave->load('fieldManager')->returnSettingsFields($fieldType, $settings);
 
 	$fields[] = array(
-		'#name'=>'fieldmeta',
+		'#name'=>'metadata',
 		'#type'=>'hidden',
 		'#value'=>implode(".", $data),
 	);
