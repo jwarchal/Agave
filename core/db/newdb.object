@@ -33,10 +33,11 @@ class newdb {
 		if(!$this->dbh){
                     die("Error:  Database query attempted without established database connection.");
                 }
+                //clean up whitespace
+                $queryText = preg_replace("/^\s+(\w+\W*\w*)/" , "$1", $queryText );
+                //ensure correct encoding
                 $this->dbh->query("SET NAMES 'utf8'");
                 try {
-                    //die(print_r($this->dbh->query($queryText)->fetchAll()));
-                    //die(print_r($queryText));
                     $pdostate = $this->dbh->query($queryText);
                     if(!$pdostate){
                         die("Error:  Unsuccessful execution of a database query; check syntax.");
@@ -53,10 +54,10 @@ class newdb {
                             }
                             return $arr;
                     }
-                    if ($dataFormat == 2) { // build a hash of values
+                    if ($dataFormat == 2) { // return a hash of values
                             return $pdostate->fetch();
                     }
-                    if (!isset($dataFormat) || $dataFormat == 3) { // build array of hashes (default format)
+                    if (!isset($dataFormat) || $dataFormat == 3) { // return an array of hashes (default format)
                             return $pdostate->fetchAll();
                     }
                 }
