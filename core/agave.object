@@ -1,5 +1,5 @@
 <?php
-class agave extends newdb {
+class agave extends olddb {
 	
 	//TODO: organize properties by what is set during bootstrap, and what is set internally
 	public $destination = FALSE;
