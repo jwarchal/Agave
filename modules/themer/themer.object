@@ -256,7 +256,6 @@ final class themer {
 				}
 				elseif(!empty($panel['func'])) {
 					if(!function_exists($panel['func'])) $this->loadPanelFile($panel['module']);
-//$agave->death($panel);
 					$themevars['content'] = (function_exists($panel['func'])) ? call_user_func_array($panel['func'], array($agave->uri)) : NULL;
 				}
 				

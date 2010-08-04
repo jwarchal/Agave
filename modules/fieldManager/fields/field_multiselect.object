@@ -55,7 +55,7 @@ final class field_multiselect extends genericField implements fieldInterface {
 	public function returnSettingsForm($settings) {
 		$elements = array();
 		
-		$elements[] = array(
+		$elements['values'] = array(
 			'#name'=>'values',
 			'#type'=>'text',
 			'#label'=>'Values',
@@ -65,7 +65,7 @@ final class field_multiselect extends genericField implements fieldInterface {
 		);
 		
 		//size: text, multiselect
-		$elements[] = array(
+		$elements['size'] = array(
 			'#name'=>'size',
 			'#type'=>'text',
 			'#label'=>'Size',

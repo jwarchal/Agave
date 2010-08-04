@@ -46,7 +46,7 @@ final class field_hidden extends genericField implements fieldInterface {
 	}
 	public function returnSettingsForm($settings) {
 		$elements = array();
-		$elements[] = array(
+		$elements['value'] = array(
 			'#name'=>'value',
 			'#type'=>'text',
 			'#label'=>'Value:',

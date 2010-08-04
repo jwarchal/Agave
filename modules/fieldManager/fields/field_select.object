@@ -55,7 +55,7 @@ final class field_select extends genericField implements fieldInterface {
 	
 	public function returnSettingsForm($settings) {
 		$elements = array();
-		$elements[] = array(
+		$elements['values'] = array(
 			'#name'=>'values',
 			'#type'=>'text',
 			'#label'=>'Values',

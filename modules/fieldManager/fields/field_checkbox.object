@@ -87,7 +87,7 @@ final class field_checkbox extends genericField implements fieldInterface {
 	}
 	public function returnSettingsForm($settings) {
 		$elements = array();
-		$elements[] = array(
+		$elements['values'] = array(
 			'#name'=>'values',
 			'#type'=>'text',
 			'#label'=>'Values',
@@ -95,7 +95,7 @@ final class field_checkbox extends genericField implements fieldInterface {
 			'#size'=>60,
 			'#default'=>(isset($settings['values'])) ? implode(",", $settings['values']) : NULL
 		);
-		$elements[] = array(
+		$elements['layout'] = array(
 			'#name'=>'layout',
 			'#type'=>'radio',
 			'#layout'=>array('type'=>'horizontal'),
@@ -103,7 +103,7 @@ final class field_checkbox extends genericField implements fieldInterface {
 			'#values'=>array('horizontal','vertical','grid'),
 			'#default'=>(isset($settings['layout']['type'])) ? $settings['layout']['type'] : 'horizontal'
 		);
-		$elements[] = array(
+		$elements['gridwidth'] = array(
 			'#name'=>'gridwidth',
 			'#type'=>'text',
 			'#label'=>'Grid width',
@@ -112,7 +112,7 @@ final class field_checkbox extends genericField implements fieldInterface {
 			'#maxlength'=>2,
 			'#default'=>(isset($settings['layout']['width'])) ? $settings['layout']['width'] : '3'
 		);
-		$elements[] = array(
+		$elements['nolabel'] = array(
 			'#name'=>'nolabel',
 			'#type'=>'checkbox',
 			'#label'=>'Hide labels',

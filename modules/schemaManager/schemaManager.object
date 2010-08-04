@@ -76,22 +76,40 @@ class schemaManager {
     }
 
     public function deleteSchemaField($stem, $fieldKey) {
-        $query = "DELETE FROM `".$stem."_schema_values` WHERE `fieldKey`='$fieldKey'";
-		$this->agave->doSQLQuery($query, 0);
-		$query = "DELETE FROM `".$stem."_schema_fields` WHERE `fieldKey`='$fieldKey'";
-		$this->agave->doSQLQuery($query, 0);
+		$locked = $this->getFieldData($stem, $fieldKey, 'locked');
+		if(!$locked) {
+			$query = "DELETE FROM `".$stem."_schema_values` WHERE `fieldKey`='$fieldKey'";
+			$this->agave->doSQLQuery($query, 0);
+			$query = "DELETE FROM `".$stem."_schema_fields` WHERE `fieldKey`='$fieldKey'";
+			$this->agave->doSQLQuery($query, 0);
+		}
+		else $this->agave->message('warning', "SchemaManager tried to delete a locked field from a schema in <b>$stem</b>");
     }
 
-    public function addValueMatchField($stem, $column) {
+    public function addValueMatchField($stem, $column, $settings=NULL) {
+		//set sql type, defaults to int
+		$type = (isset($settings['type'])) ? strtoupper($settings['type']) : 'INT';
 
+		//set sql length, defaults to 11 for ints or 32 for varchar
+		if(!isset($settings['length'])) $length = ($settings['type']=='VARCHAR') ? '32' : '11';
+		else $length = $settings['length'];
+
+		//column name
+		$column = "mf_".$column;
+
+		//build query to modify table
+		$query = "ALTER TABLE `".$stem."_schema_values` ADD `$column` $type( $length ) NULL AFTER `uniqueKey`";
+		$this->agave->doSQLQuery($query, 0);
     }
 
     public function deleteValueMatchField($stem, $column) {
-        //delete where mf_$column != NULL
-        //remove column
+		$query = "DELETE FROM `".$stem."_schema_values` WHERE `mf_".$column." != NULL";
+		$this->agave->dOSQLQuery($query, 0);
+        $query = "ALTER TABLE `".$stem."_schema_values` DROP `mf_".$column."` ";
+        $this->agave->doSQLQuery($query);
     }
 
-	public function saveSchemaFormValues($uniqueKey, $form) {
+	public function saveSchemaFormValues($uniqueKey, $form, $unset=FALSE) {
 		$schemaFields = array();
 
 		//check for metadata denoting schema field, if it's there, build the query and save the field data
@@ -107,6 +125,7 @@ class schemaManager {
 					$data[$key] = $value;
 				}
 			}
+			if($unset) unset($form->values[$field['#name']]);
 			$this->agave->mergeRow($stem."_schema_values", $data);
 		}
 	}
@@ -126,9 +145,9 @@ class schemaManager {
 		//return array of unique keys that match the field=>value
 	}
 
-	public function getFieldName($stem, $fieldKey) {
-		$query = "SELECT `keyName` from `".$this->stem."_schema_fields` WHERE `fieldKey`='$fieldKey'";
-		return $this->doSQLQuery($query, 0);
+	public function getFieldData($stem, $fieldKey, $field) {
+		$query = "SELECT `$field` from `".$stem."_schema_fields` WHERE `fieldKey`='$fieldKey'";
+		return $this->agave->doSQLQuery($query, 0);
 	}
 
 	public function availableSchemata($stem) {

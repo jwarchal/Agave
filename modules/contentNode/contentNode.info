@@ -30,6 +30,14 @@ function contentNode_info_extensions() {
 	return $extensions;
 }
 
+function contentNode_info_events() {
+
+}
+
+function contentNode_info_eventListeners() {
+	
+}
+
 function contentNode_info_menu_items() {
 	$items = array();
 //	$items[] = array('menu','weight','label','desc','href','visible?','expanded?','access');
