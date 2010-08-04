@@ -31,13 +31,13 @@ class newdb {
 	function doQuery($queryText) {
 
 		if(!$this->dbh){
-                    die("DB query attempted without established PDO DB connection.");
+                    die("Database query attempted without established database connection.");
                 }
                 try {
                     return $this->dbh->query($queryText);
                 }
                 catch (PDOException $e) {
-                    die("Error in query execution: ".$e->getMessage()." <br/>");
+                    die("Error in database query execution: ".$e->getMessage()." <br/>");
                 }
 	}
 }
