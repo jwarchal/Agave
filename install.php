@@ -173,7 +173,7 @@ function install_site_info() {
 function create_admin_user() {
 	global $agave;
 
-	foreach($_POST as $key=>$value) $$key = mysql_real_escape_string($value);
+	foreach($_POST as $key=>$value) $$key = $value;
 	
 	if(!$lname || !$fname || !$login || !$email || !$pword || !$pwordConfirm) {
 		$_SESSION['error'] = "You must complete all fields in the form.";

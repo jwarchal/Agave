@@ -203,10 +203,10 @@ final class fileManager {
 		$fields = array();
 		$values = array();
 		$duplicates = array();
-		if(!empty($file->data)) $file->data = mysql_real_escape_string(serialize($file->data));
+		if(!empty($file->data)) $file->data = serialize($file->data);
 		foreach($file as $field=>$value) {
 			$fields[] = "`$field`";
-			$values[] = "'".mysql_real_escape_string($value)."'";
+			$values[] = "'".$value."'";
 			$duplicates[] = " `$field`=VALUES(`$field`) ";
 		}
 		$fields = implode(",", $fields);

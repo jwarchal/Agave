@@ -389,7 +389,7 @@ final class admin {
 	
 	public function addPanel($name, $title, $content, $query, $template, $func, $region, $include, $exclude, $access, $weight, $enabled, $module) {
 		$query = "INSERT INTO `panels` (`name`,`title`,`content`,`query`,`template`,`func`,`region`,`include`,`exclude`,`access`,`weight`,`enabled`,`module`) 
-					VALUES('$name', '$title', '".mysql_real_escape_string($content)."', '".mysql_real_escape_string($query)."', '$template', '$func', '$region', '$include', '$exclude', '$access', '$weight', '$enabled', '$module')";
+					VALUES('$name', '$title', '".$content."', '".$query."', '$template', '$func', '$region', '$include', '$exclude', '$access', '$weight', '$enabled', '$module')";
 		$this->agave->doSQLQuery($query, 0);
 	}
 	
@@ -404,8 +404,8 @@ final class admin {
 		if($value) {
 			if($value=="0" || $value=="no") $value = FALSE;
 			if($value=="1" || $value=="yes") $value = TRUE;
-			$value = mysql_real_escape_string(serialize($value));
-			$key = mysql_real_escape_string($key);
+			$value = serialize($value);
+			$key = $key;
 			$previous = $this->agave->doSQLQuery("SELECT * FROM `system_variables` WHERE `key`='$key'", 0);
 			$query = (isset($previous)) ? "UPDATE `system_variables` SET `value`='".$value."' WHERE `key`='$key'" : "INSERT INTO `system_variables` (`key`, `value`) VALUES(\"".$key."\",\"".$value."\")";
 			$this->agave->doSQLQuery($query);
@@ -463,9 +463,9 @@ final class admin {
 			$this->agave->redirect("admin/users&mode=types");
 		}
 		
-		$name = mysql_real_escape_string($name);
-		$label = mysql_real_escape_string($label);
-		$desc = mysql_real_escape_string($desc);
+		$name = $name;
+		$label = $label;
+		$desc = $desc;
 		
 		//add new user_type to user_types
 		$query = "INSERT INTO `user_types` (`name`, `label`, `desc`) VALUES('".$name."','".$label."','".$desc."')";

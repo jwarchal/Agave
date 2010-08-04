@@ -239,8 +239,8 @@ function deleteType($args=null) {
 function saveType($args=null) {
 	global $agave;
 	if(!empty($_POST['typeKey'])) {
-		$label = mysql_real_escape_string($_POST['label']);
-		$desc = mysql_real_escape_string($_POST['description']);
+		$label = $_POST['label'];
+		$desc = $_POST['description'];
 		$typeKey = $_POST['typeKey'];
 		$query = "UPDATE `user_types` SET `label`='$label', `description`='$desc' WHERE `typeKey`='$typeKey'";
 		$agave->doSQLQuery($query);
@@ -550,7 +550,7 @@ function processAddUser($postData=null) {
 	global $agave;
 
 	//unpack post vars
-	if(!empty($postData)) foreach($postData as $key=>$value) $$key = (!empty($value)) ? mysql_real_escape_string($value) : NULL;
+	if(!empty($postData)) foreach($postData as $key=>$value) $$key = (!empty($value)) ? $value : NULL;
 	
 	if(!$lname || !$fname || !$login || !$email || !$pword || !$pwordConfirm) {
 		$agave->message('error', "All fields in the form are required!");
@@ -634,7 +634,7 @@ function messageUser($args=null) {
 //TODO: move to userMessages module
 function saveMessage($post) {
 	global $agave;
-	foreach($post as $key=>$value) $$key = (!empty($value)) ? mysql_real_escape_string($value) : NULL;
+	foreach($post as $key=>$value) $$key = (!empty($value)) ? $value : NULL;
 	$user = $agave->user;
 	$message = "<em>Message from <b>$user->firstName $user->lastName</b></em>:<br/>".$message;
 	//$agave->message($type, $message, $targetUserKey);

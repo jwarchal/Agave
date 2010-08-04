@@ -57,17 +57,17 @@ function saveProperty($args=null) {
 	//save new access argument if posted
 	if(empty($_POST['aKey'])) {
 		$admin->addAccessArgument(
-			mysql_real_escape_string($_POST['action']),
-			mysql_real_escape_string($_POST['label']),
-			mysql_real_escape_string($_POST['desc']),
-			mysql_real_escape_string($_POST['default']),
-			mysql_real_escape_string($_POST['module'])
+			$_POST['action'],
+			$_POST['label'],
+			$_POST['desc'],
+			$_POST['default'],
+			$_POST['module']
 		);
 	}
 
 	//otherwise just update existing entry
 	else {
-		if(!empty($_POST)) foreach($_POST as $key=>$value) $$key = mysql_real_escape_string($value);
+		if(!empty($_POST)) foreach($_POST as $key=>$value) $$key = $value;
 		$query = "UPDATE `user_access` SET `label`='".$label."',`default`='".$default."',`desc`='".$desc."', `module`='".$module."' WHERE `aKey`='".$aKey."'";
 		$agave->doSQLQuery($query);
 	}

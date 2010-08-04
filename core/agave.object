@@ -43,7 +43,7 @@ class agave extends newdb {
 	private function setCache($item, $data, $module, $expires=0) {
 		if($this->installed) {  
 			$time = time();
-			$data = mysql_real_escape_string(serialize($data));
+			$data = serialize($data);
 			$query = "DELETE FROM `cache` WHERE `item`='$item'";
 			$this->doSQLQuery($query, 0);
 			
@@ -179,8 +179,8 @@ class agave extends newdb {
 
 	public function log($type, $event, $userKey=NULL) {
 		//TODO: add current path field to track errors by url
-		$type = mysql_real_escape_string($type);
-		$event = mysql_real_escape_string($event);
+		$type = $type;
+		$event = $event;
 		if(!isset($_SESSION['logs'])) $_SESSION['logs'] = array();
 		$item = array();
 		$item['type'] = $type;

@@ -53,7 +53,7 @@ class schemaManager {
     }
 
     public function addSchema($stem, $schema, $label, $desc) {
-        $query = "INSERT INTO `".$stem."_schemata` (`schema`,`label`,`desc`) VALUES('".$schema."', '".mysql_real_escape_string($label)."', '".mysql_real_escape_string($desc)."')";
+        $query = "INSERT INTO `".$stem."_schemata` (`schema`,`label`,`desc`) VALUES('".$schema."', '".$label."', '".$desc."')";
         $this->agave->doSQLQuery($query, 0);
     }
 

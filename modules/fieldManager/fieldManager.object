@@ -358,8 +358,8 @@ final class fieldManager {
 	
 	public function cleanup($values) {
 		foreach($values as $key=>$value) {
-			$key = mysql_real_escape_string($key);
-			$value = (is_string($value)) ? mysql_real_escape_string($value) : $value;
+			$key = $key;
+			$value = (is_string($value)) ? $value : $value;
 		}
 		return $values;
 	}
