@@ -28,7 +28,7 @@ class newdb {
                 }
 	}
 	
-	function doSQLQuery($queryText,$dataFormat=null,$debug=null) {
+	function doSQLQuery($queryText,$dataFormat=null,$debug=null) { // TODO: check PDOStatement::errorInfo for errors and put them out somewhere useful...
 
 		if(!$this->dbh){
                     die("Error:  Database query attempted without established database connection.");
@@ -86,5 +86,14 @@ class newdb {
 
 		return $this->dbh->lastInsertId;
 	}
+
+        public function lastInsertId() {
+
+            if(!$this->dbh){
+                die("Error:  No established database connection to get last insert id from.");
+            }
+
+            return $this->dbh->lastInsertId;
+        }
 
 }

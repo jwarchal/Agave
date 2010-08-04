@@ -578,7 +578,7 @@ function processAddUser($postData=null) {
 	
 	$query = "INSERT INTO `users` (`firstName`,`lastName`,`login`,`password`,`email`,`date_added`) VALUES('$fname','$lname','$login','".md5($pword)."','$email','".time()."')";
 	$agave->doSQLQuery($query);
-	$id = mysql_insert_id();
+	$id = $agave->lastInsertId();
 	$agave->message('general', "Added user <b>$fname $lname</b>");
 	$agave->redirect("admin/users/manage/$id");
 }

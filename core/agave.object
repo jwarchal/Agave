@@ -225,7 +225,8 @@ class agave extends newdb {
 	}
 	
 	public function loadModules() {
-		if($this->module_env == $this->cache('agave_module_env')) $this->modulesLoaded = TRUE;
+                $cachedval = $this->cache('agave_module_env');
+		if(!empty($cachedval)) { $this->module_env = $cachedval; $this->modulesLoaded = TRUE; }
 		else {
 			foreach($this->setting('enabled_modules') as $module) {
 				$modulePath = $this->modulePath($module);

@@ -214,7 +214,7 @@ final class fileManager {
 		$duplicates = implode(",", $duplicates);
 		$query = "INSERT INTO `files` (".$fields.") VALUES(".$values.") ON DUPLICATE KEY UPDATE $duplicates";
 		$agave->doSQLQuery($query);
-		$fileKey = mysql_insert_id();
+		$fileKey = $agave->lastInsertId();
 		$file = $this->returnFile($fileKey);
                 //$agave->death($file);
 		return $file;
