@@ -189,9 +189,9 @@ function user_info_install() {
 
 	$agave->load('schemaManager')->createSchemaTables('agave_users');
 
-	$admin = $agave->load('admin');
-	$admin->addUserType('anon','Anonymous','Users who have not logged into your site.');
-	$admin->addUserType('authenticated','Authenticated','Users who have logged into your site.');
+	$um = $agave->load('userManager');
+	$um->addUserType('anon','Anonymous','Users who have not logged into your site.');
+	$um->addUserType('authenticated','Authenticated','Users who have logged into your site.');
 	
 }
 

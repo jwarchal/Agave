@@ -240,15 +240,23 @@ function agave_error_page($type=NULL, $message=FALSE) {
 	$t = $agave->load('themer');
 	$_SESSION['agave_error_page'] = TRUE;
 
-	$message = "<h2>Error: $type</h2>".$message;
-	if(!$message) $message .= "<h5>A serious error occured - please contact the site administrator if this is a recurring issue</h5>";
-	$t->output = $message."<h4></h4><hr /><h5>URL info: </h5><pre>".print_r($agave->uri, TRUE)."</pre>";
+	//assemble error output
+	$output = "<h2>Error: $type</h2>".$message;
+	if(!$message) $output .= "<h4>A serious error occured - please contact the site administrator if this is a recurring issue</h4>";
+	$t->output = $output."
+		<p>You have arrived here as a result of an error, click on the URL below to get back to the site.</p>
+		<p><a href='".$agave->url."'>".$agave->url."</a></p>
+		<hr />
+		<h5>URL info: </h5>
+		<pre>".print_r($agave->uri, TRUE)."</pre>
+	";
 
+	//log the error
 	$type = ($type) ? $type : "unknown";
 	$agave->log($type, $message);
 
-	//set headers if necessary
-	//TODO: abstract out these error codes, get a complete list
+	//set headers if necessary... TODO: add header methods for themer
+	//TODO: abstract out these error codes, get a complete list; move to themer header methods?
 	if($type=='404') {
 		$t->page['title'] = "Content Not Found (404)";
 		header('HTTP/1.1 404 Not Found');

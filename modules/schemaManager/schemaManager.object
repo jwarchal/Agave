@@ -58,16 +58,16 @@ class schemaManager {
     }
 
     public function deleteSchema($stem, $schema) {
-        $query = "SELECT `fieldKey` FROM `".$stem."_schema_fields` WHERE `schema`='".$scema."'";
+        $query = "SELECT `fieldKey` FROM `".$stem."_schema_fields` WHERE `schema`='".$schema."'";
         $fieldKeys = $this->agave->doSQLQuery($query, 1);
 
         if(!empty($fieldKeys)) {
             $query = "DELETE FROM `".$stem."_schema_values` WHERE `fieldKey` IN('".implode("','", $fieldKeys)."')";
             $this->agave->doSQLQuery($query, 0);
-            $query = "DELETE FROM `".$stem."_schema_fields` WHERE `fieldKey` IN('".implode("','", $fieldKeys)."')";
-            $this->agave->doSQLQuery($query, 0);
         }
 
+		$query = "DELETE FROM `".$stem."_schema_fields` WHERE `schema`='".$schema."'";
+		$this->agave->doSQLQuery($query, 0);
 		$query = "DELETE FROM `".$stem."_schemata` WHERE `schema`='".$schema."'";
 		$this->agave->doSQLQuery($query, 0);
     }

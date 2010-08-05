@@ -288,7 +288,7 @@ function editType($args=null) {
 		'#cols'=>40,
 		'#rows'=>5,
 		'#label'=>'Description',
-		'#default'=>($id) ? $sql['description'] : NULL
+		'#default'=>($id) ? $sql['desc'] : NULL
 	);
 	$elements[] = array(
 		'#name'=>'typeKey',
