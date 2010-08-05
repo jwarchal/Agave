@@ -1,6 +1,6 @@
 <?php
 class schemaManager {
-	private $debugFilter = NULL; //array('get_node_keys','unpackElement');
+	private $debugFilter = NULL; //can be an array of method names
 
 	public function __construct() {
         global $agave;
@@ -14,7 +14,7 @@ class schemaManager {
           `label` varchar(255) character set utf8 collate utf8_unicode_ci NOT NULL,
           `desc` text character set utf8 collate utf8_unicode_ci NOT NULL,
           PRIMARY KEY  (`schemaKey`)
-        ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+        ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;";
         $this->agave->doSQLQuery($query, 0);
 
 		$query = "CREATE TABLE IF NOT EXISTS `".$stem."_schema_fields` (
@@ -39,7 +39,7 @@ class schemaManager {
           `uniqueKey` int(11) NOT NULL,
           `value` text NOT NULL,
           PRIMARY KEY  (`valueKey`)
-        ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+        ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;";
         $this->agave->doSQLQuery($query, 0);
     }
 
@@ -66,12 +66,13 @@ class schemaManager {
             $this->agave->doSQLQuery($query, 0);
             $query = "DELETE FROM `".$stem."_schema_fields` WHERE `fieldKey` IN('".implode("','", $fieldKeys)."')";
             $this->agave->doSQLQuery($query, 0);
-            $query = "DELETE FROM `".$stem."_schemata` WHERE `schema`='".$schema."'";
-            $this->agave->doSQLQuery($query, 0);
         }
+
+		$query = "DELETE FROM `".$stem."_schemata` WHERE `schema`='".$schema."'";
+		$this->agave->doSQLQuery($query, 0);
     }
 
-    public function saveSchemaField($stem, $data) {
+    public function addSchemaField($stem, $data) {
 		return $this->agave->mergeRow($stem."_schema_fields", $data);
     }
 
@@ -103,7 +104,7 @@ class schemaManager {
     }
 
     public function deleteValueMatchField($stem, $column) {
-		$query = "DELETE FROM `".$stem."_schema_values` WHERE `mf_".$column." != NULL";
+		$query = "DELETE FROM `".$stem."_schema_values` WHERE `mf_".$column."` != NULL";
 		$this->agave->dOSQLQuery($query, 0);
         $query = "ALTER TABLE `".$stem."_schema_values` DROP `mf_".$column."` ";
         $this->agave->doSQLQuery($query);

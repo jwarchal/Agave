@@ -230,7 +230,7 @@ function site_offline() {
 	die("<h1>HTTP/1.1 404 Not Found</h1><h2>Agave could not establish a database connection to <em>".$_SERVER['SERVER_NAME']."</em>.</h2><p>$agave->dbError</p>");
 }
 
-function agave_error_page($type=NULL, $message=NULL) {
+function agave_error_page($type=NULL, $message=FALSE) {
 	//The purpose of this function is to kill the processing of a request midstream, yet still render a full page with the necessary message
 	//The most common need for this would be for "404" errors or "ACCESS_DENIED" errors
 	//common errors (note that these aren't real HTTP responses, we use these codes for convenience because they correspond to actual errors that would occur if Apache were to handle this scenario on the file system):
@@ -240,15 +240,15 @@ function agave_error_page($type=NULL, $message=NULL) {
 	$t = $agave->load('themer');
 	$_SESSION['agave_error_page'] = TRUE;
 
-	//get error message
-	$message = ($message) ? $message : $agave->setting("message-".$type);
-	if(!isset($message)) $message = "A serious error occured - please contact the site administrator if this is a recurring issue";
-	$t->output = $message."<hr /><h5>URL info: </h5><pre>".print_r($agave->uri, TRUE)."</pre>";
+	$message = "<h2>Error: $type</h2>".$message;
+	if(!$message) $message .= "<h5>A serious error occured - please contact the site administrator if this is a recurring issue</h5>";
+	$t->output = $message."<h4></h4><hr /><h5>URL info: </h5><pre>".print_r($agave->uri, TRUE)."</pre>";
 
 	$type = ($type) ? $type : "unknown";
 	$agave->log($type, $message);
 
 	//set headers if necessary
+	//TODO: abstract out these error codes, get a complete list
 	if($type=='404') {
 		$t->page['title'] = "Content Not Found (404)";
 		header('HTTP/1.1 404 Not Found');

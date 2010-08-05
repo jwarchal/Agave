@@ -102,44 +102,6 @@ function deleteType($args=null) {
 	$id = $args[0];
 	if(!isset($_POST['confirm']) || $_POST['confirm'] != "true") confirmDeleteType($id);
 	else {
-		$admin = $agave->load('admin');
-		$query = "SELECT * FROM `contentNode_types` WHERE `typeKey`='$id'";
-		$type = $agave->doSQLQuery($query, 2);
-
-		//remove URL for creation of this type		
-		$url = "content/create/".$type['name'];
-		$query = "DELETE FROM `system_uri` WHERE `dest`='$url'";
-		$agave->doSQLQuery($query);
-		
-		//remove access checks
-		$admin->removeAccessArgument('view_content_'.$type['name']);
-		$admin->removeAccessArgument('create_content_'.$type['name']);
-		$admin->removeAccessArgument('edit_content_'.$type['name']);
-		$admin->removeAccessArgument('delete_content_'.$type['name']);
-
-		//get contentNodeKeys for items of type $type['name']
-		$query = "SELECT `contentNodeKey` FROM `contentNode` WHERE `type`='".$type['name']."'";
-		$keys = $agave->doSQLQuery($query, 1);
-		
-		//remove from contentNode_values
-		if($keys) {
-			$query = "DELETE FROM `contentNode_values` WHERE `contentNodeKey` IN(".implode(",", $keys).")";
-			$agave->doSQLQuery($query);
-		}
-		//remove from contentNode_schema where type==$type['name']
-		$query = "DELETE FROM `contentNode_schema` WHERE `contentNode_type`='".$type['name']."'";
-		$agave->doSQLQuery($query);
-		
-		//delete from contentNode table
-		$query = "DELETE FROM `contentNode` WHERE `type`='".$type['name']."'";
-		$agave->doSQLQuery($query);
-		
-		//finally delete row from types table
-		$query = "DELETE FROM `contentNode_types` WHERE `typeKey`='".$type['typeKey']."'";
-		$agave->doSQLQuery($query);
-		
-		$agave->message('general', "Deleted content type <em>".$type['label']."</em>");
-		$agave->redirect("admin/content/types");
 	}
 }
 
@@ -148,7 +110,7 @@ function confirmDeleteType($id) {
 	$t = $agave->load('themer');
 	$fm = $agave->load('fieldManager');
 	
-	$query = "SELECT * FROM `contentNode_types` WHERE `typeKey`='$id'";
+	$query = "SELECT * FROM `contentNode_schemata` WHERE `typeKey`='$id'";
 	$type = $agave->doSQLQuery($query, 2);
 	
 	$elements[] = array(
@@ -172,7 +134,7 @@ function returnEditTypeForm($id=null) {
 
 	$type = NULL;
 	if($id) {
-		$query = "SELECT * FROM `contentNode_types` WHERE `typeKey`='$id'";
+		$query = "SELECT * FROM `contentNode_schemata` WHERE `schemaKey`='$id'";
 		$type = $agave->doSQLQuery($query, 2);
 	}
 	
@@ -216,9 +178,9 @@ function returnEditTypeForm($id=null) {
 		)
 	);
 	$elements[] = array(
-		'#name'=>'typeKey',
+		'#name'=>'schemaKey',
 		'#type'=>'hidden',
-		'#value'=> ($type) ? $type['typeKey'] : NULL,
+		'#value'=> ($type) ? $type['schemaKey'] : NULL,
 		'#blockNum'=>0,
 		'#metaData'=>array(
 			'table'=>'contentNode_types',

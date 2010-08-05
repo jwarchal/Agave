@@ -104,7 +104,7 @@ function themer_info_install() {
 	  `module` varchar(128) NOT NULL,
 	  `array` longtext character set utf8 collate utf8_unicode_ci,
 	  PRIMARY KEY  (`menuKey`)
-	) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+	) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;";
 	$agave->doSQLQuery($query, 0);
 	
 	//panels

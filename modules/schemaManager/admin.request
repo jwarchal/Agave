@@ -128,14 +128,13 @@ function saveField($args=NULL) {
 		'type'=>$form->values['type'],
 		'schema' => $form->values['schema'],
 		'label' => $form->values['label'],
-		'showLabel' => !empty($form->values['showLabel']) ? $form->values['showLabel'] : 0,
+		'showLabel' => !empty($form->values['showLabel']) ? $form->values['showLabel'] : 1,
 		'help' => $form->values['helpText'],
 		'access' => $form->values['access'],
 	);
 	
 	//following fields can only be saved for new fields
 	if($new) $data['keyName'] = $form->values['fieldName'];
-	if($new) $data['type'] = $form->values['type'];
 
 	$agave->mergeRow($stem."_schema_fields", $data);
 	$agave->redirect("admin/schemata&stem=$stem&schema=".$form->values['schema']);

@@ -55,3 +55,7 @@ function contentNode_return_edit_form($form_values, $node=NULL) {
 
 	return $form;
 }
+
+function contentNode_return_type_form($form_values, $data) {
+	//TODO: implement this form
+}

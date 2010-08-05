@@ -102,9 +102,9 @@ final class themer {
 		$this->page['site_name'] = $agave->setting('site_name');
 		$this->page['footer_message'] = $agave->setting('footer_message');
 		
-		//if panels should be loaded, load them here
+		//load panels if the uri specifies it, and if this is NOT an error page (panels on error pages could cause an infinite loop
 		$agave->invoke('pre_panel_render');
-		if(isset($agave->uri['panels']) || (isset($_SESSION['agave_error_page']) && $_SESSION['agave_error_page']==TRUE && $agave->setting('message-panels'))) $this->loadPanels();
+		if(isset($agave->uri['panels']) && !isset($_SESSION['agave_error_page'])) $this->loadPanels();
 		$agave->invoke('post_panel_render');
 
 		//call themes post_process function

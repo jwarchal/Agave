@@ -230,8 +230,8 @@ function deleteType($args=null) {
 
 	if(!isset($_POST['confirm']) || $_POST['confirm'] != 'true') confirmDeleteType($type);
 	else {
-		$admin = $agave->load("admin");
-		$admin->deleteUserType($type['name']);
+		$um = $agave->load("userManager");
+		$um->deleteUserType($type['name']);
 		$agave->redirect("admin/users/types");
 	}
 }
@@ -249,8 +249,8 @@ function saveType($args=null) {
 	}
 	else if(empty($_POST['typeKey'])) {
 		$post = $_POST;
-		$admin = $agave->load('admin');
-		$admin->addUserType($post['name'], $post['label'], $post['description']);
+		$um = $agave->load('userManager');
+		$um->addUserType($post['name'], $post['label'], $post['description']);
 		$agave->message('general', "Saved new user type.");
 		$agave->redirect("admin/users/types");
 	}
