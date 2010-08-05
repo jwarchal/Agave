@@ -78,7 +78,6 @@ final class admin {
 		$meta = call_user_func($module."_info_meta");
 
 		//remove core data
-		$this->uninstallActions($module);
 		$this->uninstallCron($module);
 		$this->uninstallMenu($module);
 		$this->uninstallMenuItems($module);
@@ -134,7 +133,6 @@ final class admin {
 		call_user_func_array($module."_info_update", array());
 
         //remove items from .info file
-		$this->uninstallActions($module);
 		$this->uninstallCron($module);
 		$this->uninstallMenu($module);
 		$this->uninstallMenuItems($module);
@@ -215,7 +213,7 @@ final class admin {
 			$menu['array']=unserialize($menu['array']);
 			$this->deleteModuleFromMenuArray($menu['array'], $module);
 			$menu['array']=serialize($menu['array']);
-			$query = "UPDATE `menu` SET `array`='".$menu['array']."' WHERE `menuKey`='".$menu['menuKey']."'";
+			$query = "UPDATE `agave_menu` SET `array`='".$menu['array']."' WHERE `menuKey`='".$menu['menuKey']."'";
 			$this->agave->doSQLQuery($query, 0);
 		}
 	}
