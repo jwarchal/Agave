@@ -1,0 +1,22 @@
+<?php
+function dbTree_info_meta() {
+	return array(
+		'name'=>'DB Tree',
+		'machine-name'=>'dbTree',
+		'description'=>'Provides an object for analyzing INNODB data structures with key constraints.',
+		'group'=>'Database',
+		'version'=>'.1',
+		'agave-version'=>'1',
+		'dependencies'=>array(),
+	);
+}
+
+function dbTree_info_objects() {
+	return array('dbTree'=>'dbTree.object');
+}
+
+function dbTree_info_system_uri() {
+	$uris = array();
+	$uris[] = array();
+	return $uris;
+}

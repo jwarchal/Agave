@@ -25,13 +25,6 @@ function fieldManager_info_objects() {
 	return $objects;
 }
 
-function fieldManager_info_actions() {
-	$actions = array();
-	//$actions[] = array('name','action','description','function','file','enabled?');
-	
-	return $actions;
-}
-
 function fieldManager_info_cron() {
 	$jobs = array();
 //	$jobs[] = array('name','description','function','interval','enabled?');

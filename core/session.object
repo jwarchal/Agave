@@ -54,7 +54,7 @@ class session {
 		
 		//look for session in DB to determine whether or not user is logged in
 		if(!isset($_COOKIE[session_name()])) $_COOKIE[session_name()] = "NULL";
-			$query = "SELECT * FROM `sessions` WHERE `sessionID` = '".$_COOKIE[session_name()]."' ";
+			$query = "SELECT * FROM `agave_users_sessions` WHERE `sessionID` = '".$_COOKIE[session_name()]."' ";
 			$sqlData = $agave->doSQLQuery($query, 2);
 			$userKey = $sqlData['userKey'];
 			
@@ -86,7 +86,7 @@ class session {
 				fclose($fp);
 				
 				if(!$agave->user->isAnon) {
-					$query = "UPDATE `sessions` SET `time_refreshed`='".time()."' WHERE `sessionID`='".$sess_id."'";
+					$query = "UPDATE `agave_users_sessions` SET `time_refreshed`='".time()."' WHERE `sessionID`='".$sess_id."'";
 					$agave->doSQLQuery($query);	
 				}
 				
@@ -95,7 +95,7 @@ class session {
 			 else return FALSE;
 		}
 		else {
-			$query = "UPDATE `sessions` SET `time_refreshed`='".time()."', `data`='".mysql_real_escape_string(serialize($data))."' WHERE `sessionID`='".$sess_id."'";
+			$query = "UPDATE `agave_users_sessions` SET `time_refreshed`='".time()."', `data`='".mysql_real_escape_string(serialize($data))."' WHERE `sessionID`='".$sess_id."'";
 			$agave->doSQLQuery($query);
 			return TRUE;
 		}
@@ -105,7 +105,7 @@ class session {
 		$id = ($id) ? $id : $_COOKIE[session_name()];
 		global $agave;
 		if(!$agave->user->isAnon && $this->method=='database') {
-			$query = "DELETE FROM `sessions` WHERE `sessionID`='".mysql_real_escape_string($id)."'";
+			$query = "DELETE FROM `agave_users_sessions` WHERE `sessionID`='".mysql_real_escape_string($id)."'";
 			$agave->doSQLQuery($query);
 		}
 		else {
@@ -129,14 +129,14 @@ class session {
 		}
 		
 		//clean database
-		$query = "SELECT `time_refreshed`,`sessionID` FROM `sessions`";
+		$query = "SELECT `time_refreshed`,`sessionID` FROM `agave_users_sessions`";
 		$sessions = $agave->doSQLQuery($query, 3);
 		$old = array();
 		foreach($sessions as $session) {
 			if($session['time_refreshed'] + $sess_maxlifetime < time()) $old[] = $session['sessionID'];
 		}
 		$old = implode(',', $old);
-		$query = "DELETE FROM `sessions` WHERE `sessionID` IN('".$old."')";
+		$query = "DELETE FROM `agave_users_sessions` WHERE `sessionID` IN('".$old."')";
 		$agave->doSQLQuery($query);
 		
 		return true;
@@ -145,7 +145,7 @@ class session {
 	public function getUserKey($login,$password){
 		global $agave;
 		$query = "SELECT `userKey` " .
-		                  "FROM `users` " .
+		                  "FROM `agave_users` " .
 		                  "WHERE `login` = '$login' " .
 		                  "AND `password` = '$password' " ;
 		$sqlData = $agave->doSQLQuery($query,0);
@@ -155,7 +155,7 @@ class session {
 	public function returnValidSessionID(){
 		global $agave;
 		session_regenerate_id();
-		$query = "SELECT `sessionID` FROM `sessions` WHERE `sessionID` = '".session_id()."' ";
+		$query = "SELECT `sessionID` FROM `agave_users_sessions` WHERE `sessionID` = '".session_id()."' ";
 		$sqlData = $agave->doSQLQuery($query, 0);
 		if ($sqlData){
 			session_regenerate_id();
@@ -168,7 +168,7 @@ class session {
 	    global $agave;
 	    $time = time();
 	    $data = ($data) ? mysql_real_escape_string(serialize($data)) : NULL;
-		$query = "INSERT INTO `sessions` (`sessionID`,`userKey`,`time_refreshed`,`time_created`,`data`)
+		$query = "INSERT INTO `agave_users_sessions` (`sessionID`,`userKey`,`time_refreshed`,`time_created`,`data`)
 					VALUES('$sessionID','$userKey','$time','$time','$data');";
 		$agave->doSQLQuery($query,0);
 	}

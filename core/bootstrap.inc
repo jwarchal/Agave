@@ -160,7 +160,7 @@ function bootstrap_env() {
 
 	if($agave->uri['validRequest'] && $agave->uri['fast_route']) {
 		$GLOBALS['objects']['dispatcher']->route($agave->uri);
-		exit;
+		$agave->stop();
 	}
 	$agave->status = BOOTSTRAP_ENV;
 	return bootstrap(BOOTSTRAP_SESSION);
@@ -171,8 +171,7 @@ function bootstrap_session() {
 	include("./core/user.object");
 	include("./core/session.object");
 
-	$GLOBALS['objects']['session'] = new session;		
-	$GLOBALS['objects']['user'] = new user;
+	$GLOBALS['objects']['session'] = new session;
 	
 	//start the users session - global user is built here
 	$GLOBALS['objects']['session']->start();
@@ -180,29 +179,6 @@ function bootstrap_session() {
 	//needed to wait until after session was created to throw our 404 error for logging purposes
 	if(!$agave->uri['validRequest']) return DESTINATION_UNKNOWN;
 
-	//TODO: implement this for real - add db tables and stuff; check for 1-time access key, reauthenticate if present
-	if(isset($_GET['agave_one_time_access'])) {
-		$code = $_GET['agave_one_time_access'];
-		$query = "SELECT * FROM `one_time_access` WHERE `code`='$code'";
-		$data = $agave->doSQLQuery($query, 2); //query for access-code in DB
-		if(!$data) {
-			$agave->message('error', "You have attempted to use an invalid one-time access code.");
-			$agave->redirect();
-		}
-		$query = "DELETE FROM `one_time_access` WHERE `code`='$code'"; 
-		$agave->doSQLQuery($query); //wipe used access code
-		$userKey = $data['userKey'];
-		
-		//TODO check against begin & end dates
-		//if error - notify them that the code was wiped - they must request new access
-		
-		$GLOBALS['objects']['session']->addSession(session_id(), $userKey, $_SESSION);
-		$agave->log('one_time_access', "User $userKey used a one-time access code.", $userKey);
-		$agave->invoke('one_time_access', $userKey);
-		$redirect = (isset($data['redirect'])) ? $data['redirect'] : NULL;
-		$agave->redirect($redirect);
-	}
-	
 	//start the users session and set important session data
 	$_SESSION['referrer'] = (isset($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : $agave->url;
 	$_SESSION['agent'] = $_SERVER['HTTP_USER_AGENT'];
@@ -334,7 +310,7 @@ function __autoload($object) {
 	 * Provides support for autoloading in classes that are being extended or implemented
 	 */
 	global $agave;
-	$file = (isset($agave->module_env['objects'][$object])) ? $agave->module_env['objects'][$object] : FALSE;
+	$file = $agave->getObjectFile($object);
 	if(!$file) die("Autoload error - could not load <em>$object</em> object.<hr><h3>URI info:</h3><pre>".print_r($agave->uri, TRUE)."</pre><h3>Module info:</h3><pre>".print_r($agave->setting('module_data'), TRUE)."</pre>");
 	if(file_exists($file)) include($file);
 }

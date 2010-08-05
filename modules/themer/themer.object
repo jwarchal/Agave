@@ -226,7 +226,7 @@ final class themer {
 	public function loadPanels() {
 		global $agave;
 		$user = $agave->user;
-		$query = "SELECT * FROM `panels` WHERE `enabled`='1'";
+		$query = "SELECT * FROM `agave_panels` WHERE `enabled`='1'";
 		$panels = $agave->doSQLQuery($query, 3);
 
 		//assemble all panels
@@ -293,7 +293,7 @@ final class themer {
 			return (!empty($final)) ? "<ul class='agave-menu $menu-menu menu-root'>".$this->markupMenuItems($final)."</ul>" : NULL;
 		}
 		else {
-			$query = "SELECT array FROM `menu` WHERE `name`='$menu'";
+			$query = "SELECT `array` FROM `agave_menu` WHERE `name`='$menu'";
 			$arr = $agave->doSQLQuery($query, 0);
 			//$agave->death($arr);
 			$final = unserialize($arr);

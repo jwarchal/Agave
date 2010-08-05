@@ -32,7 +32,7 @@ class agave extends olddb {
 		if(!$this->cache) return FALSE;
 		if(isset($this->caches[$item])) return $this->caches[$item];
 		else {
-			$query = "SELECT `data`,`expires` FROM `cache` WHERE `item`='$item'";
+			$query = "SELECT `data`,`expires` FROM `agave_cache` WHERE `item`='$item'";
 			$cache = $this->doSQLQuery($query, 2);
 			if(!$cache) $this->caches[$item] = FALSE;
 			else $this->caches[$item] = ($cache['expires'] != 0 && (time() > $cache['expires'])) ? FALSE : unserialize($cache['data']);
@@ -44,10 +44,10 @@ class agave extends olddb {
 		if($this->installed) {  
 			$time = time();
 			$data = mysql_real_escape_string(serialize($data));
-			$query = "DELETE FROM `cache` WHERE `item`='$item'";
+			$query = "DELETE FROM `agave_cache` WHERE `item`='$item'";
 			$this->doSQLQuery($query, 0);
 			
-			$query = "INSERT INTO `cache` (`item`,`data`,`created`,`expires`, `module`)
+			$query = "INSERT INTO `agave_cache` (`item`,`data`,`created`,`expires`, `module`)
 						VALUES('$item','".$data."','$time','$expires','$module')";
 			$this->doSQLQuery($query);
 		}
@@ -201,7 +201,7 @@ class agave extends olddb {
 						$events[] = "('".$item['type']."','".$item['event']."','".$item['time']."','".$item['userKey']."','".$item['location']."')";
 					}
 					$values = implode(", ", $events);
-					$query = "INSERT INTO `logs` (`type`,`event`,`time`,`userKey`,`location`) VALUES $values";
+					$query = "INSERT INTO `agave_logs` (`type`,`event`,`time`,`userKey`,`location`) VALUES $values";
 					$this->doSQLQuery($query);
 				}
 				unset($_SESSION['logs']);
@@ -234,6 +234,8 @@ class agave extends olddb {
 					include_once($file);
 					$extensions = (function_exists($module."_info_extensions")) ? call_user_func($module."_info_extensions") : FALSE;
 					$objects = (function_exists($module."_info_objects")) ? call_user_func($module."_info_objects") : FALSE;
+					//TODO: $events = ;
+					//TODO: $eventListeners = ;
 					if($extensions) foreach($extensions as $extension) {
 						//TODO: Change this, include each file, add $extensions together, 1 foreach after all included
 						$data['file'] = $modulePath.$extension['location'];
@@ -242,7 +244,7 @@ class agave extends olddb {
 						unset($data); 
 					}
 					if(isset($objects)) foreach($objects as $object=>$location) $this->module_env['objects'][$object] = $modulePath.$location;
-					//TODO: Maybe one day add another section in .module file for object oriented libraries instead of generic functions?
+					//TODO: assemble events/eventListeners
 				}
 			}
 
@@ -250,29 +252,17 @@ class agave extends olddb {
 			$this->modulesLoaded = TRUE;
 		}
 	}
-	
-	//TODO: rewrite actions so that files are not loaded automatically, load as necessary
-	//make code for actions object oriented, actions have configurations to manage
-	//TODO: implement cache
-	public function loadActions() {
-		$query = "SELECT * FROM `actions` WHERE `active`='1'";
-		$actions = $this->doSQLQuery($query, 3);
-		$this->actions = array();
-		if($actions) {
-			foreach($actions as $action) {
-				$this->actions[$action['action']][] = $action['name'];
-			}
-		}
-		unset($actions);
-		
-		//TODO: remove the following foreach loop, don't include these files by default, wait till they are necessary in the "invoke" method
-		foreach($this->setting('enabled_modules') as $module) {
-			if (file_exists($file = $this->modulePath($module)."$module.actions")) include_once($file);
-		}
-		$this->actionsLoaded = TRUE;
+
+	public function getExtensions($module) {
+		return (isset($this->module_env['extensions'][$module])) ? $this->module_env['extensions'][$module] : FALSE;
 	}
-	
+
+	public function getObjectFile($object) {
+		return (isset($this->module_env['objects'][$object])) ? $this->module_env['objects'][$object] : FALSE;
+	}
+		
 	public function invoke($action, &$data=null) {
+		//TODO: change invoke to "event", have it look up event, and pass along data to "eventListeners"
 		//if actions have been loaded, call functions that correspond to the invoked action
 		static $i = 1;
 		//echo "$i - $action<br />";
@@ -320,7 +310,7 @@ class agave extends olddb {
 		else {
 			global $settings;
 			$this->settings = $settings;
-			$query = "SELECT * FROM `system_variables`";
+			$query = "SELECT * FROM `agave_system_variables`";
 			$sqlData = $this->doSQLQuery($query, 3);
 			if ($sqlData) {
 				foreach ($sqlData as $row) {

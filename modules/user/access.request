@@ -20,9 +20,9 @@ function admin_save_access_grid() {
 	global $agave;
 	if(isset($_POST['checkboxes'])) {
 		//save access checkbox grid	
-		$query = "UPDATE `user_access_map` SET `value`='0' WHERE `userKey` IS NULL";
+		$query = "UPDATE `agave_users_access_map` SET `value`='0' WHERE `userKey` IS NULL";
 		$agave->doSQLQuery($query);
-		$query = "SELECT * FROM `user_access_map`";
+		$query = "SELECT * FROM `agave_users_access_map`";
 		$data = $agave->doSQLQuery($query, 3);
 		$actions = array();
 		foreach($data as $datum) {
@@ -30,7 +30,7 @@ function admin_save_access_grid() {
 		}	
 		if(isset($_POST['access_args'])) foreach($_POST['access_args'] as $arg) {
 			if(isset($actions[$arg])) {
-				$query = "UPDATE `user_access_map` SET `value`='1' WHERE `action`='".$actions[$arg]['action']."' AND `user_type`='".$actions[$arg]['user_type']."'";
+				$query = "UPDATE `agave_users_access_map` SET `value`='1' WHERE `action`='".$actions[$arg]['action']."' AND `user_type`='".$actions[$arg]['user_type']."'";
 				$agave->doSQLQuery($query);
 			}
 		}
@@ -41,7 +41,7 @@ function admin_save_access_grid() {
 function viewProperties($args=null) {
 	global $agave;
 	$t = $agave->load('themer');
-	$query = "SELECT * FROM `user_access` ORDER BY `module`";
+	$query = "SELECT * FROM `agave_users_access` ORDER BY `module`";
 	$properties = $agave->doSQLQuery($query, 3);
 	
 	$themevars['properties'] = $properties;
@@ -68,7 +68,7 @@ function saveProperty($args=null) {
 	//otherwise just update existing entry
 	else {
 		if(!empty($_POST)) foreach($_POST as $key=>$value) $$key = mysql_real_escape_string($value);
-		$query = "UPDATE `user_access` SET `label`='".$label."',`default`='".$default."',`desc`='".$desc."', `module`='".$module."' WHERE `aKey`='".$aKey."'";
+		$query = "UPDATE `agave_users_access` SET `label`='".$label."',`default`='".$default."',`desc`='".$desc."', `module`='".$module."' WHERE `aKey`='".$aKey."'";
 		$agave->doSQLQuery($query);
 	}
 	
@@ -96,7 +96,7 @@ function editProperty($args=null) {
 function delete($args=null) {
 	global $agave;
 	$id = (isset($args[0])) ? $args[0] : NULL;
-	$query = "SELECT * FROM `user_access` WHERE `aKey`='$id'";
+	$query = "SELECT * FROM `agave_users_access` WHERE `aKey`='$id'";
 	$sql = $agave->doSQLQuery($query, 2);
 	if(!$sql) agave_error_page("404");
 	
@@ -134,11 +134,11 @@ function returnAccessCheckboxes() {
 	$fm = $agave->load('fieldManager');
 
 	//query for user_types and access arguments	
-	$query = "SELECT * FROM `user_types`";
+	$query = "SELECT * FROM `agave_users_types`";
 	$user_types = $agave->doSQLQuery($query, 3);
-	$query = "SELECT * FROM `user_access` ORDER BY `module` ASC";
+	$query = "SELECT * FROM `agave_users_access` ORDER BY `module` ASC";
 	$actions = $agave->doSQLQuery($query, 3);
-	$query = "SELECT * FROM `user_access_map`";
+	$query = "SELECT * FROM `agave_users_access_map`";
 	$data = $agave->doSQLQuery($query, 3);
 	$currentVals = array();
 	foreach($data as $datum) {
@@ -180,7 +180,7 @@ function returnAccessCheckboxes() {
 function returnPropertyForm($id=null) {
 	global $agave;
 	if($id) {
-		$query = "SELECT * FROM `user_access` WHERE `aKey`='$id'";
+		$query = "SELECT * FROM `agave_users_access` WHERE `aKey`='$id'";
 		$item = $agave->doSQLQuery($query, 2);
 	}
 	

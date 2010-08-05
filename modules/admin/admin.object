@@ -51,7 +51,6 @@ final class admin {
 		if(function_exists($module."_info_install")) call_user_func($module."_info_install");
 		
 		//now run upates to core tables
-		if(function_exists($module."_info_actions")) $this->installActions(call_user_func($module."_info_actions"), $module);
 		if(function_exists($module."_info_cron")) $this->installCron(call_user_func($module."_info_cron"), $module);
 		if(function_exists($module."_info_menu")) $this->installMenu(call_user_func($module."_info_menu"), $module);
 		if(function_exists($module."_info_menu_items")) $this->installMenuItems(call_user_func($module."_info_menu_items"), $module);
@@ -146,7 +145,6 @@ final class admin {
 		$this->clearModuleCache($module);
 
         //install items from .info file
-		if(function_exists($module."_info_actions")) $this->installActions(call_user_func($module."_info_actions"), $module);
 		if(function_exists($module."_info_cron")) $this->installCron(call_user_func($module."_info_cron"), $module);
 		if(function_exists($module."_info_menu")) $this->installMenu(call_user_func($module."_info_menu"), $module);
 		if(function_exists($module."_info_menu_items")) $this->installMenuItems(call_user_func($module."_info_menu_items"), $module);
@@ -165,24 +163,6 @@ final class admin {
  * Core table bulk install/uninstalls
  */
 
-	public function installActions($actions, $module) {
-		foreach($actions as $action) {
-			$name = $action[0];
-			$action = $action[1];
-			$desc = $action[2];
-			$func = $action[3];
-			$file = $action[4];
-			$enabled = $action[5];
-			
-			$this->addAction($name, $action, $desc, $func, $file, $module, $enabled);
-		}
-	}
-	
-	public function uninstallActions($module) {
-		$query = "DELETE FROM `actions` WHERE `module`='$module'";
-		$this->agave->doSQLQuery($query, 0);
-	}
-
 	public function installCron($jobs, $module) {
 		foreach($jobs as $job) {
 			$name = $job[0];
@@ -196,7 +176,7 @@ final class admin {
 	}
 	
 	public function uninstallCron($module) {
-		$query = "DELETE FROM `cron` WHERE `module`='$module'";
+		$query = "DELETE FROM `agave_cron` WHERE `module`='$module'";
 		$this->agave->doSQLQuery($query, 0);
 	}
 	
@@ -210,7 +190,7 @@ final class admin {
 	}
 	
 	public function uninstallMenu($module) {
-		$query = "DELETE FROM `menu` WHERE `module`='$module'";
+		$query = "DELETE FROM `agave_menu` WHERE `module`='$module'";
 		$this->agave->doSQLQuery($query, 0);		
 	}
 	
@@ -229,7 +209,7 @@ final class admin {
 	}
 	
 	public function uninstallMenuItems($module) {
-		$query = "SELECT `menuKey`,`array` FROM `menu`";
+		$query = "SELECT `menuKey`,`array` FROM `agave_menu`";
 		$menus = $this->agave->doSQLQuery($query, 3);
 		foreach($menus as $menu){
 			$menu['array']=unserialize($menu['array']);
@@ -282,7 +262,7 @@ final class admin {
 	}
 	
 	public function uninstallPanels($module) {
-		$query = "DELETE FROM `panels` WHERE `module`='$module'";
+		$query = "DELETE FROM `agave_panels` WHERE `module`='$module'";
 		$this->agave->doSQLQuery($query, 0);	
 	}
 	
@@ -294,14 +274,13 @@ final class admin {
 			$function = $uri[3];
 			$file = $uri[4];
 			$panels = $uri[5];
-			$actions = $uri[6];
-			$route = $uri[7];			
-			$this->addSystemUri($dest, $alias, $access, $module, $function, $file, $panels, $actions, $route);
+			$route = $uri[6];
+			$this->addSystemUri($dest, $alias, $access, $module, $function, $file, $panels, $route);
 		}
 	}
 	
 	public function uninstallSystemUri($module) {
-		$query = "DELETE FROM `system_uri` WHERE `module`='$module'";
+		$query = "DELETE FROM `agave_system_uri` WHERE `module`='$module'";
 		$this->agave->doSQLQuery($query, 0);
 	}
 	
@@ -330,7 +309,7 @@ final class admin {
 	}
 
 	public function uninstallUserAccess($module) {
-		$query = "SELECT `action` FROM `user_access` WHERE `module`='$module'";
+		$query = "SELECT `action` FROM `agave_users_access` WHERE `module`='$module'";
 		$args = $this->agave->doSQLQuery($query, 1);
 		if($args) foreach($args as $arg) $this->removeAccessArgument($arg);
 	}
@@ -340,30 +319,24 @@ final class admin {
  */
 
 	public function clearModuleCache($module) {
-		$query = "DELETE FROM `cache` WHERE `module`='$module'";
-		$this->agave->doSQLQuery($query, 0);
-	}
-
-	public function addAction($name=NULL, $action=NULL, $desc=NULL, $func=NULL, $file=NULL, $module=NULL, $enabled=0) {
-		$query = "INSERT INTO `actions` (`name`,`action`,`desc`,`func`,`file`,`module`,`active`) 
-					VALUES('".$name."', '".$action."', '".$desc."', '".$func."', '".$file."', '".$module."', $enabled)";
+		$query = "DELETE FROM `agave_cache` WHERE `module`='$module'";
 		$this->agave->doSQLQuery($query, 0);
 	}
 	
 	public function addCron($name=NULL, $desc=NULL, $func=NULL, $interval=NULL, $module=NULL, $enabled=0) {
-		$query = "INSERT INTO `cron` (`name`,`description`,`module`,`function`,`interval`,`enabled`) 
+		$query = "INSERT INTO `agave_cron` (`name`,`description`,`module`,`function`,`interval`,`enabled`)
 					VALUES('".$name."', '".$desc."', '".$module."', '".$func."', $interval, $enabled)";
 		$this->agave->doSQLQuery($query, 0);
 	}
 	
 	public function addMenu($name=NULL, $desc=NULL, $module=NULL) {
-		$query = "INSERT INTO `menu` (`name`,`desc`,`module`,`array`) 
+		$query = "INSERT INTO `agave_menu` (`name`,`desc`,`module`,`array`)
 					VALUES('".$name."', '".$desc."', '".$module."' , '".serialize(array())."')";
 		$this->agave->doSQLQuery($query, 0);
 	}
 	
 	public function addMenuItem($menu=NULL, $path=NULL, $weight=NULL, $desc=NULL, $href=NULL, $visible=1, $expanded=1, $access=NULL, $module=NULL) {
-		$query = "SELECT `array` FROM `menu` WHERE `name`='$menu'";
+		$query = "SELECT `array` FROM `agave_menu` WHERE `name`='$menu'";
 		$arr = $this->agave->doSQLQuery($query, 0);
 		$arr = unserialize($arr);
 		global $agave;
@@ -383,19 +356,19 @@ final class admin {
 		$arrplace['^module'] = $module;
 		
 		$arr = serialize($arr);
-		$query = "UPDATE `menu` SET `array`='".$arr."' WHERE `name`='".$menu."'";
+		$query = "UPDATE `agave_menu` SET `array`='".$arr."' WHERE `name`='".$menu."'";
 		$this->agave->doSQLQuery($query, 0);
 	}
 	
 	public function addPanel($name, $title, $content, $query, $template, $func, $region, $include, $exclude, $access, $weight, $enabled, $module) {
-		$query = "INSERT INTO `panels` (`name`,`title`,`content`,`query`,`template`,`func`,`region`,`include`,`exclude`,`access`,`weight`,`enabled`,`module`) 
+		$query = "INSERT INTO `agave_panels` (`name`,`title`,`content`,`query`,`template`,`func`,`region`,`include`,`exclude`,`access`,`weight`,`enabled`,`module`)
 					VALUES('$name', '$title', '".mysql_real_escape_string($content)."', '".mysql_real_escape_string($query)."', '$template', '$func', '$region', '$include', '$exclude', '$access', '$weight', '$enabled', '$module')";
 		$this->agave->doSQLQuery($query, 0);
 	}
 	
-	public function addSystemUri($dest=NULL, $alias=NULL, $access=NULL, $module=NULL, $function=NULL, $file=NULL, $panels=1, $actions=1, $route=0) {
-		$query = "INSERT INTO `system_uri` (`dest`,`alias`,`access`,`module`,`function`,`file`,`panels`,`actions`,`fast_route`)
-					VALUES('".$dest."', '".$alias."', '".$access."', '".$module."', '".$function."', '".$file."', '".$panels."', '".$actions."', $route)";
+	public function addSystemUri($dest=NULL, $alias=NULL, $access=NULL, $module=NULL, $function=NULL, $file=NULL, $panels=1, $route=0) {
+		$query = "INSERT INTO `agave_system_uri` (`dest`,`alias`,`access`,`module`,`function`,`file`,`panels`,`fast_route`)
+					VALUES('".$dest."', '".$alias."', '".$access."', '".$module."', '".$function."', '".$file."', '".$panels."', $route)";
 		$this->agave->doSQLQuery($query, 0);
 	}
 
@@ -406,19 +379,19 @@ final class admin {
 			if($value=="1" || $value=="yes") $value = TRUE;
 			$value = mysql_real_escape_string(serialize($value));
 			$key = mysql_real_escape_string($key);
-			$previous = $this->agave->doSQLQuery("SELECT * FROM `system_variables` WHERE `key`='$key'", 0);
-			$query = (isset($previous)) ? "UPDATE `system_variables` SET `value`='".$value."' WHERE `key`='$key'" : "INSERT INTO `system_variables` (`key`, `value`) VALUES(\"".$key."\",\"".$value."\")";
+			$previous = $this->agave->doSQLQuery("SELECT * FROM `agave_system_variables` WHERE `key`='$key'", 0);
+			$query = (isset($previous)) ? "UPDATE `agave_system_variables` SET `value`='".$value."' WHERE `key`='$key'" : "INSERT INTO `agave_system_variables` (`key`, `value`) VALUES(\"".$key."\",\"".$value."\")";
 			$this->agave->doSQLQuery($query);
 		}
 		else {
 			//TODO: Why is this here?
-			$query = "DELETE FROM `system_variables` WHERE `key`='$key'";
+			$query = "DELETE FROM `agave_system_variables` WHERE `key`='$key'";
 			$this->agave->doSQLQuery($query);
 		}
 	}
 
 	public function addAccessArgument($action, $label, $desc, $default, $module) {
-		$query = "SELECT `action` FROM `user_access`";
+		$query = "SELECT `action` FROM `agave_users_access`";
 		$current = $this->agave->doSQLQuery($query, 1);
                 if(!$current) $current = array(); // attempting fix
 		if(in_array($action, $current)) {
@@ -427,24 +400,24 @@ final class admin {
 		}
 		
 		//add new access property
-		$query = "INSERT INTO `user_access` (`aKey`,`action`,`label`,`desc`,`default`,`module`) VALUES(NULL,'".$action."','".$label."','".$desc."','".$default."','".$module."')";
+		$query = "INSERT INTO `agave_users_access` (`aKey`,`action`,`label`,`desc`,`default`,`module`) VALUES(NULL,'".$action."','".$label."','".$desc."','".$default."','".$module."')";
 		$this->agave->doSQLQuery($query);
 		
 		//add default mappings to all user_types
-		$query = "SELECT `name` FROM `user_types`";
+		$query = "SELECT `name` FROM `agave_users_types`";
 		$user_types = $this->agave->doSQLQuery($query, 1);
 		if($user_types) {
 			foreach($user_types as $level) {
-				$query = "INSERT INTO `user_access_map` (`mKey`,`action`, `user_type`, `value`) VALUES(NULL,'".$action."','".$level."','".$default."')";
+				$query = "INSERT INTO `agave_users_access_map` (`mKey`,`action`, `user_type`, `value`) VALUES(NULL,'".$action."','".$level."','".$default."')";
 				$this->agave->doSQLQuery($query);
 			}
 		}
 	}
 
 	public function removeAccessArgument($argument) {
-		$query = "DELETE FROM `user_access_map` WHERE `action`='$argument'";
+		$query = "DELETE FROM `agave_users_access_map` WHERE `action`='$argument'";
 		$this->agave->doSQLQuery($query);
-		$query = "DELETE FROM `user_access` WHERE `action`='$argument'";
+		$query = "DELETE FROM `agave_users_access` WHERE `action`='$argument'";
 		$this->agave->doSQLQuery($query);
 	}
 
@@ -455,7 +428,7 @@ final class admin {
 	//TODO: move these to userManager object
 	public function addUserType($name, $label, $desc) {
 		
-		$query = "SELECT `name` FROM `user_types`";
+		$query = "SELECT `name` FROM `agave_users_types`";
 		$current = $this->agave->doSQLQuery($query, 1);
                 if(!$current) $current = array(); // attempting fix
 		if(in_array($name, $current)) {
@@ -468,30 +441,30 @@ final class admin {
 		$desc = mysql_real_escape_string($desc);
 		
 		//add new user_type to user_types
-		$query = "INSERT INTO `user_types` (`name`, `label`, `desc`) VALUES('".$name."','".$label."','".$desc."')";
+		$query = "INSERT INTO `agave_users_types` (`name`, `label`, `desc`) VALUES('".$name."','".$label."','".$desc."')";
 		$this->agave->doSQLQuery($query);
 		
 		//add default mappings for all access properties for new user level
-		$query = "SELECT `action`, `default` FROM `user_access`";
+		$query = "SELECT `action`, `default` FROM `agave_users_access`";
 		$actions = $this->agave->doSQLQuery($query, 3);
 		if($actions) {
 			foreach($actions as $item) {
-				$query = "INSERT INTO `user_access_map` (action, user_type, value) VALUES('".$item['action']."','".$name."','".$item['default']."')";
+				$query = "INSERT INTO `agave_users_access_map` (action, user_type, value) VALUES('".$item['action']."','".$name."','".$item['default']."')";
 				$this->agave->doSQLQuery($query);
 			}
 		}
 
-		$this->agave->load('schemaManager')->addSchema('user', $name, $label, $desc);
+		$this->agave->load('schemaManager')->addSchema('agave_users', $name, $label, $desc);
 	}
 	
 	public function deleteUserType($name) {
-		$query = "DELETE FROM `user_access_map` WHERE `user_type`='$name'";
+		$query = "DELETE FROM `agave_users_access_map` WHERE `user_type`='$name'";
 		$this->agave->doSQLQuery($query);
 		
-		$query = "DELETE FROM `users_map` WHERE `user_type`='$name'";
+		$query = "DELETE FROM `agave_users_map` WHERE `user_type`='$name'";
 		$this->agave->doSQLQuery($query);
 		
-		$query = "DELETE FROM `user_types` WHERE `name`='$name'";
+		$query = "DELETE FROM `agave_users_types` WHERE `name`='$name'";
 		$this->agave->doSQLQuery($query);
 	}
 

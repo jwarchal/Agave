@@ -25,7 +25,7 @@ function listMenus($args=null) {
 	$t = $agave->load('themer');
 	$agave->rebuildCaches();
 	
-	$query = "SELECT * FROM `menu`";
+	$query = "SELECT * FROM `agave_menu`";
 	$sql = $agave->doSQLQuery($query, 3);
 
 	$themevars['sql'] = $sql;
@@ -55,12 +55,12 @@ function editMenu($args=null) {
 function deleteMenu($args=null) {
 	global $agave;
 	$menuKey = $args[0];
-	$query = "SELECT * FROM `menu` WHERE `menuKey`='$menuKey'";
+	$query = "SELECT * FROM `agave_menu` WHERE `menuKey`='$menuKey'";
 	$sql = $agave->doSQLQuery($query, 2);
 
 	if(!isset($_POST['confirm']) || $_POST['confirm']!='true') confirmDeleteMenu($sql);
 	else {
-		$query = "DELETE FROM `menu` WHERE `menuKey`='".$menuKey."'";
+		$query = "DELETE FROM `agave_menu` WHERE `menuKey`='".$menuKey."'";
 		$agave->doSQLQuery($query);
 		$agave->message('general', "The '".$sql['name']."' menu was deleted.");
 		$agave->redirect("admin/menus/list");
@@ -73,10 +73,10 @@ function confirmDeleteMenu($sql) {
 	$fm = $agave->load('fieldManager');
 	
 	$elements[] = array(
-		'preHTML'=>"<p>Are you sure you want to delete the <b>".$sql['name']."</b> menu? Once you press delete, all information related to this menu will be removed, and this action cannot be undone.</p>",
-		'type'=>'hidden',
-		'name'=>'confirm',
-		'value'=>'true'
+		'#preHTML'=>"<p>Are you sure you want to delete the <b>".$sql['name']."</b> menu? Once you press delete, all information related to this menu will be removed, and this action cannot be undone.</p>",
+		'#type'=>'hidden',
+		'#name'=>'confirm',
+		'#value'=>'true'
 	);
 	
 	$form = $fm->startForm($agave->url."admin/menus/delete/".$sql['menuKey'], "post");
@@ -105,7 +105,7 @@ function listMenuItems($args=null) {
 	$menuKey = $args[0];
 	$t = $agave->load('themer');
 
-	$query = "SELECT `name`,`array` FROM `menu` WHERE `menuKey`='$menuKey'";
+	$query = "SELECT `name`,`array` FROM `agave_menu` WHERE `menuKey`='$menuKey'";
 	$menu = $agave->doSQLQuery($query, 2);
 	
 	$themevars['menuArray'] = $menu['array'];
@@ -121,7 +121,7 @@ function deleteMenuItem($args=null) { //path looks like label1/label2/label3 for
 	$menuKey = $args[0];
 	$path = $_GET['menupath'];
 	
-	$query = "SELECT `array` FROM `menu` WHERE `menuKey`='$menuKey'";
+	$query = "SELECT `array` FROM `agave_menu` WHERE `menuKey`='$menuKey'";
 	$menuarr = $agave->doSQLQuery($query, 0);
 	$menuarr = unserialize($menuarr);
 	
@@ -137,7 +137,7 @@ function deleteMenuItem($args=null) { //path looks like label1/label2/label3 for
 	else {
 		unset($menuspot[$lastlabel]);
 		$menuarr = serialize($menuarr);
-		$query = "UPDATE `menu` SET `array`='$menuarr' WHERE `menuKey`='$menuKey'";
+		$query = "UPDATE `agave_menu` SET `array`='$menuarr' WHERE `menuKey`='$menuKey'";
 		$agave->doSQLQuery($query, 0);
 		$agave->message('general', "Menu item was deleted.");
 		$agave->redirect("admin/menus/$menuKey/items/list");
@@ -150,10 +150,10 @@ function confirmDeleteMenuItem($menuKey, $path) {
 	$fm = $agave->load('fieldManager');
 	
 	$elements[] = array(
-		'preHTML'=>"<p>Are you sure you want to delete the <b>".$path."</b> menu item? Once you press delete, all information related to this item will be removed, and this action cannot be undone.</p>",
-		'type'=>'hidden',
-		'name'=>'confirm',
-		'value'=>'true'
+		'#preHTML'=>"<p>Are you sure you want to delete the <b>".$path."</b> menu item? Once you press delete, all information related to this item will be removed, and this action cannot be undone.</p>",
+		'#type'=>'hidden',
+		'#name'=>'confirm',
+		'#value'=>'true'
 	);
 	
 	$form = $fm->startForm($agave->url.'admin/menus/'.$menuKey.'/items/delete/&menupath='.$path, "post");
@@ -188,7 +188,7 @@ function saveMenuItem($args=null) {
 	global $agave;
 	$menuKey = $args[0];
 	
-	$query = "SELECT `array`,`name` FROM `menu` WHERE `menuKey`='$menuKey'";
+	$query = "SELECT `array`,`name` FROM `agave_menu` WHERE `menuKey`='$menuKey'";
 	$menu = $agave->doSQLQuery($query, 2);
 	$menuarr = unserialize($menu['array']);
 	
@@ -204,51 +204,51 @@ function returnMenuForm($menuKey=null) {
 	
 	$menu = NULL;
 	if($menuKey) {
-		$query = "SELECT * FROM `menu` WHERE `menuKey`='$menuKey'";
+		$query = "SELECT * FROM `agave_menu` WHERE `menuKey`='$menuKey'";
 		$menu = $agave->doSQLQuery($query, 2);
 	}
 	
 	$elements = array();
 	$elements[] = array(
-		'name'=>'name',
-		'label'=>'Internal Name:',
-		'type'=>'text',
-		'metaData'=> array(
+		'#name'=>'name',
+		'#label'=>'Internal Name:',
+		'#type'=>'text',
+		'#metaData'=> array(
 			'table'=>'menu',
 			'field'=>'name'
 		),
-		'help'=>'This is the name Agave uses internally to identify the menu - it is also the name you will use when you call <code>$themer->printMenu(<em>\'name\'</em>)</code>',
-		'default'=>(isset($menu)) ? $menu['name'] : NULL
+		'#help'=>'This is the name Agave uses internally to identify the menu - it is also the name you will use when you call <code>$themer->printMenu(<em>\'name\'</em>)</code>',
+		'#default'=>(isset($menu)) ? $menu['name'] : NULL
 	);
 	$elements[] = array(
-		'name'=>'desc',
-		'label'=>'Description',
-		'type'=>'textarea',
-		'cols'=>40,
-		'rows'=>5,
-		'metaData'=> array(
+		'#name'=>'desc',
+		'#label'=>'Description',
+		'#type'=>'textarea',
+		'#cols'=>40,
+		'#rows'=>5,
+		'#metaData'=> array(
 			'table'=>'menu',
 			'field'=>'desc'
 		),
-		'default'=>(isset($menu)) ? $menu['desc'] : NULL
+		'#default'=>(isset($menu)) ? $menu['desc'] : NULL
 	);
 	$elements[] = array(
-		'name'=>'menuKey',
-		'type'=>'hidden',
-		'metaData'=> array(
+		'#name'=>'menuKey',
+		'#type'=>'hidden',
+		'#metaData'=> array(
 			'table'=>'menu',
 			'field'=>'menuKey'
 		),
-		'value'=>(isset($menu['menuKey'])) ? $menu['menuKey'] : NULL
+		'#value'=>(isset($menu['menuKey'])) ? $menu['menuKey'] : NULL
 	);
 	$elements[] = array(
-		'name'=>'array',
-		'type'=>'hidden',
-		'metaData'=> array(
+		'#name'=>'array',
+		'#type'=>'hidden',
+		'#metaData'=> array(
 			'table'=>'menu',
 			'field'=>'array'
 		),
-		'value'=>(isset($menu['array'])) ? $menu['array'] : NULL
+		'#value'=>(isset($menu['array'])) ? $menu['array'] : NULL
 	);
 	return $elements;
 }
@@ -259,7 +259,7 @@ function returnMenuItemForm($menuKey, $path=null) {
 	//get vals if we're editing already existing item
 	$item = NULL;
 
-	$query = "SELECT `array` FROM `menu` WHERE `menuKey`='$menuKey'";
+	$query = "SELECT `array` FROM `agave_menu` WHERE `menuKey`='$menuKey'";
 	$menuarr = $agave->doSQLQuery($query, 0);
 	$menuarr = unserialize($menuarr);
 		
@@ -276,65 +276,65 @@ function returnMenuItemForm($menuKey, $path=null) {
 
 	$elements = array();
 	$elements[] = array(
-		'name'=>'weight',
-		'label'=>'Weight',
-		'type'=>'text',
-		'size'=>4,
-		'maxlength'=>4,
-		'help'=>'Weight affects ordering of menu items that appear at same depth level.',
-		'default'=> (isset($item)) ? $item['^weight'] : NULL,
+		'#name'=>'weight',
+		'#label'=>'Weight',
+		'#type'=>'text',
+		'#size'=>4,
+		'#maxlength'=>4,
+		'#help'=>'Weight affects ordering of menu items that appear at same depth level.',
+		'#default'=> (isset($item)) ? $item['^weight'] : NULL,
 	);
 	$elements[] = array(
-		'name'=>'label',
-		'label'=>'Label',
-		'type'=>'text',
-		'help'=>'This is the name of the menu item as it will be seen in the interface',
-		'default'=> (isset($item)) ? $lastlabel : NULL,
+		'#name'=>'label',
+		'#label'=>'Label',
+		'#type'=>'text',
+		'#help'=>'This is the name of the menu item as it will be seen in the interface',
+		'#default'=> (isset($item)) ? $lastlabel : NULL,
 	);
 	$elements[] = array(
-		'name'=>'desc',
-		'label'=>'Description',
-		'type'=>'textarea',
-		'help'=>'The description will appear in the title text of the menu link.',
-		'default'=> (isset($item)) ? $item['^desc'] : NULL,
+		'#name'=>'desc',
+		'#label'=>'Description',
+		'#type'=>'textarea',
+		'#help'=>'The description will appear in the title text of the menu link.',
+		'#default'=> (isset($item)) ? $item['^desc'] : NULL,
 	);
 	$elements[] = array(
-		'name'=>'href',
-		'label'=>'HREF',
-		'type'=>'text',
-		'size'=>80,
-		'help'=>'This is the destination of the menu item - it can be an absolute url (<code>http://www.google.com</code>) or an internal Agave path (<code>content/1337</code>).',
-		'default'=> (isset($item)) ? $item['^href'] : NULL,
+		'#name'=>'href',
+		'#label'=>'HREF',
+		'#type'=>'text',
+		'#size'=>80,
+		'#help'=>'This is the destination of the menu item - it can be an absolute url (<code>http://www.google.com</code>) or an internal Agave path (<code>content/1337</code>).',
+		'#default'=> (isset($item)) ? $item['^href'] : NULL,
 	);
 	$elements[] = array(
-		'name'=>'visible',
-		'label'=>'Visible?',
-		'type'=>'radio',
-		'help'=>'Determines whether or not the menu item is actually visible (active) in the menu.',
-		'values'=>array('yes'=>'1','no'=>'0'),
-		'default'=> (isset($item)) ? $item['^visible'] : 1,
+		'#name'=>'visible',
+		'#label'=>'Visible?',
+		'#type'=>'radio',
+		'#help'=>'Determines whether or not the menu item is actually visible (active) in the menu.',
+		'#values'=>array('yes'=>'1','no'=>'0'),
+		'#default'=> (isset($item)) ? $item['^visible'] : 1,
 	);
 	$elements[] = array(
-		'name'=>'expanded',
-		'label'=>'Expanded',
-		'type'=>'radio',
-		'values'=>array('yes'=>'1','no'=>'0'),
-		'default'=> (isset($item)) ? $item['^expanded'] : 1,
-		'help'=>'Determines whether or not to markup child elements of a menu item (if they exist).  If you want a drop-down menu, all items which contain children must be set to "expand".',
+		'#name'=>'expanded',
+		'#label'=>'Expanded',
+		'#type'=>'radio',
+		'#values'=>array('yes'=>'1','no'=>'0'),
+		'#default'=> (isset($item)) ? $item['^expanded'] : 1,
+		'#help'=>'Determines whether or not to markup child elements of a menu item (if they exist).  If you want a drop-down menu, all items which contain children must be set to "expand".',
 	);
 	$elements[] = array(
-		'name'=>'access',
-		'label'=>'Access',
-		'type'=>'text',
-		'help'=>'If present, only users with the specified access priviledge will be able to see this menu item.',
-		'default'=> (isset($item)) ? $item['^access'] : NULL,
+		'#name'=>'access',
+		'#label'=>'Access',
+		'#type'=>'text',
+		'#help'=>'If present, only users with the specified access priviledge will be able to see this menu item.',
+		'#default'=> (isset($item)) ? $item['^access'] : NULL,
 	);
 	$elements[] = array(
-		'name'=>'module',
-		'label'=>'Module',
-		'type'=>'text',
-		'help'=>'The module that owns this.',
-		'default'=> (isset($item)) ? $item['^module'] : NULL,
+		'#name'=>'module',
+		'#label'=>'Module',
+		'#type'=>'text',
+		'#help'=>'The module that owns this.',
+		'#default'=> (isset($item)) ? $item['^module'] : NULL,
 	);
 	if($path){
 		$patharr = explode("/", $path);
@@ -352,19 +352,19 @@ function returnMenuItemForm($menuKey, $path=null) {
                     if($pathe != "/") { $pathe .= "/"; }
                 }
 		$elements[] = array(
-			'name'=>'menupath',
-			'label'=>'Path',
-			'type'=>'select',
-			'values'=>$posspathsarr,
-			'help'=>"At what path in the menu's structure shall this menu item reside?",
-			'default'=> $path,
+			'#name'=>'menupath',
+			'#label'=>'Path',
+			'#type'=>'select',
+			'#values'=>$posspathsarr,
+			'#help'=>"At what path in the menu's structure shall this menu item reside?",
+			'#default'=> $path,
 		);
 	}
 	else{
 		$elements[] = array(
-			'name'=>'new',
-			'type'=>'hidden',
-			'value'=>'yes',
+			'#name'=>'new',
+			'#type'=>'hidden',
+			'#value'=>'yes',
 		);
 		$posspathsarr = array();
 		$posspathsarr[] = '/';
@@ -373,12 +373,12 @@ function returnMenuItemForm($menuKey, $path=null) {
                     if($pathe != "/") { $pathe .= "/"; }
                 }
 		$elements[] = array(
-			'name'=>'menupath',
-			'label'=>'Path',
-			'type'=>'select',
-			'values'=>$posspathsarr,
-			'help'=>"At what path in the menu's structure shall this menu item reside?",
-			'default'=> '/',
+			'#name'=>'menupath',
+			'#label'=>'Path',
+			'#type'=>'select',
+			'#values'=>$posspathsarr,
+			'#help'=>"At what path in the menu's structure shall this menu item reside?",
+			'#default'=> '/',
 		);
 	}
 	

@@ -52,7 +52,7 @@ function processLogin() {
 
 	//if we have a valid user, start sessions and log in database, then redirect back to index
 	else if ($userKey) {
-		$query = "SELECT `userKey` FROM `sessions` WHERE `sessionID`='".session_id()."'";
+		$query = "SELECT `userKey` FROM `agave_users_sessions` WHERE `sessionID`='".session_id()."'";
 		$result = $agave->doSQLQuery($query,0);
 		if (!$result) {
 			$sessionID = $session->returnValidSessionID();

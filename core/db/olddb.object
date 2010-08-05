@@ -48,7 +48,7 @@ class olddb {
 		$sqlQuery = mysql_query($queryText,$this->dbcnx);
 		if (!$sqlQuery) {
 			$html = "<h2>Database Error</h2><p>".mysql_error()."</p>";
-			die($html);
+			die($html."<hr /><pre>".print_r($this->uri, TRUE)."</pre>");
 		}
 		// parse out the first word of query -- SELECT/REPLACE/UPDATE/INSERT
 		$pieces = explode(" ", $queryText);		

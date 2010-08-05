@@ -3,7 +3,7 @@ function viewAll($args=null) {
 	global $agave;
 	$t = $agave->load('themer');
 	
-	$query = "SELECT * FROM `system_uri` ORDER BY `module` ASC, `dest` ASC";
+	$query = "SELECT * FROM `agave_system_uri` ORDER BY `module` ASC, `dest` ASC";
 	$sql = $agave->doSQLQuery($query, 3);
 	
 	$themevars['sql'] = $sql;
@@ -49,7 +49,7 @@ function delete($args=null) {
 	$id = $args[0];
 	if(!isset($_POST['confirm']) || $_POST['confirm'] != "true") confirmDelete($id);
 	else {
-		$query = "DELETE FROM `system_uri` WHERE `uriKey`='$id'";
+		$query = "DELETE FROM `agave_system_uri` WHERE `uriKey`='$id'";
 		$agave->doSQLQuery($query);
 		$agave->message('general', "Deleted URL $id");
 		$agave->redirect("admin/urls");
@@ -77,7 +77,7 @@ function returnEditForm($id=NULL) {
 	global $agave;
 
 	if($id) {
-		$query = "SELECT * FROM `system_uri` WHERE `uriKey`='$id'";
+		$query = "SELECT * FROM `agave_system_uri` WHERE `uriKey`='$id'";
 		$url = $agave->doSQLQuery($query, 2);
 	}
 	else $url = NULL;

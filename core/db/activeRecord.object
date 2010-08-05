@@ -1,0 +1,61 @@
+<?php
+class ActiveRecord {
+	private $internalStorage = array();
+
+	public function __construct($table, $row=FALSE) {
+		global $agave;
+		$this->internalStorage->agave = $agave;
+		$this->internalStorage->table = new ActiveTable($table);
+		if($row) {
+			foreach($row as $key=>$value) $this->$key = $value;
+		}
+	}
+
+	public function save() {
+		$data = array();
+		foreach($this as $key=>$value) if($key != 'internalStorage') $data[$key] = $value;
+		$id = $this->internalStorage->agave->mergeRow($this->table, $data);
+		$this->internalStorage->uniqueRowID = $id;
+	}
+
+	public function delete() {
+		//how would I ensure a delete on the primary key if I don't know what it is? Query for it first based on $this->table?
+	}
+
+}
+
+class ActiveTable {
+	public function __construct($table) {
+		$this->table = $table;
+		$this->data = "";  //What?  SELECT * from information_schema on this->db and this->table?
+	}
+
+	public function findByField($field, $returnType, $class=false) {
+		//build query to return by properties in fields
+	}
+
+	public function returnPrimaryKeyName() {
+		
+	}
+
+	public function
+}
+
+/*
+ * THEORETICAL USAGE EXAMPLES
+ */
+
+//examples
+//creating a new row in user table
+$user = new ActiveRecord('user');
+$user->firstName = "Evan";
+$user->lastName = "Villemez";
+$user->time_added = time();
+$id = $user->save();
+
+//updating lots of rows - in reality this is dumb, it executes many queries where it could be done in 1
+$users = DB::select("* FROM `users`")->execute()->fetchAsClass('ActiveRecord'); //TRUE means use activeRecord for the returned rows
+foreach($users as $user) {
+	$user->time_modified = time();
+	$user->save();
+}

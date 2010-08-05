@@ -27,13 +27,6 @@ function user_info_extensions() {
 	
 }
 
-function user_info_actions() {
-	$actions = array();
-	//$actions[] = array('name','action','description','function','file','enabled?');
-	
-	return $actions;
-}
-
 function user_info_cron() {
 	$jobs = array();
 //	$jobs[] = array('name','description','function','interval','enabled?');
@@ -69,35 +62,34 @@ function user_info_panels() {
 
 function user_info_system_uri() {
 	$uris = array();
-	$uris[] = array('admin/access',NULL,'administer_users','admin_view_access_grid','access',0,1,0);
-	$uris[] = array('admin/access/add',NULL,'administer_users','editProperty','access',0,1,0);
-	$uris[] = array('admin/access/delete/%',NULL,'administer_users','delete','access',0,1,0);
-	$uris[] = array('admin/access/edit/%',NULL,'administer_users','editProperty','access',0,1,0);
-	$uris[] = array('admin/access/manage',NULL,'administer_users','viewProperties','access',0,1,0);
-	$uris[] = array('admin/access/save',NULL,'administer_users','saveProperty','access',0,1,0);
-	$uris[] = array('admin/access/update',NULL,'administer_users','admin_save_access_grid','access',0,1,0);
-	$uris[] = array('admin/users',NULL,'administer_users','browseUsers','admin',0,1,0);
-	$uris[] = array('admin/users/%/drop-access/%',NULL,'administer_users','dropPrivilege','admin',0,1,0);
-	$uris[] = array('admin/users/add',NULL,'administer_users','addUser','admin',0,1,0);
-	$uris[] = array('admin/users/delete/%',NULL,'administer_users','deleteUser','admin',0,1,0);
-	$uris[] = array('admin/users/manage/%',NULL,'administer_users','manageUser','admin',0,1,0);
-	$uris[] = array('admin/users/manage/save/%',NULL,'administer_users','saveUser','admin',0,1,0);
-	$uris[] = array('admin/users/message/%',NULL,'administer_users','messageUser','admin',0,1,0);
-	$uris[] = array('admin/users/types',NULL,'administer_users','viewTypes','admin',0,1,0);
-	$uris[] = array('admin/users/types/add',NULL,'administer_users','editType','admin',0,1,0);
-	$uris[] = array('admin/users/types/delete/%',NULL,'administer_users','deleteType','admin',0,1,0);
-	$uris[] = array('admin/users/types/edit/%',NULL,'administer_users','editType','admin',0,1,0);
-	$uris[] = array('admin/users/types/save',NULL,'administer_users','saveType','admin',0,1,0);
-	$uris[] = array('user/checkin',NULL,NULL,'checkin','checkin',0,0,1);
-	$uris[] = array('user/login',NULL,NULL,'login','login',0,1,0);
-	$uris[] = array('user/logout',NULL,NULL,'logout','logout',0,1,0);
-	$uris[] = array('user/profile',NULL,NULL,'user_view_profile','profile-view',0,1,0);
-	$uris[] = array('user/profile/%',NULL,NULL,'user_view_profile','profile-view',0,1,0);
-	$uris[] = array('user/profile/edit',NULL,NULL,'user_edit_profile','profile-edit',0,1,0);
-	$uris[] = array('user/profile/edit/%',NULL,NULL,'user_edit_profile','profile-edit',0,1,0);
-	$uris[] = array('user/profile/save',NULL,NULL,'user_save_profile','profile-save',0,1,0);
-	$uris[] = array('user/profile/save/%',NULL,NULL,'user_save_profile','profile-save',0,1,0);
-	$uris[] = array('user/register',NULL,NULL,'register','register',0,1,0);
+	$uris[] = array('admin/access',NULL,'administer_users','admin_view_access_grid','access',0,0);
+	$uris[] = array('admin/access/add',NULL,'administer_users','editProperty','access',0,0);
+	$uris[] = array('admin/access/delete/%',NULL,'administer_users','delete','access',0,0);
+	$uris[] = array('admin/access/edit/%',NULL,'administer_users','editProperty','access',0,0);
+	$uris[] = array('admin/access/manage',NULL,'administer_users','viewProperties','access',0,0);
+	$uris[] = array('admin/access/save',NULL,'administer_users','saveProperty','access',0,0);
+	$uris[] = array('admin/access/update',NULL,'administer_users','admin_save_access_grid','access',0,0);
+	$uris[] = array('admin/users',NULL,'administer_users','browseUsers','admin',0,0);
+	$uris[] = array('admin/users/%/drop-access/%',NULL,'administer_users','dropPrivilege','admin',0,0);
+	$uris[] = array('admin/users/add',NULL,'administer_users','addUser','admin',0,0);
+	$uris[] = array('admin/users/delete/%',NULL,'administer_users','deleteUser','admin',0,0);
+	$uris[] = array('admin/users/manage/%',NULL,'administer_users','manageUser','admin',0,0);
+	$uris[] = array('admin/users/manage/save/%',NULL,'administer_users','saveUser','admin',0,0);
+	$uris[] = array('admin/users/message/%',NULL,'administer_users','messageUser','admin',0,0);
+	$uris[] = array('admin/users/types',NULL,'administer_users','viewTypes','admin',0,0);
+	$uris[] = array('admin/users/types/add',NULL,'administer_users','editType','admin',0,0);
+	$uris[] = array('admin/users/types/delete/%',NULL,'administer_users','deleteType','admin',0,0);
+	$uris[] = array('admin/users/types/edit/%',NULL,'administer_users','editType','admin',0,0);
+	$uris[] = array('admin/users/types/save',NULL,'administer_users','saveType','admin',0,0);
+	$uris[] = array('user/login',NULL,NULL,'login','login',0,0);
+	$uris[] = array('user/logout',NULL,NULL,'logout','logout',0,0);
+	$uris[] = array('user/profile',NULL,NULL,'user_view_profile','profile-view',0,0);
+	$uris[] = array('user/profile/%',NULL,NULL,'user_view_profile','profile-view',0,0);
+	$uris[] = array('user/profile/edit',NULL,NULL,'user_edit_profile','profile-edit',0,0);
+	$uris[] = array('user/profile/edit/%',NULL,NULL,'user_edit_profile','profile-edit',0,0);
+	$uris[] = array('user/profile/save',NULL,NULL,'user_save_profile','profile-save',0,0);
+	$uris[] = array('user/profile/save/%',NULL,NULL,'user_save_profile','profile-save',0,0);
+	$uris[] = array('user/register',NULL,NULL,'register','register',0,0);
 	
 	return $uris;
 }
@@ -127,7 +119,7 @@ function user_info_update() {
 function user_info_install() {
 	
 	global $agave;
-	$query = "CREATE TABLE IF NOT EXISTS `users` (
+	$query = "CREATE TABLE IF NOT EXISTS `agave_users` (
 	  `userKey` int(11) NOT NULL auto_increment,
 	  `firstName` text collate utf8_unicode_ci NOT NULL,
 	  `lastName` text collate utf8_unicode_ci NOT NULL,
@@ -140,11 +132,9 @@ function user_info_install() {
 	$agave->doSQLQuery($query, 0);
 
 	//users map
-	$query = "CREATE TABLE IF NOT EXISTS `users_map` (
+	$query = "CREATE TABLE IF NOT EXISTS `agave_users_map` (
 	  `mapKey` int(11) NOT NULL auto_increment,
 	  `userKey` int(11) NOT NULL default '0',
-	  `groupKey` int(11) default NULL,
-	  `clientKey` int(11) default NULL,
 	  `user_type` varchar(60) collate utf8_unicode_ci default NULL,
 	  PRIMARY KEY  (`mapKey`),
 	  KEY `par_ind_2` (`userKey`)
@@ -152,7 +142,7 @@ function user_info_install() {
 	$agave->doSQLQuery($query, 0);
 
 	//user access
-	$query = "CREATE TABLE IF NOT EXISTS `user_access` (
+	$query = "CREATE TABLE IF NOT EXISTS `agave_users_access` (
 	  `aKey` int(11) NOT NULL auto_increment,
 	  `action` text character set utf8 NOT NULL,
 	  `label` text character set utf8 NOT NULL,
@@ -164,7 +154,7 @@ function user_info_install() {
 	$agave->doSQLQuery($query, 0);
 
 	//user access map
-	$query = "CREATE TABLE IF NOT EXISTS `user_access_map` (
+	$query = "CREATE TABLE IF NOT EXISTS `agave_users_access_map` (
 	  `mKey` int(11) NOT NULL auto_increment,
 	  `action` text character set latin1 NOT NULL,
 	  `user_type` varchar(60) collate utf8_unicode_ci default NULL,
@@ -175,7 +165,7 @@ function user_info_install() {
 	$agave->doSQLQuery($query, 0);
 
 	//user types
-	$query = "CREATE TABLE IF NOT EXISTS `user_types` (
+	$query = "CREATE TABLE IF NOT EXISTS `agave_users_types` (
 	  `typeKey` int(11) NOT NULL auto_increment,
 	  `label` varchar(255) collate utf8_unicode_ci default NULL,
 	  `name` varchar(60) collate utf8_unicode_ci NOT NULL,
@@ -186,7 +176,7 @@ function user_info_install() {
 	$agave->doSQLQuery($query, 0);
 
 	//sessions
-	$query = "CREATE TABLE IF NOT EXISTS `sessions` (
+	$query = "CREATE TABLE IF NOT EXISTS `agave_users_sessions` (
 	  `id` int(11) NOT NULL auto_increment,
 	  `userKey` int(11) NOT NULL,
 	  `sessionID` varchar(64) character set utf8 NOT NULL,
@@ -197,12 +187,11 @@ function user_info_install() {
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;";
 	$agave->doSQLQuery($query, 0);
 
-	$agave->load('schemaManager')->createSchemaTables('user');
+	$agave->load('schemaManager')->createSchemaTables('agave_users');
 
 	$admin = $agave->load('admin');
 	$admin->addUserType('anon','Anonymous','Users who have not logged into your site.');
 	$admin->addUserType('authenticated','Authenticated','Users who have logged into your site.');
-
 	
 }
 
