@@ -32,10 +32,10 @@
 		<?php if($fields): foreach($fields as $field): ?>
 			<?php $listItemClass = ($field['schema'] != $schema) ? "class='schema-field schema-shared-field'" : "class='schema-field'"; ?>
 			<li <?php echo $listItemClass ?> id='<?php echo $stem."_".$field['fieldKey'] ?>'>
-				<span class='schema-field-keyName'><?php echo $field['keyName'] ?></span>
-				<a class='schema-field-delete schema-field-control'>delete</a>
-				<a class='schema-field-edit schema-field-control'>edit</a>
-				<a class='schema-field-control show-field-settings'>settings</a>
+				<span class='schema-field-keyName'><?php echo $field['keyName'] ?><?php if($field['locked']): ?> (locked) <?php endif; ?></span>
+				<?php if(!$field['locked']): ?><a class='schema-field-delete schema-field-control'>delete</a><?php endif; ?>
+				<?php if(!$field['locked']): ?><a class='schema-field-edit schema-field-control'>edit</a><?php endif; ?>
+				<?php if(!$field['locked']): ?><a class='schema-field-control show-field-settings'>settings</a><?php endif; ?>
 				<input class='schema-field-metadata' type='hidden' value='<?php echo $stem.".".$field['fieldKey'].".".$field['schema'] ?>' />
 			</li>
 		<?php endforeach; else: print "No fields :("; endif; ?>

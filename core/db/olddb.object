@@ -16,7 +16,7 @@ class olddb {
 		$host = $db_info['default']["host"];
 
 		//establish connection with database, or print error messages
-		$this->dbcnx = mysql_connect($host, $login, $pass, true);		
+		$this->dbcnx = mysql_connect($host, $login, $pass, true);
 		if (!$this->dbcnx) die("MYSQL could not establish connection w/ given credentials.");
 		
 		//select the db we're operating on, or print error message
