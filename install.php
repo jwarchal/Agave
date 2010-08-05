@@ -297,7 +297,9 @@ function bootstrap() {
 function bootstrap_agave($initFile) {
 	global $agave, $settings, $db_info;
 	include($initFile);
+        //TODO: we'll be changing this to point at core/db/db.object
 	include('./core/db/olddb.object');
+        include('./core/db/newdb.object');
 	include('./core/agave.object');
 	$agave = new agave();
 	$agave->settings = $settings;

@@ -96,6 +96,7 @@ function bootstrap_agave() {
 	include($initFile);
 	//TODO: we'll be changing this to point at core/db/db.object
 	include('./core/db/olddb.object');
+        include('./core/db/newdb.object');
 	include('./core/agave.object');
 	include("./core/dispatcher.object");
 	$agave = new agave();
