@@ -117,7 +117,7 @@ function contentNode_info_install() {
     $nodeManager->createContentType("page", "Page", "A general page for basic needs.  By default contains only a title and body.");
 
 	//update access defaults so everyone can view pages (everything defaults to 0, you must explicitly grant access)
-	$query = "UPDATE `users_access_map` SET `value`='1' WHERE `action`='view_content_page'";
+	$query = "UPDATE `agave_users_access_map` SET `value`='1' WHERE `action`='view_content_page'";
 	$agave->doSQLQuery($query);
 }
 
