@@ -21,7 +21,7 @@ class genericField {
 		$rows = '';
 		$size = '';
 		$disabled = '';
-                $href = '';
+        $href = '';
 
 		if(isset($element['#href'])) $href = ' href="'.$element['#href'].'"';
 		if(isset($element['#class'])) $classes .= $element['#class'];

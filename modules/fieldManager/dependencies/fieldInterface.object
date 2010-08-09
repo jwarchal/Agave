@@ -1,13 +1,11 @@
 <?php
 interface fieldInterface {
-	public function format($values, $fieldName); //format values for how they should be stored in DB
-	public function unformat($value); //unformat values for how you want them in PHP
 	public function edit($element); //generate interface with form elements
 	public function display($values, $settings); //format value as it should be displayed on page
 	public function validate($values, $metaData); //special validation before formating for save
 	public function returnSettingsForm($settings); //return form elements for editing settings specific to the field 
 	public function saveSettingsFields($data); //format information submitted from the settings form
-	
-	//public function edit_settings(); //return interface for editting settings, like display settings, db settings, whatever
+	public function phpFormat($postValue, $element); //formats data from $_POST to what it should be in $form->values
+	public function schemaFormat($phpValue, $element); //formats data from phpFormat to how it should be stored in the schema's 'value' field
+	public function schemaUnformat($dbValue, $element); //unformats data from the schema's 'value' field to how it should be in PHP
 }
-?>
