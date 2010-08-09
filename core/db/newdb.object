@@ -94,7 +94,12 @@ class newdb {
                 die("Error:  No established database connection to get last insert id from.");
             }
 
-            return $this->dbh->lastInsertId;
+            if(isset($this->dbh->lastInsertId)){
+                return $this->dbh->lastInsertId;
+            }
+            else{
+                return null;
+            }
         }
 
         public function escape($string) {

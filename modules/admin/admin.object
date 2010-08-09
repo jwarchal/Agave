@@ -378,8 +378,9 @@ final class admin {
 			$value = $this->agave->escape(serialize($value));
 			$key = $this->agave->escape($key);
 			$previous = $this->agave->doSQLQuery("SELECT * FROM `agave_system_variables` WHERE `key`='$key'", 0);
-			$query = (isset($previous)) ? "UPDATE `agave_system_variables` SET `value`='".$value."' WHERE `key`='$key'" : "INSERT INTO `agave_system_variables` (`key`, `value`) VALUES(\"".$key."\",\"".$value."\")";
-			$this->agave->doSQLQuery($query);
+			$query = ($previous) ? "UPDATE `agave_system_variables` SET `value`='".$value."' WHERE `key`='$key'" : "INSERT INTO `agave_system_variables` (`key`, `value`) VALUES(\"".$key."\",\"".$value."\")";
+			//FIXED?  IDK MY BFF JILL
+                        $this->agave->doSQLQuery($query);
 		}
 		else {
 			//TODO: Why is this here?

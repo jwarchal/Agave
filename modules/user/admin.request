@@ -166,11 +166,11 @@ function deleteUser($args=null) {
 	$userKey = $args[0];
 	if(!isset($_POST['confirm']) || $_POST['confirm'] != 'true') confirmDeleteUser($userKey);
 	else {
-		$query = "DELETE FROM `agave_sessions` WHERE `userKey`='$userKey'";
+		$query = "DELETE FROM `agave_users_sessions` WHERE `userKey`='$userKey'";
 		$agave->doSQLQuery($query);
 		$query = "DELETE FROM `agave_users_access_map` WHERE `userKey`='$userKey'";
 		$agave->doSQLQuery($query);
-		$query = "DELETE FROM `agave_users_values` WHERE `userKey`='$userKey'";
+		$query = "DELETE FROM `agave_users_schema_values` WHERE `userKey`='$userKey'";
 		$agave->doSQLQuery($query);
 		$query = "DELETE FROM `agave_users_map` WHERE `userKey`='$userKey'";
 		$agave->doSQLQuery($query);
