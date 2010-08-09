@@ -51,6 +51,7 @@ class schema {
 			foreach($this->fieldOrderedList as $field) $html .= $this->displayField($field, $matchFields);
 			return $html;
 		}
+		return NULL;
 	}
 	
 	public function displayField($field, $matchFields=FALSE) {

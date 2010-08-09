@@ -18,9 +18,9 @@
 		<td><?php print $type['label'] ?></td>
 		<td><?php print $type['desc'] ?></td>
 		<td>
-			<a href='<?php print $agave->url."admin/schemata&table=contentNode&type=".$type['name'] ?>'>fields</a> - 
-			<a href='<?php print $agave->url."admin/content/types/edit/".$type['typeKey'] ?>'>edit</a> - 
-			<a href='<?php print $agave->url."admin/content/types/delete/".$type['typeKey'] ?>'>delete</a>
+			<a href='<?php print $agave->url."admin/schemata&stem=contentNode&schema=".$type['schema'] ?>'>fields</a> -
+			<a href='<?php print $agave->url."admin/content/types/edit/".$type['schemaKey'] ?>'>edit</a> -
+			<a href='<?php print $agave->url."admin/content/types/delete/".$type['schemaKey'] ?>'>delete</a>
 		</td>
 	</tr>
 <?php endforeach; ?>

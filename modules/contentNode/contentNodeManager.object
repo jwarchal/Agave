@@ -1,6 +1,5 @@
 <?php
 class contentNodeManager {
-	//TODO: write this AFTER you've figured out the whole schema/schemaManager mess
 
 	public function __construct() {
 		global $agave;
@@ -8,12 +7,84 @@ class contentNodeManager {
 	}
 	public function __destruct() {}
 	
-	public function createContentType($machine_name, $label, $description) {
+	public function createContentType($machine_name, $label, $desc) {
+		$query = "SELECT * FROM `contentNode_schemata` WHERE `schema`='$machine_name'";
+		$exists = $this->agave->doSQLQuery($query, 2);
+		if($exists) return FALSE;
+
+		$admin = $this->agave->load('admin');
+
+		//add access checks for new content type
+		$admin->addAccessArgument('view_content_'.$machine_name,'View '.$label, "Allows users to view this type of content.", 0, 'contentNode-autogen');
+		$admin->addAccessArgument('create_content_'.$machine_name,'Create '.$label, "Allows users to create this type of content.", 0, 'contentNode-autogen');
+		$admin->addAccessArgument('edit_content_'.$machine_name,'Edit '.$label, "Allows users to edit this type of content.", 0, 'contentNode-autogen');
+		$admin->addAccessArgument('delete_content_'.$machine_name,'Delete '.$label, "Allows users to delete this type of content.", 0, 'contentNode-autogen');
+
+		//add URL for creating new item of given type
+		$url = "content/create/".$machine_name;
+		$access = 'create_content_'.$machine_name;
+		$module = 'contentNode';
+		$file = 'node_edit';
+		$function = 'editContentNode';
+		$admin->addSystemURI($url, NULL, $access, $module, $function, $file, 1, 0);
+
+		//add new schema
+		$sm = $this->agave->load('schemaManager');
+		$sm->addSchema('contentNode',$machine_name, $label, $desc);
+
+		//prefill with 2 fields for title (locked) and body (can be deleted)
+		$sm->addSchemaField('contentNode', array(
+			'keyName'=>'title',
+			'type'=> 'text',
+			'schema' => $machine_name,
+			'label' => "Title",
+			'showLabel' => 0,
+			'help' => "Please enter a title for this piece of content",
+			'locked'=>1,
+			'settings'=>array(
+				'size'=>50
+			),
+		));
+		
+		$sm->addSchemaField('contentNode', array(
+			'keyName'=>'body',
+			'type'=> 'textarea',
+			'schema' => $machine_name,
+			'label' => "Body",
+			'showLabel' => 0,
+			'help' => "Please enter a title for this piece of content",
+			'settings'=>array(
+				'cols'=>50,
+				'rows'=>20,
+			),
+		));
 
 		return TRUE;
 	}
 	
 	public function deleteContentType($machine_name) {
+		$admin = $this->agave->load('admin');
+		$query = "SELECT * FROM `contentNode_schemata` WHERE `schema`='$machine_name'";
+		$data = $this->agave->doSQLQuery($query, 2);
+		if(!$data) return FALSE;
+
+		//remove URL for creation of this type
+		$url = "content/create/".$machine_name;
+		$query = "DELETE FROM `agave_system_uri` WHERE `dest`='$url'";
+		$this->agave->doSQLQuery($query);
+
+		//remove access checks
+		$admin->removeAccessArgument('view_content_'.$machine_name);
+		$admin->removeAccessArgument('create_content_'.$machine_name);
+		$admin->removeAccessArgument('edit_content_'.$machine_name);
+		$admin->removeAccessArgument('delete_content_'.$machine_name);
+
+		//delete items of given type
+		$query = "DELETE FROM `contentNode` WHERE `type`='".$machine_name."'";
+		$this->agave->doSQLQuery($query);
+
+		//remove schema for type
+		$this->agave->load('schemaManager')->deleteSchema('contentNode', $machine_name);
 
 		return TRUE;
 	}

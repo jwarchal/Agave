@@ -21,21 +21,11 @@ function viewContentNode($args=null) {
 	//give modules a chance to play with the content
 	$node = $agave->invoke("contentNode_build", $node);
 
-	//check for special template based on contentNode-type, and assemble themevars
-
-
-	//NEW
 	$themer->page['title'] = ($node->fields->getValue('title')) ? $node->fields->getValue('title') : "Content $contentID";
 	$themer->page['keywords'] = ($node->fields->getValue('title')) ? strip_tags($node->fields->getValue('title')) : NULL;
 	$themer->page['description'] = ($node->fields->getValue('body')) ? substr(strip_tags($node->fields->getValue('body')),0, 200) : NULL;
 
-	
-	/*
-	//OLD
-	$themer->page['title'] = (isset($node->fields->values->title)) ? $node->fields->values->title : "Content $contentID";
-	$themer->page['keywords'] = ($node->fields->values->title) ? strip_tags($node->fields->values->title) : NULL;
-	$themer->page['description'] = ($node->fields->values->body) ? substr(strip_tags($node->fields->values->body),0, 200) : NULL;
-	 */
+	//check for special template based on contentNode-type, and assemble themevars
 	$template = (file_exists($agave->proj_dir."themes/$themer->theme/node-$node->type.tpl.php") || file_exists("./themes/$themer->theme/node-$node->type.tpl.php")) ? "node-".$node->type : "node";
 	$themevars = array(
 		'node' => $node,

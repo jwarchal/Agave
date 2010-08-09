@@ -1,4 +1,4 @@
-<?php
+ <?php
 //TODO: properly process $prefs and $mappings
 final class userManager {
 	public function __construct() {
@@ -7,7 +7,7 @@ final class userManager {
 	}
 	public function __destruct() {}
 	
-	public function returnUsers($mappings=NULL, $sort=NULL, $sortType=NULL, $basic=NULL) {
+	public function returnUsersByMapping($mappings=NULL, $sort=NULL, $sortType=NULL, $basic=NULL) {
 		//assemble joins
 		$join = array();
 		if(isset($mappings)) $join[] = "INNER JOIN  `users_map` um ON u.`userKey` = um.`userKey`";
@@ -40,14 +40,66 @@ final class userManager {
 		
 		$users = array();
 		for($i=0; $i<count($keys); $i++) {
-			$users[$i] = $this->agave->load('user', TRUE);
+			$users[$i] = new user;
 			if($basic) $users[$i]->buildBasic($keys[$i]);
 			else $users[$i]->build($keys[$i]);
 		}
 		
 		return (!empty($users)) ? $users : NULL;
 	}
-	
-	//TODO: add management methods for userTypes (cut from admin), and user_map table mangagement
+
+	public function returnUsers($keys) {
+		$users = array();
+		foreach($keys as $key) {
+			$user = new user;
+			$user->build($key);
+			$users[] = $user;
+		}
+		return (!empty($users)) ? $users : FALSE;
+	}
+
+	public function addUserType($name, $label, $desc) {
+
+		$query = "SELECT `name` FROM `agave_users_types`";
+		$current = $this->agave->doSQLQuery($query, 1);
+                if(!$current) $current = array(); // attempting fix
+		if(in_array($name, $current)) {
+			$this->agave->message('error', "A user type with that name already exists in the database.");
+			$this->agave->redirect("admin/users&mode=types");
+		}
+
+		$name = mysql_real_escape_string($name);
+		$label = mysql_real_escape_string($label);
+		$desc = mysql_real_escape_string($desc);
+
+		//add new user_type to user_types
+		$query = "INSERT INTO `agave_users_types` (`name`, `label`, `desc`) VALUES('".$name."','".$label."','".$desc."')";
+		$this->agave->doSQLQuery($query);
+
+		//add default mappings for all access properties for new user level
+		$query = "SELECT `action`, `default` FROM `agave_users_access`";
+		$actions = $this->agave->doSQLQuery($query, 3);
+		if($actions) {
+			foreach($actions as $item) {
+				$query = "INSERT INTO `agave_users_access_map` (action, user_type, value) VALUES('".$item['action']."','".$name."','".$item['default']."')";
+				$this->agave->doSQLQuery($query);
+			}
+		}
+
+		$this->agave->load('schemaManager')->addSchema('agave_users', $name, $label, $desc);
+	}
+
+	public function deleteUserType($name) {
+		$query = "DELETE FROM `agave_users_access_map` WHERE `user_type`='$name'";
+		$this->agave->doSQLQuery($query);
+
+		$query = "DELETE FROM `agave_users_map` WHERE `user_type`='$name'";
+		$this->agave->doSQLQuery($query);
+
+		$query = "DELETE FROM `agave_users_types` WHERE `name`='$name'";
+		$this->agave->doSQLQuery($query);
+
+		$this->agave->load('schemaManager')->deleteSchema('agave_users', $name);
+	}
 
 }

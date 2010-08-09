@@ -49,22 +49,22 @@ function themer_info_panels() {
 function themer_info_system_uri() {
 	$uris = array();
 	//	$uris[] = array('dest','alias','access','function','file','panels','actions','fast_route');
-	$uris[] = array('admin/menus/%/items/add',NULL,'administer_menus','editMenuItem','menus',0,1,0);
-	$uris[] = array('admin/menus/%/items/delete',NULL,'administer_menus','deleteMenuItem','menus',0,1,0);
-	$uris[] = array('admin/menus/%/items/edit',NULL,'administer_menus','editMenuItem','menus',0,1,0);
-	$uris[] = array('admin/menus/%/items/list',NULL,'administer_menus','listMenuItems','menus',0,1,0);//fkjsdgbbds
-	$uris[] = array('admin/menus/%/items/save',NULL,'administer_menus','saveMenuItem','menus',0,1,0);
-	$uris[] = array('admin/menus/add',NULL,'administer_menus','editMenu','menus',0,1,0);
-	$uris[] = array('admin/menus/delete/%',NULL,'administer_menus','deleteMenu','menus',0,1,0);
-	$uris[] = array('admin/menus/edit/%',NULL,'administer_menus','editMenu','menus',0,1,0);
-	$uris[] = array('admin/menus',NULL,'administer_menus','listMenus','menus',0,1,0);
-	$uris[] = array('admin/menus/save',NULL,'administer_menus','saveMenu','menus',0,1,0);
-	$uris[] = array('admin/panels',NULL,'administer_panels','viewPanels','panels',0,1,0);
-	$uris[] = array('admin/panels/add',NULL,'administer_panels','editPanel','panels',0,1,0);
-	$uris[] = array('admin/panels/delete/%',NULL,'administer_panels','deletePanel','panels',0,1,0);
-	$uris[] = array('admin/panels/edit/%',NULL,'administer_panels','editPanel','panels',0,1,0);
-	$uris[] = array('admin/panels/save',NULL,'administer_panels','save','panels',0,1,0);
-	$uris[] = array('admin/themes',NULL,'administer_themes','showThemes','themes',0,1,0);
+	$uris[] = array('admin/menus/%/items/add',NULL,'administer_menus','editMenuItem','menus',0,0);
+	$uris[] = array('admin/menus/%/items/delete',NULL,'administer_menus','deleteMenuItem','menus',0,0);
+	$uris[] = array('admin/menus/%/items/edit',NULL,'administer_menus','editMenuItem','menus',0,0);
+	$uris[] = array('admin/menus/%/items/list',NULL,'administer_menus','listMenuItems','menus',0,0);//fkjsdgbbds
+	$uris[] = array('admin/menus/%/items/save',NULL,'administer_menus','saveMenuItem','menus',0,0);
+	$uris[] = array('admin/menus/add',NULL,'administer_menus','editMenu','menus',0,0);
+	$uris[] = array('admin/menus/delete/%',NULL,'administer_menus','deleteMenu','menus',0,0);
+	$uris[] = array('admin/menus/edit/%',NULL,'administer_menus','editMenu','menus',0,0);
+	$uris[] = array('admin/menus',NULL,'administer_menus','listMenus','menus',0,0);
+	$uris[] = array('admin/menus/save',NULL,'administer_menus','saveMenu','menus',0,0);
+	$uris[] = array('admin/panels',NULL,'administer_panels','viewPanels','panels',0,0);
+	$uris[] = array('admin/panels/add',NULL,'administer_panels','editPanel','panels',0,0);
+	$uris[] = array('admin/panels/delete/%',NULL,'administer_panels','deletePanel','panels',0,0);
+	$uris[] = array('admin/panels/edit/%',NULL,'administer_panels','editPanel','panels',0,0);
+	$uris[] = array('admin/panels/save',NULL,'administer_panels','save','panels',0,0);
+	$uris[] = array('admin/themes',NULL,'administer_themes','showThemes','themes',0,0);
 	
 	return $uris;
 }
@@ -97,18 +97,18 @@ function themer_info_install() {
 	global $agave;
 	
 	//menu
-	$query = "CREATE TABLE IF NOT EXISTS `menu` (
+	$query = "CREATE TABLE IF NOT EXISTS `agave_menu` (
 	  `menuKey` tinyint(4) NOT NULL auto_increment,
 	  `name` text NOT NULL,
 	  `desc` text NOT NULL,
 	  `module` varchar(128) NOT NULL,
 	  `array` longtext character set utf8 collate utf8_unicode_ci,
 	  PRIMARY KEY  (`menuKey`)
-	) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+	) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;";
 	$agave->doSQLQuery($query, 0);
 	
 	//panels
-	$query = "CREATE TABLE IF NOT EXISTS `panels` (
+	$query = "CREATE TABLE IF NOT EXISTS `agave_panels` (
 	  `id` int(11) NOT NULL auto_increment,
 	  `name` varchar(32) collate utf8_unicode_ci NOT NULL,
 	  `module` varchar(32) collate utf8_unicode_ci NOT NULL,

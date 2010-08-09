@@ -30,13 +30,6 @@ function exampleModule_info_extensions() {
 	return $extensions;
 }
 
-function exampleModule_info_actions() {
-	$actions = array();
-	//$actions[] = array('name','action','description','function','file','enabled?');
-	
-	return $actions;
-}
-
 function exampleModule_info_cron() {
 	$jobs = array();
 //	$jobs[] = array('name','description','function','interval','enabled?');

@@ -1,0 +1,95 @@
+<?php
+class ActiveRecord {
+	private $ar_internal_storage = stdClass;
+
+	public function __construct($table, $row=FALSE) {
+		global $agave;
+		$this->ar_internal_storage->agave = $agave;
+		$this->ar_internal_storage->table = $table;
+		if($row) foreach($row as $key=>$value) $this->$key = $value;
+	}
+
+	public function save() {
+		$data = array();
+		foreach($this as $key=>$value) if($key != 'ar_internal_storage') $data[$key] = $value;
+		if(isset($this->ar_internal_storage->uniqueKeyName) && isset($this->ar_internal_storage->uniqueRowID)) {
+			$data[$this->ar_internal_storage->uniqueKeyName] = $this->ar_internal_storage->uniqueRowID;
+		}
+		$id = $this->ar_internal_storage->agave->mergeRow($this->table, $data);
+		$this->ar_internal_storage->uniqueRowID = $id;
+	}
+
+	public function delete() {
+		$query = "DELETE FROM `".$this->ar_internal_storage->table."` WHERE `".$this->ar_internal_storage->uniqueKeyName."`='".$this->ar_internal_storage->uniqueRowID."'";
+		$this->ar_internal_storage->agave->doSQLQuery($query, 0);
+	}
+
+	public function setUniqueKeyName($name) {
+		$this->ar_internal_storage->uniqueKeyName = $name;
+	}
+}
+
+class ActiveTable {
+	//active table queries return ActiveRecord rows, this is on purpose
+	private $table = FALSE;
+	private $uniqueKeyName = FALSE;
+	
+	public function __construct($table, $uniqueKeyName) {
+		$this->table = $table;
+		$this->uniqueKeyName = $uniqueKeyName;
+	}
+
+	public function findRecordsByField($field, $value, $modifier=FALSE) {
+		//build query to return by properties in fields
+		$records = array();
+		if($results) foreach($results as $result) {
+			$item = new ActiveRecord($this->table);
+			$item->setUniqueKeyName($this->uniqueKeyName);
+			$records[] = $item;
+		}
+		return (!empty($records)) ? $records : FALSE;
+	}
+
+	public function create($data) {
+		//can forgoe sending the primary key field
+	}
+
+	public function retrieve($keys) {
+		//check for scalar or array
+	}
+
+	public function update($data) {
+		//MUST have the primary key
+	}
+
+	public function delete($keys) {
+		//check for scalar or array
+	}
+}
+
+/*
+ * THEORETICAL USAGE EXAMPLES
+ */
+
+//examples
+//creating a new row in user table
+$user = new ActiveRecord('agave_users');
+$user->firstName = "Evan";
+$user->lastName = "Villemez";
+$user->time_added = time();
+$id = $user->save();
+
+//updating lots of rows - in reality this is dumb, it executes many queries where it could be done in 1
+$users = DB::select("* FROM `agave_users`")->execute()->fetchAsClass('ActiveRecord', 'agave_users');
+foreach($users as $user) {
+	$user->time_modified = time();
+	$user->save();
+}
+
+//getting stuff with ActiveTable
+$table = new ActiveTable('agave_users', 'userKey');
+$users = $table->findRecordsByField('firstName', "John");
+foreach($users as $user) {
+	$user->time_modified = time();
+	$user->save();
+}

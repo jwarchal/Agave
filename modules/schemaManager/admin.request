@@ -95,8 +95,8 @@ function deleteField($args=null) {
 
 	$locked = $agave->load('schemaManager')->getFieldData($stem, $fieldKey, 'locked');
 
-	//first delete any values stored for this field - NOTE that this only deletes info from the database, doesn't look for stray files etc...
 	if(!$locked) $agave->load('schemaManager')->deleteSchemaField($stem, $fieldKey);
+	else $agave->message('warning', "You cannot delete locked schema fields from this interface!");
 }
 
 function updateWeights($args=null) {
@@ -112,7 +112,6 @@ function updateWeights($args=null) {
 		$query = "UPDATE `".$stem."_schema_fields` SET `weight`='$i' WHERE `fieldKey`='$fieldKey'";
 		$agave->doSQLQuery($query);
 	}
-	$agave->stop(); //this function is for an ajax request, kill it at the end
 }
 
 function saveField($args=NULL) {
@@ -129,13 +128,13 @@ function saveField($args=NULL) {
 		'type'=>$form->values['type'],
 		'schema' => $form->values['schema'],
 		'label' => $form->values['label'],
-		'showLabel' => !empty($form->values['showLabel']) ? $form->values['showLabel'] : 0,
+		'showLabel' => !empty($form->values['showLabel']) ? $form->values['showLabel'] : 1,
 		'help' => $form->values['helpText'],
 		'access' => $form->values['access'],
 	);
+	
 	//following fields can only be saved for new fields
 	if($new) $data['keyName'] = $form->values['fieldName'];
-	if($new) $data['type'] = $form->values['type'];
 
 	$agave->mergeRow($stem."_schema_fields", $data);
 	$agave->redirect("admin/schemata&stem=$stem&schema=".$form->values['schema']);

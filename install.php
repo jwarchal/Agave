@@ -32,8 +32,8 @@ $settings['installed_modules'] = array('admin','user','schemaManager','fieldMana
 $settings['module_versions'] = array(
 	'admin'=>'.1',
 	'user'=>'.1',
-	'schemaManager'=>'.1',
-	'fieldManager'=>'.1',
+	'schemaManager'=>'.3',
+	'fieldManager'=>'.2',
 	'fileManager'=>'.3',
 	'themer'=>'.1',
 );
@@ -185,7 +185,7 @@ function create_admin_user() {
 		$agave->redirect("install.php");
 	}
 		
-	$query = "INSERT INTO `users` (`firstName`,`lastName`,`login`,`password`,`email`,`date_added`) VALUES('$fname','$lname','$login','".md5($pword)."','$email','".time()."')";
+	$query = "INSERT INTO `agave_users` (`firstName`,`lastName`,`login`,`password`,`email`,`date_added`) VALUES('$fname','$lname','$login','".md5($pword)."','$email','".time()."')";
 	$agave->doSQLQuery($query);
 	
 	install_phase('info');
@@ -343,7 +343,7 @@ function __autoload($object) {
 	 * Provides support for autoloading in classes that are being extended or implemented
 	 */
 	global $agave;
-	$file = (isset($agave->module_env['objects'][$object])) ? $agave->module_env['objects'][$object] : FALSE;
+	$file = $agave->getObjectFile($object);
 	if(!$file) die("Request could not be completed because a necessary object could not be loaded.  The module that provides the requested object (<b>$object</b>) may not be installed/enabled.");
 	if(file_exists($file)) include($file);
 	else {

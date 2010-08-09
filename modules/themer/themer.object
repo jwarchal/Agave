@@ -102,9 +102,9 @@ final class themer {
 		$this->page['site_name'] = $agave->setting('site_name');
 		$this->page['footer_message'] = $agave->setting('footer_message');
 		
-		//if panels should be loaded, load them here
+		//load panels if the uri specifies it, and if this is NOT an error page (panels on error pages could cause an infinite loop
 		$agave->invoke('pre_panel_render');
-		if(isset($agave->uri['panels']) || (isset($_SESSION['agave_error_page']) && $_SESSION['agave_error_page']==TRUE && $agave->setting('message-panels'))) $this->loadPanels();
+		if(isset($agave->uri['panels']) && !isset($_SESSION['agave_error_page'])) $this->loadPanels();
 		$agave->invoke('post_panel_render');
 
 		//call themes post_process function
@@ -226,7 +226,7 @@ final class themer {
 	public function loadPanels() {
 		global $agave;
 		$user = $agave->user;
-		$query = "SELECT * FROM `panels` WHERE `enabled`='1'";
+		$query = "SELECT * FROM `agave_panels` WHERE `enabled`='1'";
 		$panels = $agave->doSQLQuery($query, 3);
 
 		//assemble all panels
@@ -293,7 +293,7 @@ final class themer {
 			return (!empty($final)) ? "<ul class='agave-menu $menu-menu menu-root'>".$this->markupMenuItems($final)."</ul>" : NULL;
 		}
 		else {
-			$query = "SELECT array FROM `menu` WHERE `name`='$menu'";
+			$query = "SELECT `array` FROM `agave_menu` WHERE `name`='$menu'";
 			$arr = $agave->doSQLQuery($query, 0);
 			//$agave->death($arr);
 			$final = unserialize($arr);

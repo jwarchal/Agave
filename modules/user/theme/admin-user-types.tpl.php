@@ -20,7 +20,7 @@
 				<td>
 					<a href='<?php print $agave->url."admin/users/types/edit/".$type['typeKey']?>'>edit</a>
 					<?php if($type['name'] != 'anon'): ?>
-						<a href='<?php print $agave->url."admin/schemata&table=user&type=".$type['name'] ?>'>prefs</a>
+						<a href='<?php print $agave->url."admin/schemata&stem=agave_users&schema=".$type['name'] ?>'>prefs</a>
 					<?php endif; ?>
 					<?php if($type['name'] != 'anon' && $type['name'] != 'authenticated'): ?>
 						<a href='<?php print $agave->url."admin/users/types/delete/".$type['typeKey'] ?>'>delete</a>

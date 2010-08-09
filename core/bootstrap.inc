@@ -160,7 +160,7 @@ function bootstrap_env() {
 
 	if($agave->uri['validRequest'] && $agave->uri['fast_route']) {
 		$GLOBALS['objects']['dispatcher']->route($agave->uri);
-		exit;
+		$agave->stop();
 	}
 	$agave->status = BOOTSTRAP_ENV;
 	return bootstrap(BOOTSTRAP_SESSION);
@@ -171,8 +171,7 @@ function bootstrap_session() {
 	include("./core/user.object");
 	include("./core/session.object");
 
-	$GLOBALS['objects']['session'] = new session;		
-	$GLOBALS['objects']['user'] = new user;
+	$GLOBALS['objects']['session'] = new session;
 	
 	//start the users session - global user is built here
 	$GLOBALS['objects']['session']->start();
@@ -180,29 +179,6 @@ function bootstrap_session() {
 	//needed to wait until after session was created to throw our 404 error for logging purposes
 	if(!$agave->uri['validRequest']) return DESTINATION_UNKNOWN;
 
-	//TODO: implement this for real - add db tables and stuff; check for 1-time access key, reauthenticate if present
-	if(isset($_GET['agave_one_time_access'])) {
-		$code = $_GET['agave_one_time_access'];
-		$query = "SELECT * FROM `one_time_access` WHERE `code`='$code'";
-		$data = $agave->doSQLQuery($query, 2); //query for access-code in DB
-		if(!$data) {
-			$agave->message('error', "You have attempted to use an invalid one-time access code.");
-			$agave->redirect();
-		}
-		$query = "DELETE FROM `one_time_access` WHERE `code`='$code'"; 
-		$agave->doSQLQuery($query); //wipe used access code
-		$userKey = $data['userKey'];
-		
-		//TODO check against begin & end dates
-		//if error - notify them that the code was wiped - they must request new access
-		
-		$GLOBALS['objects']['session']->addSession(session_id(), $userKey, $_SESSION);
-		$agave->log('one_time_access', "User $userKey used a one-time access code.", $userKey);
-		$agave->invoke('one_time_access', $userKey);
-		$redirect = (isset($data['redirect'])) ? $data['redirect'] : NULL;
-		$agave->redirect($redirect);
-	}
-	
 	//start the users session and set important session data
 	$_SESSION['referrer'] = (isset($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : $agave->url;
 	$_SESSION['agent'] = $_SERVER['HTTP_USER_AGENT'];
@@ -253,7 +229,7 @@ function site_offline() {
 	die("<h1>HTTP/1.1 404 Not Found</h1><h2>Agave could not establish a database connection to <em>".$_SERVER['SERVER_NAME']."</em>.</h2><p>$agave->dbError</p>");
 }
 
-function agave_error_page($type=NULL, $message=NULL) {
+function agave_error_page($type=NULL, $message=FALSE) {
 	//The purpose of this function is to kill the processing of a request midstream, yet still render a full page with the necessary message
 	//The most common need for this would be for "404" errors or "ACCESS_DENIED" errors
 	//common errors (note that these aren't real HTTP responses, we use these codes for convenience because they correspond to actual errors that would occur if Apache were to handle this scenario on the file system):
@@ -263,15 +239,23 @@ function agave_error_page($type=NULL, $message=NULL) {
 	$t = $agave->load('themer');
 	$_SESSION['agave_error_page'] = TRUE;
 
-	//get error message
-	$message = ($message) ? $message : $agave->setting("message-".$type);
-	if(!isset($message)) $message = "A serious error occured - please contact the site administrator if this is a recurring issue";
-	$t->output = $message."<hr /><h5>URL info: </h5><pre>".print_r($agave->uri, TRUE)."</pre>";
+	//assemble error output
+	$output = "<h2>Error: $type</h2>".$message;
+	if(!$message) $output .= "<h4>A serious error occured - please contact the site administrator if this is a recurring issue</h4>";
+	$t->output = $output."
+		<p>You have arrived here as a result of an error, click on the URL below to get back to the site.</p>
+		<p><a href='".$agave->url."'>".$agave->url."</a></p>
+		<hr />
+		<h5>URL info: </h5>
+		<pre>".print_r($agave->uri, TRUE)."</pre>
+	";
 
+	//log the error
 	$type = ($type) ? $type : "unknown";
 	$agave->log($type, $message);
 
-	//set headers if necessary
+	//set headers if necessary... TODO: add header methods for themer
+	//TODO: abstract out these error codes, get a complete list; move to themer header methods?
 	if($type=='404') {
 		$t->page['title'] = "Content Not Found (404)";
 		header('HTTP/1.1 404 Not Found');
@@ -334,7 +318,7 @@ function __autoload($object) {
 	 * Provides support for autoloading in classes that are being extended or implemented
 	 */
 	global $agave;
-	$file = (isset($agave->module_env['objects'][$object])) ? $agave->module_env['objects'][$object] : FALSE;
+	$file = $agave->getObjectFile($object);
 	if(!$file) die("Autoload error - could not load <em>$object</em> object.<hr><h3>URI info:</h3><pre>".print_r($agave->uri, TRUE)."</pre><h3>Module info:</h3><pre>".print_r($agave->setting('module_data'), TRUE)."</pre>");
 	if(file_exists($file)) include($file);
 }

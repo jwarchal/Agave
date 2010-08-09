@@ -22,14 +22,15 @@ define('FILE_EXISTS_THROW_ERROR', 2);
 
 final class fileManager {
 	protected $schemes = array();
+	private $stream_wrappers_loaded	= FALSE;
 	
 	public function __construct() {
 		//load core interfaces and stream wrappers if they have not been loaded yet
 		global $agave;
 		$this->agave = $agave;
-		if(!isset($agave->stream_wrappers_loaded) || $agave->stream_wrappers_loaded == FALSE) {
-			//TODO: change to agave->inc
-			include_once("modules/fileManager/stream_wrappers/agaveStreamWrapper.object");
+		$this->extensions = $this->agave->getExtensions('fileManager');
+		if(!$this->stream_wrappers_loaded) {
+			$this->agave->inc("fileManager","stream_wrappers/agaveStreamWrapper.object");
 			$this->register_stream_wrappers();
 		}
 	}
@@ -57,14 +58,14 @@ final class fileManager {
 	/* building file objects */
 	public function returnFile($fileKey) {
 		global $agave;
-		$query = "SELECT * FROM `files` WHERE `fileKey`='$fileKey'";
+		$query = "SELECT * FROM `agave_files` WHERE `fileKey`='$fileKey'";
 		$data = $agave->doSQLQuery($query, 2);
 		return $this->unpackFileObject($data);
 	}
 	
 	public function returnFiles($fileKeys) {
 		global $agave;
-		$query = "SELECT * FROM `files` WHERE `fileKey` IN('".implode("','", $fileKeys)."')";
+		$query = "SELECT * FROM `agave_files` WHERE `fileKey` IN('".implode("','", $fileKeys)."')";
 		$results = $agave->doSQLQuery($query, 3);
                 //$agave->death($results);
 		$files = array();
@@ -101,7 +102,7 @@ final class fileManager {
 	/* stream wrapper functions */
 	private function register_stream_wrappers() {
 		global $agave;
-		foreach($agave->module_env['extensions']['fileManager']['stream_wrappers'] as $wrapper) {
+		foreach($this->extensions['stream_wrappers'] as $wrapper) {
 			$scheme = $wrapper['data']['scheme'];
 			$class = "stream_wrapper_".$scheme;
 			$file = $wrapper['file'];
@@ -111,7 +112,7 @@ final class fileManager {
 				$this->schemes[] = $scheme;
 			}
 		}
-		$agave->stream_wrappers_loaded = TRUE;
+		$this->stream_wrappers_loaded = TRUE;
 	}
 	
 	private function return_stream_wrapper($uri=NULL, $scheme=NULL) {
@@ -162,14 +163,14 @@ final class fileManager {
 			//foreach derivatives as file, delete_file
 		}
 		
-		$query = "DELETE FROM `files` WHERE `fileKey`='$file->fileKey'";
+		$query = "DELETE FROM `agave_files` WHERE `fileKey`='$file->fileKey'";
 		$this->agave->doSQLQuery($query, 0);
 		return $this->delete_realfile($file->uri);
 	}
 	
 	public function delete_derivatives($file) {
 		$file = $this->normalize($file);
-		$query = "SELECT `fileKey` FROM `files` WHERE `parentKey`='$file->fileKey'";
+		$query = "SELECT `fileKey` FROM `agave_files` WHERE `parentKey`='$file->fileKey'";
 		$keys = $this->agave->doSQLQuery($query, 1);
 		
 		$derivatives = $this->returnFiles($keys);
@@ -212,7 +213,7 @@ final class fileManager {
 		$fields = implode(",", $fields);
 		$values = implode(",", $values);
 		$duplicates = implode(",", $duplicates);
-		$query = "INSERT INTO `files` (".$fields.") VALUES(".$values.") ON DUPLICATE KEY UPDATE $duplicates";
+		$query = "INSERT INTO `agave_files` (".$fields.") VALUES(".$values.") ON DUPLICATE KEY UPDATE $duplicates";
 		$agave->doSQLQuery($query);
 		$fileKey = $agave->lastInsertId();
 		$file = $this->returnFile($fileKey);
@@ -434,14 +435,6 @@ final class fileManager {
 		$file->time_created = $time;
 		$file->time_modified = $time;
 		$file->userKey = $user->userKey;
-
-                //$agave->death(file_exists($file->uri));
-
-		//scan file for $data using getid3
-		
-		//TODO: start here
-		
-			//$agave->death(stream_get_wrappers());
 		
 		//TODO: add integrity check on filename, append .txt to executable code files
 
@@ -454,8 +447,6 @@ final class fileManager {
 			return FALSE;
 		}
 		$file = $this->save_file($file);
-
-                
 
 		return $file;
 	}
