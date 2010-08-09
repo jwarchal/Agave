@@ -223,7 +223,7 @@ final class fieldManager {
 		}
 
                 //DO FORMATS
-		//$this->formatValuesWithFieldsArray($form->fields, $form);
+		$this->formatValuesWithFieldsArray($form->fields, $form);
 		
 		$form->processed = TRUE;
 		return $form;
@@ -247,20 +247,20 @@ final class fieldManager {
 				$class = $value['#type'];
 				$field = $this->loadField($class);
 				if(isset($form->values[$value['#name']])){
-					$form->values[$value['#name']] = $field->format($form->values, $value['#name']);
+					$form->values[$value['#name']] = $field->phpFormat($form->values, $value['#name']);
 				}
 				$this->formatValuesWithFieldsArray($value, $form);
 			}
 		}
 	}
 
-	private function unformatValuesWithFieldsArray($array, &$form){
+	private function unformatValuesWithFieldsArray($array, &$form){ // This probably doesn't need to exist
 		foreach($array as $key=>$value){
 			if(!$this->isProp($key)){
 				$class = $value['#type'];
 				$field = $this->loadField($class);
 				if(isset($form->values[$value['#name']])){
-					$form->values[$value['#name']] = $field->unformat($form->values[$value['#name']]);
+					$form->values[$value['#name']] = $field->phpUnformat($form->values[$value['#name']]);
 				}
 				$this->unformatValuesWithFieldsArray($value, $form);
 			}
@@ -503,12 +503,12 @@ final class fieldManager {
 	public function format($type, $value){
 		$field = $this->loadField($type);
 		$values[0]=$value;
-		return $field->format($values,0);
+		return $field->phpFormat($values,0);
 	}
 
 	public function unformat($type, $value){
 		$field = $this->loadField($type);
-		return $field->unformat($value);
+		return $field->phpUnformat($value);
 	}
 
 	//TODO: implement following field methods in the field interface and all core fields
