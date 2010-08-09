@@ -40,7 +40,8 @@ class newdb {
                 try {
                     $pdostate = $this->dbh->query($queryText);
                     if(!$pdostate){
-                        die("Error:  Unsuccessful execution of a database query; check syntax.");
+                        $error = $this->dbh->errorInfo();
+                        die("Error:  Unsuccessful execution of a database query.<br/><br/>Query attempted: ".$queryText."<br/>SQLSTATE: ".$error[0]."<br/>Error Code: ".$error[1]."<br/>Error Message: ".$error[2]);
                     }
                     if ($dataFormat == 0) { // return a scalar value
                             return $pdostate->fetchColumn();
@@ -94,6 +95,16 @@ class newdb {
             }
 
             return $this->dbh->lastInsertId;
+        }
+
+        public function escape($string) {
+
+            if(!$this->dbh){
+                die("Error:  No established database connection to escape string with.");
+            }
+
+            $quoted = $this->dbh->quote($string);
+            return substr($quoted, 1, -1);
         }
 
 }

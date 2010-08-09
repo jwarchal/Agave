@@ -405,6 +405,7 @@ final class admin {
 			if($value=="0" || $value=="no") $value = FALSE;
 			if($value=="1" || $value=="yes") $value = TRUE;
 			$value = serialize($value);
+                        $value = $this->agave->escape($value);
 			$key = $key;
 			$previous = $this->agave->doSQLQuery("SELECT * FROM `system_variables` WHERE `key`='$key'", 0);
                         //$this->agave->death($previous); //TODO: There is most likely a problem somewhere here...?
