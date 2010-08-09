@@ -112,7 +112,7 @@ function install_finish() {
 	foreach($_SESSION as $key=>$value) unset($_SESSION[$key]);
 	foreach($agave->settings as $key=>$value) $admin->saveSetting($key, $value);
 	$href = $agave->url;
-	$html = "<h2>Instatllation complete.</h2><p>You may now continue to your site: <a href='$href'>view site</a></p>";
+	$html = "<h2>Installation complete.</h2><p>You may now continue to your site: <a href='$href'>view site</a></p>";
 	die($html);
 }
 
