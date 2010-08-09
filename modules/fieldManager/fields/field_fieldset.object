@@ -1,12 +1,16 @@
 <?php
 final class field_fieldset extends genericField implements fieldInterface {
-	public function format($values, $fieldName) { //format values for how they should be stored in DB
-            if(array_key_exists($fieldName, $values)){
-                    return $values[$fieldName];
-            }
-            else return null;
-        } 
-	public function unformat($value) { return $value; } //unformat values for how you want them in PHP
+	public function phpFormat($postValue, $element = null) {
+                return $postValue;
+	}
+
+        public function schemaFormat($phpValue, $element = null) {
+                return $phpValue;
+        }
+
+	public function schemaUnformat($dbValue, $element = null) {
+		return $dbValue;
+	}
 	public function edit($element){ //generate interface with form elements
             $attributes = $this->generateAttributes($element);
             //global $agave;
