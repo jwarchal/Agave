@@ -85,7 +85,7 @@ class newdb {
 		$query = "INSERT INTO `".$table."` (`".$fields."`) VALUES('".$values."') ON DUPLICATE KEY UPDATE ".$duplicates;
 		$this->doSQLQuery($query, 0);
 
-		return $this->dbh->lastInsertId;
+		return $this->lastInsertId();
 	}
 
         public function lastInsertId() {
