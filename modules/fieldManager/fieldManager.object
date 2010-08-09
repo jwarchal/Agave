@@ -247,7 +247,7 @@ final class fieldManager {
 				$class = $value['#type'];
 				$field = $this->loadField($class);
 				if(isset($form->values[$value['#name']])){
-					$form->values[$value['#name']] = $field->phpFormat($form->values, $value['#name']);
+					$form->values[$value['#name']] = $field->phpFormat($form->values[$value['#name']], $value);
 				}
 				$this->formatValuesWithFieldsArray($value, $form);
 			}
@@ -500,23 +500,32 @@ final class fieldManager {
 	/*
 	 * Methods for formatting individual fields
 	 */
-	public function format($type, $value){
+	/*public function format($type, $value){
 		$field = $this->loadField($type);
 		$values[0]=$value;
 		return $field->phpFormat($values,0);
 	}
 
-	/*public function unformat($type, $value){ // Probably should not exist
+	public function unformat($type, $value){ // Probably should not exist
 		$field = $this->loadField($type);
 		return $field->phpUnformat($value);
 	}*/
 
 	//TODO: implement following field methods in the field interface and all core fields
-	public function schemaFormat($value, $field) {}
+	public function schemaFormat($value, $field) {
+            $field = $this->loadField($field);
+            return $field->schemaFormat($value);
+        }
 
-	public function schemaUnformat($value, $field) {}
+	public function schemaUnformat($value, $field) {
+            $field = $this->loadField($field);
+            return $field->schemaUnformat($value);
+        }
 
-	public function phpFormat($value, $field) {}
+	public function phpFormat($value, $field) {
+            $field = $this->loadField($field);
+            return $field->phpFormat($value);
+        }
 
 	public function displayFormat($value, $field) {
 		return $this->loadField($field['type'])->display($value, $field['settings']);
