@@ -119,4 +119,10 @@ class olddb {
 		if(is_object($value)) $value = mysql_real_escape_string(serialize($value));
 		return $value;
 	}
+
+        public function escape($string) {
+
+            return mysql_real_escape_string($string);
+            
+        }
 }

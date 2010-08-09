@@ -319,7 +319,7 @@ function __autoload($object) {
 	 */
 	global $agave;
 	$file = $agave->getObjectFile($object);
-	if(!$file) die("Autoload error - could not load <em>$object</em> object.<hr><h3>URI info:</h3><pre>".print_r($agave->uri, TRUE)."</pre><h3>Module info:</h3><pre>".print_r($agave->setting('module_data'), TRUE)."</pre>");
+	if(!$file) die("Autoload error - could not load <em>$object</em> object.<hr><h3>URI info:</h3><pre>".print_r($agave->uri, TRUE)."</pre><h3>agave -> settings:</h3><pre>".print_r($agave->settings/*('module_data')*/, TRUE)."</pre>");
 	if(file_exists($file)) include($file);
 }
 
