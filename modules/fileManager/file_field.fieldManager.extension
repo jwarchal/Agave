@@ -27,6 +27,22 @@ final class field_file extends genericField implements fieldInterface {
 		}
 		return $key;
 	}
+
+        public function unformat($fileKeyOrObjectOrWhatever) {
+		return $this->fm->normalize($fileKeyOrObjectOrWhatever);
+	}
+
+        public function phpFormat($postValue, $element = null) {
+                return $postValue;
+	}
+
+        public function schemaFormat($phpValue, $element = null) {
+                return $phpValue;
+        }
+
+	public function schemaUnformat($dbValue, $element = null) {
+		return $dbValue;
+	}
 	
 	private function saveNewFile($name) {
 		$args = func_get_args();
@@ -48,10 +64,6 @@ final class field_file extends genericField implements fieldInterface {
 	private function replaceFile($fileKey, $name) {
 		$args = func_get_args();
 		return $this->fm->replace_file($fileKey, $this->saveNewFile($name))->fileKey;
-	}
-	
-	public function unformat($fileKeyOrObjectOrWhatever) {
-		return $this->fm->normalize($fileKeyOrObjectOrWhatever);
 	}
 	
 	public function edit($element) {
