@@ -1,5 +1,5 @@
 <?php
-class agave extends newdb {
+class agave extends db {
 	
 	//TODO: organize properties by what is set during bootstrap, and what is set internally
 	public $destination = FALSE;
@@ -225,7 +225,7 @@ class agave extends newdb {
 	}
 	
 	public function loadModules() {
-                $cachedval = NULL;//$this->cache('agave_module_env');
+		$cachedval = $this->cache('agave_module_env');
 		if(!empty($cachedval)) { $this->module_env = $cachedval; $this->modulesLoaded = TRUE; }
 		else {
 			foreach($this->setting('enabled_modules') as $module) {
@@ -238,7 +238,6 @@ class agave extends newdb {
 					$event_listeners = (function_exists($module."_info_event_listeners")) ? call_user_func($module."_info_event_listeners") : FALSE;
 
 					if($extensions) foreach($extensions as $extension) {
-						//TODO: Change this, include each file, add $extensions together, 1 foreach after all included
 						$data['file'] = $modulePath.$extension['location'];
 						$data['data'] = $extension['data'];
 						$this->module_env['extensions'][$extension['module']][$extension['type']][] = $data;
