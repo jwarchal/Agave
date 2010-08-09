@@ -254,7 +254,7 @@ final class fieldManager {
 		}
 	}
 
-	private function unformatValuesWithFieldsArray($array, &$form){ // This probably doesn't need to exist
+	/*private function unformatValuesWithFieldsArray($array, &$form){ // This probably doesn't need to exist
 		foreach($array as $key=>$value){
 			if(!$this->isProp($key)){
 				$class = $value['#type'];
@@ -265,7 +265,7 @@ final class fieldManager {
 				$this->unformatValuesWithFieldsArray($value, $form);
 			}
 		}
-	}
+	}*/
 
 	/**
 	 * Methods for saving, validating, and altering forms
@@ -381,8 +381,8 @@ final class fieldManager {
 	private function renderFieldsArray($array, $form) {
 		$html = "";
 
-                //DO UNFORMATS
-		$this->unformatValuesWithFieldsArray($form->fields, $form);
+                //DO UNFORMATS //Probably shuld not exist
+		//$this->unformatValuesWithFieldsArray($form->fields, $form);
 
 		//$html = '<div class="fieldstreelevel">'; //In here go whatever tags needed for child elements
 		$props = array();
@@ -506,10 +506,10 @@ final class fieldManager {
 		return $field->phpFormat($values,0);
 	}
 
-	public function unformat($type, $value){
+	/*public function unformat($type, $value){ // Probably should not exist
 		$field = $this->loadField($type);
 		return $field->phpUnformat($value);
-	}
+	}*/
 
 	//TODO: implement following field methods in the field interface and all core fields
 	public function schemaFormat($value, $field) {}
@@ -517,8 +517,6 @@ final class fieldManager {
 	public function schemaUnformat($value, $field) {}
 
 	public function phpFormat($value, $field) {}
-
-	public function phpUnformat($value, $field) {}
 
 	public function displayFormat($value, $field) {
 		return $this->loadField($field['type'])->display($value, $field['settings']);
