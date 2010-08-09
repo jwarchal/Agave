@@ -5,7 +5,7 @@ interface fieldInterface {
 	public function validate($values, $metaData); //special validation before formating for save
 	public function returnSettingsForm($settings); //return form elements for editing settings specific to the field 
 	public function saveSettingsFields($data); //format information submitted from the settings form
-	public function phpFormat($postValue, $element); //formats data from $_POST to what it should be in $form->values
-	public function schemaFormat($phpValue, $element); //formats data from phpFormat to how it should be stored in the schema's 'value' field
-	public function schemaUnformat($dbValue, $element); //unformats data from the schema's 'value' field to how it should be in PHP
+	public function phpFormat($postValue, $metadata=FALSE); //formats data from $_POST to what it should be in $form->values
+	public function schemaFormat($phpValue, $metadata=FALSE); //formats data from phpFormat to how it should be stored in the schema's 'value' field
+	public function schemaUnformat($dbValue, $metadata=FALSE); //unformats data from the schema's 'value' field to how it should be in PHP
 }

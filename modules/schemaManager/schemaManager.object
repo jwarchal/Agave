@@ -119,7 +119,7 @@ class schemaManager {
 			$stem = $field['#metadata']['stem'];
 			$data['uniqueKey'] = $uniqueKey;
 			$data['valueKey'] = (isset($field['#metadata']['valueKey'])) ? $field['#metadata']['valueKey'] : NULL;
-			$data['value'] = $form->values[$field["#name"]];
+			$data['value'] = $this->load('fieldManager')->schemaFormat($form->values[$field["#name"]], $field);
 			$data['fieldKey'] = $field['#metadata']['fieldKey'];
 			if(!empty($field['#metadata']['matchFields'])) {
 				foreach($field['#metadata']['matchFields'] as $key=>$value) {
@@ -142,7 +142,7 @@ class schemaManager {
 		$query = ""; //TODO: finish writing this search thingy...
 
 		//load fieldManager to format search string based on type of field
-		//search all rows where fieldKey=fieldKey and value=$fm->format($type, $value)
+		//search all rows where fieldKey=fieldKey and value=$fm->schemaFormat($type, $value)
 		//return array of unique keys that match the field=>value
 	}
 
