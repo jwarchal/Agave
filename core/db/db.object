@@ -1,5 +1,6 @@
 <?php
 class db {
+	//TODO: allow for multiple connections and changing of query target databases
 	public function __construct() {}
 	public function __destruct() {}
 
@@ -72,7 +73,7 @@ class db {
 		$duplicates = array();
 
 		foreach($data as $field=>$value) {
-			if(is_string($value)) $value = $this->dbh->quote($value);
+			$value = $this->compress($value);
 			$fields[] = $field;
 			$values[] = $value;
 			$duplicates[] = "`".$field."`=VALUES(`".$field."`)";
@@ -109,6 +110,13 @@ class db {
 
 		$quoted = $this->dbh->quote($string);
 		return substr($quoted, 1, -1);
+	}
+
+	public function compress($data) {
+		if(is_string($data)) return $this->escape($data);
+		if(is_object($data)) return $this->escape(serialize($data));
+		if(is_array($data)) return $this->escape(serialize($data));
+		return $data;
 	}
 
 }
