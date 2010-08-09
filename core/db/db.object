@@ -1,0 +1,114 @@
+<?php
+class db {
+	public function __construct() {}
+	public function __destruct() {}
+
+	public function disconnect() {
+		$this->dbh = null;
+	}
+
+	public function connect($db_info) {
+		$this->db_info = $db_info;
+		//set database properties needed for establishing connection
+		$username = $db_info['default']["username"];
+		$password = $db_info['default']["password"];
+		$databasename = $db_info['default']["database"];
+		$hostname = $db_info['default']["host"];
+		$port = $db_info['default']["port"];
+		$driver = $db_info['default']["driver"];
+		$options = isset($db_info['default']['options']) ? $db_info['default']['options'] : array();
+
+		try {
+			$this->dbh = new PDO($driver.':host='.$hostname.';port='.$port.';dbname='.$databasename, $username, $password, $options);
+			$this->dbh->query("SET NAMES 'utf8'");
+		}
+		catch (PDOException $e) {
+			die("Error in connecting to database: ".$e->getMessage()." <br/>");
+		}
+	}
+	
+	function doSQLQuery($queryText,$dataFormat=null,$debug=null) { // TODO: check PDOStatement::errorInfo for errors and put them out somewhere useful...
+
+		if(!$this->dbh){
+			die("Error:  Database query attempted without established database connection.");
+        }
+		//clean up whitespace
+		$queryText = preg_replace("/^\s+(\w+\W*\w*)/" , "$1", $queryText );
+		//ensure correct encoding
+		$this->dbh->query("SET NAMES 'utf8'");
+		try {
+			$pdostate = $this->dbh->query($queryText);
+			if(!$pdostate){
+				$error = $this->dbh->errorInfo();
+				die("Error:  Unsuccessful execution of a database query.<br/><br/>Query attempted: ".$queryText."<br/>SQLSTATE: ".$error[0]."<br/>Error Code: ".$error[1]."<br/>Error Message: ".$error[2]);
+			}
+			if ($dataFormat == 0) { // return a scalar value
+					return $pdostate->fetchColumn();
+			}
+			if ($dataFormat == 1) { // return an array of values-- can be used with `list()`
+					$col = $pdostate->fetchColumn();
+					$arr = array();
+					while($col){
+						$arr[] = $col;
+						$col = $pdostate->fetchColumn();
+					}
+					return $arr;
+			}
+			if ($dataFormat == 2) { // return a hash of values
+					return $pdostate->fetch();
+			}
+			if (!isset($dataFormat) || $dataFormat == 3) { // return an array of hashes (default format)
+					return $pdostate->fetchAll();
+			}
+		}
+		catch (PDOException $e) {
+			die("Error in database query execution: ".$e->getMessage()." <br/>");
+		}
+	}
+
+	public function mergeRow($table, $data) {
+		$fields = array();
+		$values = array();
+		$duplicates = array();
+
+		foreach($data as $field=>$value) {
+			if(is_string($value)) $value = $this->dbh->quote($value);
+			$fields[] = $field;
+			$values[] = $value;
+			$duplicates[] = "`".$field."`=VALUES(`".$field."`)";
+		}
+
+		$fields = implode("`, `", $fields);
+		$values = implode("', '", $values);
+		$duplicates = implode(", ", $duplicates);
+
+		$query = "INSERT INTO `".$table."` (`".$fields."`) VALUES('".$values."') ON DUPLICATE KEY UPDATE ".$duplicates;
+		$this->doSQLQuery($query, 0);
+
+		return $this->lastInsertId();
+	}
+
+	public function lastInsertId() {
+
+		if(!$this->dbh){
+			die("Error:  No established database connection to get last insert id from.");
+		}
+
+		if(isset($this->dbh->lastInsertId)){
+			return $this->dbh->lastInsertId;
+		}
+		else{
+			return null;
+		}
+	}
+
+	public function escape($string) {
+		if(!$this->dbh){
+			die("Error:  No established database connection to escape string with.");
+		}
+
+		$quoted = $this->dbh->quote($string);
+		return substr($quoted, 1, -1);
+	}
+
+}
