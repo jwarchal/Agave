@@ -2,9 +2,9 @@
 
 fieldManager uses of the following types of extensions:
  - form
- - formAlteration
+ - alterer
  - field
- - validators (?)
+ - validator
  
  Form extension example:
  $extensions[] = array(

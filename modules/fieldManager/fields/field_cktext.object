@@ -8,15 +8,16 @@ final class field_cktext extends genericField implements fieldInterface {
 	
 	public function __destruct() { }
 	
-	public function format($values=null, $fieldName) {
-		if(array_key_exists($fieldName, $values)){
-                    return $values[$fieldName];
-                }
-                else return null;
+	public function phpFormat($postValue, $element = null) {
+                return $postValue;
 	}
-	
-	public function unformat($value) {
-		return $value;
+
+        public function schemaFormat($phpValue, $element = null) {
+                return $phpValue;
+        }
+
+	public function schemaUnformat($dbValue, $element = null) {
+		return $dbValue;
 	}
 	
 	public function edit($element) {

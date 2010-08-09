@@ -223,7 +223,7 @@ final class fieldManager {
 		}
 
                 //DO FORMATS
-		//$this->formatValuesWithFieldsArray($form->fields, $form);
+		$this->formatValuesWithFieldsArray($form->fields, $form);
 		
 		$form->processed = TRUE;
 		return $form;
@@ -247,25 +247,25 @@ final class fieldManager {
 				$class = $value['#type'];
 				$field = $this->loadField($class);
 				if(isset($form->values[$value['#name']])){
-					$form->values[$value['#name']] = $field->format($form->values, $value['#name']);
+					$form->values[$value['#name']] = $field->phpFormat($form->values[$value['#name']], $value);
 				}
 				$this->formatValuesWithFieldsArray($value, $form);
 			}
 		}
 	}
 
-	private function unformatValuesWithFieldsArray($array, &$form){
+	/*private function unformatValuesWithFieldsArray($array, &$form){ // This probably doesn't need to exist
 		foreach($array as $key=>$value){
 			if(!$this->isProp($key)){
 				$class = $value['#type'];
 				$field = $this->loadField($class);
 				if(isset($form->values[$value['#name']])){
-					$form->values[$value['#name']] = $field->unformat($form->values[$value['#name']]);
+					$form->values[$value['#name']] = $field->phpUnformat($form->values[$value['#name']]);
 				}
 				$this->unformatValuesWithFieldsArray($value, $form);
 			}
 		}
-	}
+	}*/
 
 	/**
 	 * Methods for saving, validating, and altering forms
@@ -381,8 +381,8 @@ final class fieldManager {
 	private function renderFieldsArray($array, $form) {
 		$html = "";
 
-                //DO UNFORMATS
-		$this->unformatValuesWithFieldsArray($form->fields, $form);
+                //DO UNFORMATS //Probably shuld not exist
+		//$this->unformatValuesWithFieldsArray($form->fields, $form);
 
 		//$html = '<div class="fieldstreelevel">'; //In here go whatever tags needed for child elements
 		$props = array();
@@ -500,23 +500,41 @@ final class fieldManager {
 	/*
 	 * Methods for formatting individual fields
 	 */
-	public function schemaFormat($fieldType, $value, $meta=FALSE){
-		$field = $this->loadField($fieldType);
-		return $field->schemaFormat($value, $meta);
+	/*public function format($type, $value){
+		$field = $this->loadField($type);
+		$values[0]=$value;
+		return $field->phpFormat($values,0);
 	}
 
-	public function schemaUnformat($fieldType, $value, $meta=FALSE) {
-		$field = $this->loadField($fieldType);
-		return $field->schemaUnformat($value, $md);
-	}
+	public function unformat($type, $value){ // Probably should not exist
+		$field = $this->loadField($type);
+		return $field->phpUnformat($value);
+	}*/
+
+	//TODO: implement following field methods in the field interface and all core fields
+	public function schemaFormat($value, $field) {
+            $field = $this->loadField($field);
+            return $field->schemaFormat($value);
+        }
+
+	public function schemaUnformat($value, $field) {
+            $field = $this->loadField($field);
+            return $field->schemaUnformat($value);
+        }
 
 	public function phpFormat($value, $field) {
-		
-	}
+            $field = $this->loadField($field);
+            return $field->phpFormat($value);
+        }
 
 	public function displayFormat($value, $field) {
-		return $this->loadField($field['type'])->display($value, $field['settings']); //TODO: rename display to displayFormat in all fields
+		return $this->loadField($field['type'])->display($value, $field['settings']);
 	}
+
+	//the following format methods are probably not necessary...
+	public function displayUnformat($value, $field) {} //necessary?
+	public function formFormat($value, $field) {} //necessary?
+	public function formUnformat($value, $field) {} //necessary?
 
 	protected function generateMetaData($element) { //TODO: old, try to get away from using
 		if(!empty($element['#metadata'])) {
