@@ -234,8 +234,8 @@ class agave extends olddb {
 					include_once($file);
 					$extensions = (function_exists($module."_info_extensions")) ? call_user_func($module."_info_extensions") : FALSE;
 					$objects = (function_exists($module."_info_objects")) ? call_user_func($module."_info_objects") : FALSE;
-					//TODO: $events = ;
-					//TODO: $eventListeners = ;
+					$event_listeners = (function_exists($module."_info_event_listeners")) ? call_user_func($module."_info_event_listeners") : FALSE;
+
 					if($extensions) foreach($extensions as $extension) {
 						//TODO: Change this, include each file, add $extensions together, 1 foreach after all included
 						$data['file'] = $modulePath.$extension['location'];
@@ -243,8 +243,13 @@ class agave extends olddb {
 						$this->module_env['extensions'][$extension['module']][$extension['type']][] = $data;
 						unset($data); 
 					}
-					if(isset($objects)) foreach($objects as $object=>$location) $this->module_env['objects'][$object] = $modulePath.$location;
-					//TODO: assemble events/eventListeners
+					if($objects) foreach($objects as $object=>$location) $this->module_env['objects'][$object] = $modulePath.$location;
+					if($event_listeners) foreach($event_listeners as $listener) {
+						$listener['module'] = $module;
+						$listener['file'] = $modulePath.$listener['location'];
+						$listener['settings'] = $this->setting('event_listener_'.$module.'_'.$listener['name']);
+						$this->module_env['events'][$listener['event']][] = $listener;
+					}
 				}
 			}
 
