@@ -117,13 +117,14 @@ class schemaManager {
 		foreach($form->fields as $field) if(isset($field["#metadata"]['schema'])) {
 			$data = array();
 			$stem = $field['#metadata']['stem'];
+			$meta = (!empty($field['#metadata'])) ? $field['#metadata'] : FALSE;
 			$data['uniqueKey'] = $uniqueKey;
 			$data['valueKey'] = (isset($field['#metadata']['valueKey'])) ? $field['#metadata']['valueKey'] : NULL;
-			$data['value'] = $this->load('fieldManager')->schemaFormat($form->values[$field["#name"]], $field);
+			$data['value'] = $this->agave->load('fieldManager')->schemaFormat($form->values[$field["#name"]], $field['#type'], $meta);
 			$data['fieldKey'] = $field['#metadata']['fieldKey'];
 			if(!empty($field['#metadata']['matchFields'])) {
 				foreach($field['#metadata']['matchFields'] as $key=>$value) {
-					$data[$key] = $value;
+					$data['mf_'.$key] = $value;
 				}
 			}
 			if($unset) unset($form->values[$field['#name']]);

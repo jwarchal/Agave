@@ -496,55 +496,23 @@ final class fieldManager {
 		return $html;
 	}
 
-
-	/*
-	 * Methods for formatting individual fields
-	 */
-	/*public function format($type, $value){
-		$field = $this->loadField($type);
-		$values[0]=$value;
-		return $field->phpFormat($values,0);
-	}
-
-	public function unformat($type, $value){ // Probably should not exist
-		$field = $this->loadField($type);
-		return $field->phpUnformat($value);
-	}*/
-
-	//TODO: implement following field methods in the field interface and all core fields
-	public function schemaFormat($value, $field) {
+	public function schemaFormat($value, $field, $meta=FALSE) {
             $field = $this->loadField($field);
-            return $field->schemaFormat($value);
+            return $field->schemaFormat($value, $meta);
         }
 
-	public function schemaUnformat($value, $field) {
+	public function schemaUnformat($value, $field, $meta=FALSE) {
             $field = $this->loadField($field);
-            return $field->schemaUnformat($value);
+            return $field->schemaUnformat($value, $meta);
         }
 
-	public function phpFormat($value, $field) {
+	public function phpFormat($value, $field, $meta=FALSE) {
             $field = $this->loadField($field);
-            return $field->phpFormat($value);
+            return $field->phpFormat($value, $meta);
         }
 
-	public function displayFormat($value, $field) {
+	public function displayFormat($value, $field) { //TODO: have this take $value, $field and $meta like the other formats
 		return $this->loadField($field['type'])->display($value, $field['settings']);
-	}
-
-	//the following format methods are probably not necessary...
-	public function displayUnformat($value, $field) {} //necessary?
-	public function formFormat($value, $field) {} //necessary?
-	public function formUnformat($value, $field) {} //necessary?
-
-	protected function generateMetaData($element) { //TODO: old, try to get away from using
-		if(!empty($element['#metadata'])) {
-            isset($element['#blockNum']) ? $block = $element['#blockNum'] : $block = 0;
-			$element['#metadata']['type'] = $element['#type'];
-			$metadata = $this->agave->encrypt(json_encode($element['#metadata']));
-			$html = "<input type='hidden' class='fm-metadata' name='metaData[".$block."][".$element['#name']."]' value='$metadata' />";
-			return $html;
-		}
-		else return "";
 	}
 
 	public function returnSettingsFields($field, $data=FALSE){

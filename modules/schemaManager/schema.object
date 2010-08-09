@@ -30,10 +30,10 @@ class schema {
 		return $elements;
 	}
 
+	//TODO; remove parentElement stuff, it's probably unnecessary
 	public function returnFormElement($fieldName, $parentElement=FALSE, $matchFields=FALSE) {
 		$element = $this->fieldElements[$fieldName];
 		if(!$matchFields) $matchFields = $this->matchFields; //inherit matchfields from constructor if none explicit
-		if($parentElement) $element['#name'] = $parentElement."/".$element['#name']; //TODO: is this the correct syntax for element parents?
 		if($matchFields) $element['#metadata']['matchFields'] = $matchFields;
 
 		if($this->uniqueKey) {

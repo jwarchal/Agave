@@ -8,15 +8,15 @@ final class field_cktext extends genericField implements fieldInterface {
 	
 	public function __destruct() { }
 	
-	public function phpFormat($postValue, $element = null) {
-                return $postValue;
+	public function phpFormat($postValue, $meta = null) {
+			return $postValue;
 	}
 
-        public function schemaFormat($phpValue, $element = null) {
-                return $phpValue;
-        }
+	public function schemaFormat($phpValue, $meta = null) {
+		return $phpValue;
+	}
 
-	public function schemaUnformat($dbValue, $element = null) {
+	public function schemaUnformat($dbValue, $meta = null) {
 		return $dbValue;
 	}
 	

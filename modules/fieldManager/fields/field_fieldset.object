@@ -1,28 +1,28 @@
 <?php
 final class field_fieldset extends genericField implements fieldInterface {
-	public function phpFormat($postValue, $element = null) {
-                return $postValue;
+	public function phpFormat($postValue, $meta = null) {
+		return $postValue;
 	}
 
-        public function schemaFormat($phpValue, $element = null) {
-                return $phpValue;
-        }
+	public function schemaFormat($phpValue, $meta = null) {
+		return $phpValue;
+	}
 
-	public function schemaUnformat($dbValue, $element = null) {
+	public function schemaUnformat($dbValue, $meta = null) {
 		return $dbValue;
 	}
 	public function edit($element){ //generate interface with form elements
-            $attributes = $this->generateAttributes($element);
-            //global $agave;
-            //$agave->death($attributes);
-            $classes = $attributes['classes'];
-            $id = $attributes['id'];
-            $legend = $element['#label'];
-            return "<fieldset $classes $id><legend>$legend</legend>";
-        }
+		$attributes = $this->generateAttributes($element);
+		//global $agave;
+		//$agave->death($attributes);
+		$classes = $attributes['classes'];
+		$id = $attributes['id'];
+		$legend = $element['#label'];
+		return "<fieldset $classes $id><legend>$legend</legend>";
+	}
 	public function display($values, $settings){ //format value as it should be displayed on page
-            return NULL;
-        }
+		return NULL;
+	}
 	public function validate($values, $metaData) { return true; } //special validation before formating for save
 	public function returnSettingsForm($settings) { return null; } //return form elements for editing settings specific to the field
 	public function saveSettingsFields($data) { return null; } //format information submitted from the settings form

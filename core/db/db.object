@@ -1,33 +1,71 @@
 <?php
 class db {
 	//TODO: allow for multiple connections and changing of query target databases
+	private $connections = array();
+	private $db_info = array();
+	
 	public function __construct() {}
 	public function __destruct() {}
 
-	public function disconnect() {
-		$this->dbh = null;
+	/*
+	 * Connection management methods
+	 */
+	public function disconnect($name=FALSE) {
+		if($name) $this->connections[$name] = NULL;
+		else $this->connections = NULL;
 	}
 
 	public function connect($db_info) {
 		$this->db_info = $db_info;
-		//set database properties needed for establishing connection
-		$username = $db_info['default']["username"];
-		$password = $db_info['default']["password"];
-		$databasename = $db_info['default']["database"];
-		$hostname = $db_info['default']["host"];
-		$port = $db_info['default']["port"];
-		$driver = $db_info['default']["driver"];
-		$options = isset($db_info['default']['options']) ? $db_info['default']['options'] : array();
 
-		try {
-			$this->dbh = new PDO($driver.':host='.$hostname.';port='.$port.';dbname='.$databasename, $username, $password, $options);
-			$this->dbh->query("SET NAMES 'utf8'");
+		foreach($this->db_info as $name=>$data) {
+			$this->connections[$name] = FALSE;
 		}
-		catch (PDOException $e) {
-			die("Error in connecting to database: ".$e->getMessage()." <br/>");
+
+		$response = $this->setDatabase('default');
+		if(is_object($response)) die($response->getMessage());
+	}
+
+	public function setDatabase($db) {
+		//NOTE that setting the database to a DB that doesn't exist will fall back to the default DB connection for queries
+		if(is_object($this->connections[$db])) {
+			$this->dbh = $this->connections[$db];
+			return TRUE;
+		}
+		$e = $this->initializeConnection($db);
+		if(!is_object($e)) {
+			$this->dbh = $this->connections[$db];
+			return TRUE;
+		}
+		else {
+			if(is_object($this->connections['default'])) $this->dbh = $this->connections['default'];
+			return $e;
 		}
 	}
-	
+
+	private function initializeConnection($name) {
+		$username = $this->db_info[$name]["username"];
+		$password = $this->db_info[$name]["password"];
+		$databasename = $this->db_info[$name]["database"];
+		$hostname = $this->db_info[$name]["host"];
+		$port = $this->db_info[$name]["port"];
+		$driver = $this->db_info[$name]["driver"];
+		$options = isset($this->db_info[$name]['options']) ? $this->db_info[$name]['options'] : array();
+
+		try {
+			$this->connections[$name] = new PDO($driver.':host='.$hostname.';port='.$port.';dbname='.$databasename, $username, $password, $options);
+			$this->connections[$name]->query("SET NAMES 'utf8'");
+		}
+		catch (PDOException $e) {
+			return $e;
+		}
+
+		return TRUE;
+	}
+
+	/*
+	 * Query backwards compatibility with old db object
+	 */
 	function doSQLQuery($queryText,$dataFormat=null,$debug=null) { // TODO: check PDOStatement::errorInfo for errors and put them out somewhere useful...
 
 		if(!$this->dbh){
@@ -67,6 +105,7 @@ class db {
 		}
 	}
 
+	//TODO: how do we abstract this for other DB drivers??
 	public function mergeRow($table, $data) {
 		$fields = array();
 		$values = array();
@@ -90,6 +129,7 @@ class db {
 	}
 
 	public function lastInsertId() {
+		//TODO: start here - lastInsertId seems to not work
 
 		if(!$this->dbh){
 			die("Error:  No established database connection to get last insert id from.");
@@ -103,6 +143,9 @@ class db {
 		}
 	}
 
+	/*
+	 * DB value sanitization methods
+	 */
 	public function escape($string) {
 		if(!$this->dbh){
 			die("Error:  No established database connection to escape string with.");
@@ -118,5 +161,10 @@ class db {
 		if(is_array($data)) return $this->escape(serialize($data));
 		return $data;
 	}
+
+	/*
+	 * PDO wrapper methods
+	 */
+	//TODO: implement all wrapper methods for PDO
 
 }
