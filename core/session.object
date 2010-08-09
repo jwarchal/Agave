@@ -95,7 +95,7 @@ class session {
 			 else return FALSE;
 		}
 		else {
-			$query = "UPDATE `agave_users_sessions` SET `time_refreshed`='".time()."', `data`='".mysql_real_escape_string(serialize($data))."' WHERE `sessionID`='".$sess_id."'";
+			$query = "UPDATE `agave_users_sessions` SET `time_refreshed`='".time()."', `data`='".$agave->escape(serialize($data))."' WHERE `sessionID`='".$sess_id."'";
 			$agave->doSQLQuery($query);
 			return TRUE;
 		}
@@ -105,7 +105,7 @@ class session {
 		$id = ($id) ? $id : $_COOKIE[session_name()];
 		global $agave;
 		if(!$agave->user->isAnon && $this->method=='database') {
-			$query = "DELETE FROM `agave_users_sessions` WHERE `sessionID`='".mysql_real_escape_string($id)."'";
+			$query = "DELETE FROM `agave_users_sessions` WHERE `sessionID`='".$agave->escape($id)."'";
 			$agave->doSQLQuery($query);
 		}
 		else {
@@ -167,7 +167,7 @@ class session {
 	public function addSession($sessionID, $userKey, $data=null){
 	    global $agave;
 	    $time = time();
-	    $data = ($data) ? mysql_real_escape_string(serialize($data)) : NULL;
+	    $data = ($data) ? $agave->escape(serialize($data)) : NULL;
 		$query = "INSERT INTO `agave_users_sessions` (`sessionID`,`userKey`,`time_refreshed`,`time_created`,`data`)
 					VALUES('$sessionID','$userKey','$time','$time','$data');";
 		$agave->doSQLQuery($query,0);

@@ -43,7 +43,7 @@ class agave extends newdb {
 	private function setCache($item, $data, $module, $expires=0) {
 		if($this->installed) {  
 			$time = time();
-			$data = mysql_real_escape_string(serialize($data));
+			$data = $this->escape(serialize($data));
 			$query = "DELETE FROM `agave_cache` WHERE `item`='$item'";
 			$this->doSQLQuery($query, 0);
 			

@@ -68,9 +68,9 @@ final class userManager {
 			$this->agave->redirect("admin/users&mode=types");
 		}
 
-		$name = mysql_real_escape_string($name);
-		$label = mysql_real_escape_string($label);
-		$desc = mysql_real_escape_string($desc);
+		$name = $this->agave->escape($name);
+		$label = $this->agave->escape($label);
+		$desc = $this->agave->escape($desc);
 
 		//add new user_type to user_types
 		$query = "INSERT INTO `agave_users_types` (`name`, `label`, `desc`) VALUES('".$name."','".$label."','".$desc."')";

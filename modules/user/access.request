@@ -67,7 +67,7 @@ function saveProperty($args=null) {
 
 	//otherwise just update existing entry
 	else {
-		if(!empty($_POST)) foreach($_POST as $key=>$value) $$key = mysql_real_escape_string($value);
+		if(!empty($_POST)) foreach($_POST as $key=>$value) $$key = $agave->escape($value);
 		$query = "UPDATE `agave_users_access` SET `label`='".$label."',`default`='".$default."',`desc`='".$desc."', `module`='".$module."' WHERE `aKey`='".$aKey."'";
 		$agave->doSQLQuery($query);
 	}
