@@ -5,72 +5,37 @@ function viewModules() {
 	$t = $agave->load("themer");
 
 	$modules = array();
-	$modules['Global'] = getModuleData('global');
-	$modules['Local'] = getModuleData('local');	
+	$modules = getModuleData();
 	
 	$themevars['modules'] = $modules;
 	$t->output = $t->theme('admin','admin-modules', $themevars);
 	$t->output = $t->theme('admin', 'admin');
 }
 
-function getModuleData($loc) {
+function getModuleData() {
 	global $agave;
 	$admin = $agave->load('admin');
 	
-	//determine base directory and module location
-	switch ($loc) {
-		case 'global' : {
-			$dir = 'modules';
-			$location = MODULE_LOCATION_GLOBAL;
-			break;
-		}
-		case 'local' : {
-			$dir = $agave->proj_dir.'modules';
-			$location = MODULE_LOCATION_LOCAL;
-			break;
-		}
-	}
-
-	//read dir for all module directories
-	$modules = array();
-	$items = (file_exists($dir)) ? scandir($dir) : FALSE;
-	if($items) foreach($items as $item) if(substr($item, 0, 1) != '.') $modules[] = $item;
-	if(empty($modules)) return FALSE;
-	
-	//include .module files
-	$globals = array();
-	foreach($modules as $module) if(file_exists($file=$dir."/".$module."/$module.info")) include_once($file);
-	
-	//get data from _info_meta hook if it exists, add module data into setting
-	$moduleData = $agave->setting('module_data');
-	if(!$moduleData) $moduleData = array();
-	foreach($modules as $module) if(function_exists($module."_info_meta")) {
-		$moduleData[$module] = call_user_func($module."_info_meta");
-		$moduleData[$module]['path'] = $dir."/".$module."/";
-		$moduleData[$module]['location'] = $loc;
-	}
-//        $agave->death($moduleData);
+	$moduleData = $admin->getModuleData();
 	$admin->saveSetting('module_data', $moduleData);
 	
 	//re-organize moduleData for theme processing
 	$categories = array();
 	foreach($moduleData as $moduleName=>$module) {
-            if($module['location']==$loc) {
 		if(!isset($module['group'])) $module['group'] = "Unassigned";
-		$module['location'] = $location;
 		$module['enabled'] = (in_array($module['machine-name'], $agave->setting('enabled_modules'))) ? TRUE : FALSE;
 		$module['installed'] = (in_array($module['machine-name'], $agave->setting('installed_modules'))) ? TRUE : FALSE;
-		
+
 		//figure out if module is out-of-date
 		$versions = $agave->setting('module_versions');
 		$oldVersion = (isset($versions[$module['machine-name']])) ? $versions[$module['machine-name']] : FALSE;
 		$module['outdated'] = ($oldVersion && $oldVersion != $module['version']) ? TRUE : FALSE;
-		
+
 		//figure out status of dependencies
 		$dependencies = array();
 		if($module['dependencies']) foreach($module['dependencies'] as $item) $dependencies[] = (in_array($item, $agave->setting('enabled_modules'))) ? "<span class='dependency-enabled'>$item</span>" : "<span class='dependency-disabled'>$item</span>";
 		$module['dependencies'] = $dependencies;
-		
+
 		//figure out which actions are available to perform on given module, build urls to them
 		$actions = array();
 		if($module['installed']) {
@@ -103,11 +68,10 @@ function getModuleData($loc) {
 			$actions[] = array(
 				'name'=>'Install',
 				'href'=>$agave->url."admin/modules/actions&module=".$module['machine-name']."&action=install",
-			);			
+			);
 		}
 		$module['actions'] = $actions;
-		$categories[$module['group']][] = $module;
-            }
+		$categories[ucfirst($module['location'])][$module['group']][] = $module;
 	}
 	
 	return $categories;
