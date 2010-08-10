@@ -10,7 +10,7 @@ function chat_info_meta() {
 		'name'=>'Chat', //name of module in modules interfaces
 		'machine-name'=>'chat', //name of directory in the modules folder
 		'description'=>'Provides a chat interface to facilitate communication.',
-		'group'=>'Core', //the category in which you module will appear on modules page, if 
+		'group'=>'Chat', //the category in which you module will appear on modules page, if
 		'version'=>'.1', //the current version of your module, increment this any time you make changes to db in your module
 		'agave-version'=>'1', //what version of agave is required for this module to work?
 		'dependencies'=>array(), //what other modules does this module rely on?
@@ -39,14 +39,14 @@ function chat_info_menu_items() {
 
 function chat_info_system_uri() {
 	$uris = array();
-	$uris[] = array('chat',NULL,NULL,'viewSingleChat','start',0,1,0);
-	$uris[] = array('chat/%',NULL,NULL,'viewSingleChat','start',0,1,0);
+	$uris[] = array('chat',NULL,NULL,'viewSingleChat','start',0,0);
+	$uris[] = array('chat/%',NULL,NULL,'viewSingleChat','start',0,0);
 	
-	$uris[] = array('chat/getNewMsgs',NULL,NULL,'getNewMsgs','getNewMsgs',0,1,1);
-	$uris[] = array('chat/processStatuses',NULL,NULL,'processStatuses','processStatuses',0,1,1);
-	$uris[] = array('chat/uploadMessage',NULL,NULL,'uploadMessage','uploadMessage',0,1,1);
+	$uris[] = array('chat/getNewMsgs',NULL,NULL,'getNewMsgs','getNewMsgs',0,1);
+	$uris[] = array('chat/processStatuses',NULL,NULL,'processStatuses','processStatuses',0,1);
+	$uris[] = array('chat/uploadMessage',NULL,NULL,'uploadMessage','uploadMessage',0,1);
 
-//	$uris[] = array('dest','alias','access','function','file','panels','actions','fast_route');
+//	$uris[] = array('dest','alias','access','function','file','panels','fast_route');
 	
 	return $uris;
 }
