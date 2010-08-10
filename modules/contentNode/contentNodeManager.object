@@ -41,6 +41,7 @@ class contentNodeManager {
 			'showLabel' => 0,
 			'help' => "Please enter a title for this piece of content",
 			'locked'=>1,
+			'weight'=>0,
 			'settings'=>array(
 				'size'=>50
 			),
@@ -53,6 +54,7 @@ class contentNodeManager {
 			'label' => "Body",
 			'showLabel' => 0,
 			'help' => "Please enter a title for this piece of content",
+			'weight'=>1,
 			'settings'=>array(
 				'cols'=>50,
 				'rows'=>20,
