@@ -1,4 +1,4 @@
- <?php
+<?php
 //TODO: properly process $prefs and $mappings
 final class userManager {
 	public function __construct() {

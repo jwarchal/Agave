@@ -249,7 +249,6 @@ function install_core() {
 	//now call all the other stuff to populate the core tables
 	$admin = $agave->load('admin');
 	foreach($agave->setting('installed_modules') as $module) {
-		if(function_exists($module."_info_actions")) $admin->installActions(call_user_func($module."_info_actions"), $module);
 		if(function_exists($module."_info_cron")) $admin->installCron(call_user_func($module."_info_cron"), $module);
 		if(function_exists($module."_info_menu")) $admin->installMenu(call_user_func($module."_info_menu"), $module);
 		if(function_exists($module."_info_menu_items")) $admin->installMenuItems(call_user_func($module."_info_menu_items"), $module);
