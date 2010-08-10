@@ -9,6 +9,48 @@ final class admin {
 /**
  * Module status methods
  */
+	public function getModuleData() {
+		//get data from _info_meta hook if it exists, add module data into setting
+		$moduleData = $this->agave->setting('module_data');
+		if(!$moduleData) $moduleData = array();
+
+		$dir = 'modules';
+		$modules = array();
+		$items = (file_exists($dir)) ? scandir($dir) : FALSE;
+		if($items) foreach($items as $item) if(substr($item, 0, 1) != '.') $modules[] = $item;
+		foreach($modules as $module) {
+			$file = $dir."/".$module."/".$module.".info";
+			if(file_exists($file)) {
+				include_once($file);
+				if(function_exists($module."_info_meta")) {
+					$moduleData[$module] = call_user_func($module."_info_meta");
+					$moduleData[$module]['path'] = $dir."/".$module."/";
+					$moduleData[$module]['location'] = 'global';
+				}
+			}
+		}
+
+		$dir = $this->agave->proj_dir.'modules';
+                while(substr($dir, 0, 1) == "/"){ //TODO: Fix the source of this later...
+                    $dir = substr($dir, 1);
+                }
+		$modules = array();
+		$items = (file_exists($dir)) ? scandir($dir) : FALSE;
+		if($items) foreach($items as $item) if(substr($item, 0, 1) != '.') $modules[] = $item;
+		foreach($modules as $module) {
+			$file = $dir."/".$module."/".$module.".info";
+			if(file_exists($file)) {
+				include_once($file);
+				if(function_exists($module."_info_meta")) {
+					$moduleData[$module] = call_user_func($module."_info_meta");
+					$moduleData[$module]['path'] = $dir."/".$module."/";
+					$moduleData[$module]['location'] = 'local';
+				}
+			}
+		}
+
+		return $moduleData;
+	}
 
 	public function setModuleEnabled($module) {
 		$enabled = $this->agave->setting('enabled_modules');
