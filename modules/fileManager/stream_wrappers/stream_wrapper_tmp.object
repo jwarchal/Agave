@@ -1,15 +1,15 @@
 <?php
 /**
  *  * This is taken from Drupal 7's stream wrapper support.  See http://api.drupal.org
- * agave temporary (temp://) stream wrapper class.
+ * agave temporary (tmp://) stream wrapper class.
  */
-class stream_wrapper_temp extends agaveLocalStreamWrapper {
+class stream_wrapper_tmp extends agaveLocalStreamWrapper {
   /**
    * Implements abstract public function getDirectoryPath()
    */
 	public function getDirectoryPath() {
                 global $agave;
-                $path = $agave->upfiles_dir."temp/";
+                $path = $agave->upfiles_dir."tmp/";
                 return $path;
 	}
    /**
