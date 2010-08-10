@@ -17,6 +17,12 @@ function chat_info_meta() {
 	);
 }
 
+function chat_info_objects() {
+	$objects = array();
+	$objects['chat'] = 'chat.object';
+	return $objects;
+}
+
 function chat_info_cron() {
 	$jobs = array();
 //	$jobs[] = array('name','description','function','interval','enabled?');
