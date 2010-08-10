@@ -65,8 +65,6 @@ if(bootstrap()) {
 	}
 }
 
-
-
 /**
  *	Function pile
  */

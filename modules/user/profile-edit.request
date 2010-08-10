@@ -91,4 +91,3 @@ function user_edit_profile($args=NULL) {
 	$t->output = $form;
 	$t->output = $t->theme('user','user');
 }
-?>

@@ -97,4 +97,4 @@ final class field_cktext extends genericField implements fieldInterface {
 		return $settings;
 	}
 
-} 
+}
