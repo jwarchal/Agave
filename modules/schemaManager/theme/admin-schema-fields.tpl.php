@@ -3,10 +3,8 @@
 	$this->addCSS('fieldManager','theme/css/fm-defaults.css');
 	$this->addCSS('admin','theme/css/schema-manager.css');
 	
-	//add jQuery UI dependencies
-	$this->addJS(NULL,NULL,NULL,'vendor/jQuery/ui/minified/jquery-ui.min.js');
-	$this->addJS(NULL,NULL,NULL,'vendor/jQuery/ui/minified/ui.draggable.min.js');
-	$this->addJS(NULL,NULL,NULL,'vendor/jQuery/ui/minified/ui.sortable.min.js');
+	//add jQuery UI dependency
+	$this->addJS(NULL,NULL,NULL,'vendor/jQuery/jquery-ui.js');
 
 	//schemaManager js
 	$this->addJS('schemaManager','js/schema-manager.js');
