@@ -1,0 +1,250 @@
+<?php
+
+class chat {
+	
+	private $chatSessionKey;
+	
+	private $userKey;
+	
+	private $themevars;
+		
+	function __construct($sessionKey) {	
+		global $agave;
+			
+		$this->themevars = array();
+		
+		$this->themevars['sessionKey'] = $sessionKey;
+		
+		$this->chatSessionKey = $sessionKey;
+
+		$this->userKey = $agave->load('user')->userKey;
+		
+		$this->initialize();
+	}
+	
+	private function initialize() {
+		$this->getSessionData();
+		
+		$this->processInitialStatuses();
+		
+		$this->loadInitialMessages();	
+	}
+	
+	public function returnInterface() {
+		global $agave;
+
+		$sessionMembers = $this->getSessionMembers($this->chatSessionKey);
+
+		$userMap = $this->returnUserMap($sessionMembers);	
+
+		$sessionMap = $this->returnSessionMap($sessionMembers);
+		
+		$this->themevars['userKey'] = $this->userKey;
+		
+		$this->themevars['userMap'] = $userMap;
+		
+		$this->themevars['sessionMap'] = $sessionMap;
+		
+		$this->themevars['bgToggleChat'] = 0;
+		
+		$this->themevars['unreadMessages'] = 'false';
+
+		$t = $agave -> load('themer');
+		
+		$t->addJS('chat','theme/js/jquery.js');		// Needed? JQuery should probably be loaded earlier in the site
+
+		$t->addJS('chat','theme/js/ajaxq.js');
+		$t->addJS('chat','theme/js/gopher.js');
+		$t->addJS('chat','theme/js/json.js');
+
+		return $t->theme('chat','chat-interface', $this->themevars);  	// return themevars to template
+	}
+	
+	public function getSessionData() {
+		//
+		// Gets information about the current session and stores it in themevars
+		//
+	
+		global $agave;
+		
+		$queryStatement = "SELECT sessionName, gopherInterval ".
+						  "FROM chat_sessions " .
+						  "WHERE chatSessionKey = '$this->chatSessionKey'";	
+
+		$sessionData = $agave->doSQLQuery($queryStatement, 2);
+
+		$gopherInterval = $sessionData['gopherInterval'];
+		
+		$sessionName = $sessionData['sessionName'];
+		
+		$this->themevars['gopherInterval'] = $gopherInterval;
+		
+		$this->themevars['sessionName'] = $sessionName;
+	}
+	
+	public function processInitialStatuses() {
+		//
+		// Does the same thing as processStatuses.request; needed so initial status icons are accurate
+		//
+		
+		global $agave;
+		
+		$interval = 30 * pow(10,8);		// 30 seconds -- perhaps retrieve from SQL table
+
+		$mTime = $this->makeTimeStamp() - $interval;
+
+		$queryStatement = "UPDATE chat_sessions_map " .
+						  "SET status = 'inactive' " .
+						  "WHERE chatSessionKey = '$this->chatSessionKey' " .
+						  "AND status = 'active' " .
+						  "AND updateTime < '$mTime' ";
+
+		$agave->doSQLQuery($queryStatement, 0);
+
+		$queryStatement = "SELECT chatSessionKey, userKey, status " .
+						  "FROM chat_sessions_map " .
+						  "WHERE chatSessionKey = '$this->chatSessionKey' ";
+
+		$statusData = $agave->doSQLQuery($queryStatement, 3);
+
+		$statuses = array();	
+
+			foreach ($statusData as $thisStatusData) {
+			$status = array();	
+
+			$status["author"] = $thisStatusData["userKey"];
+			$status["session"] = $thisStatusData["chatSessionKey"];
+			$status["status"] = $thisStatusData["status"];
+
+			$statuses[] = $status;
+
+			unset($status);
+			}
+
+		$this->themevars['statuses'] = $statuses;
+	}
+	
+	public function loadInitialMessages() {
+		//
+		// Pulls previous messages from the DB; also looks at chat_messages_map to determine if a message
+		// is old or new.
+		//
+		
+		global $agave;
+		
+		$mTime = $this->makeTimeStamp();
+
+		$chatData = $this->getChatMessages($this->userKey, $mTime);
+
+		// Find the most recent messageKey (to reuse) that belongs to the logged in user
+		// This avoids the buildup of empty tempMsgs when the user logs out and
+		// returns:
+
+		$queryStatement = "SELECT MAX(messageKey) " .
+						  "FROM chat_messages " .
+						  "WHERE chatSessionKey = '$this->chatSessionKey' " .	
+						  "AND authorKey = '$this->userKey' ";
+
+		$messageKey = $agave->doSQLQuery($queryStatement, 0);
+
+		$this->themevars['chatMsgs'] = ($chatData ? $this->returnMessageData($chatData, $this->userKey) : array());
+		$this->themevars['lastUpdateTime'] = $mTime;
+		$this->themevars['messageKey'] = ($messageKey ? $messageKey : "''");
+	}
+	
+	private function getChatMessages($userKey, $mTime) { 
+	global $agave;
+	
+	$queryStatement = "SELECT chat_messages.messageKey, authorKey, chatSessionKey, messageText, isFinal, microTime, displayTime, isNew " . 
+					  "FROM chat_messages, chat_msg_user_map " .
+					  "WHERE chatSessionKey = '$this->chatSessionKey' " .
+					  "AND isFinal = 1 " .
+					  "AND chat_msg_user_map.userKey = '$userKey' " .
+					  "AND chat_msg_user_map.isActive = 1 " .
+					  "AND chat_messages.messageKey = chat_msg_user_map.messageKey " .
+					  "AND microTime < '$mTime' " .
+					  "ORDER BY microTime";
+
+	return $agave->doSQLQuery($queryStatement, 3);
+	}
+
+	private function returnMessageData($chatData, $userKey) {
+	//
+	// Recieves raw data and processes it into a keyed array to return
+	//
+	
+	$chatMsgs = array();
+
+		foreach ($chatData as $thisChatData) {
+		$chatMessage = array();
+
+		$chatMessage["author"] = $thisChatData['authorKey'];
+		$chatMessage["session"] = $thisChatData['chatSessionKey'];
+		$chatMessage["message"] = $thisChatData['messageText'];
+		$chatMessage["isFinal"] = $thisChatData['isFinal'];
+		$chatMessage["time"] = $thisChatData['displayTime'];
+		$chatMessage["isNew"] = $thisChatData['isNew'];
+
+		$this->markAsViewed($userKey,$thisChatData['messageKey']);
+
+		$chatMsgs[] = $chatMessage;
+
+		unset($chatMessage);	
+		}
+
+	return $chatMsgs;
+	}
+
+	private function markAsViewed($userKey, $messageKey) {
+	global $agave;
+	
+	$queryStatement = "UPDATE chat_msg_user_map SET " .
+				  	  "isNew = '0' " .
+					  "WHERE userKey='$userKey' " .
+					  "AND messageKey='$messageKey'";
+
+	$agave->doSQLQuery($queryStatement);
+	}
+
+	private function makeTimeStamp() {
+	list($usec, $sec) = explode(" ", microtime());
+
+	$usec = preg_replace("/^0\./","",$usec);
+	$convTime = $sec . $usec;
+
+	return $convTime;
+	}
+	
+	public function getSessionMembers($sessionKey) {
+	global $agave;
+	
+	$queryStatement = "SELECT firstName, lastName, chat_sessions_map.userKey ".
+						  "FROM users, chat_sessions_map ".
+						  "WHERE chatSessionKey = '$this->chatSessionKey' ".
+						  "AND chat_sessions_map.userKey = users.userKey ";
+
+	return $agave->doSQLQuery($queryStatement, 3);	// Return a list of session members
+	}
+
+	public function returnUserMap($sessionMembers) {
+	$userMap = array();
+
+		foreach($sessionMembers as $member) {
+		$userKey = $member['userKey'];
+
+		$userMap[$userKey] = $member['firstName'] . " " . $member['lastName'];
+		}
+
+	return $userMap;	// Return an array in the form of userKey=>userName
+	}
+
+	public function returnSessionMap($sessionMembers) {
+	$sessionMap = array();
+
+		foreach($sessionMembers as $member) {
+		$sessionMap[] = $member['userKey'];
+		}
+
+	return $sessionMap;	// Return an array listing session members                    
+	}
+}

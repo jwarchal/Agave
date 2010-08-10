@@ -1,0 +1,141 @@
+<?php
+//TODO: consider combining .module and .info... objects and extensions could just as easily be defined here
+
+/**
+ * Module meta data - run during install/uninstall
+ */
+
+function chat_info_meta() {
+	return array(
+		'name'=>'Chat', //name of module in modules interfaces
+		'machine-name'=>'chat', //name of directory in the modules folder
+		'description'=>'Provides a chat interface to facilitate communication.',
+		'group'=>'Core', //the category in which you module will appear on modules page, if 
+		'version'=>'.1', //the current version of your module, increment this any time you make changes to db in your module
+		'agave-version'=>'1', //what version of agave is required for this module to work?
+		'dependencies'=>array(), //what other modules does this module rely on?
+	);
+}
+
+function chat_info_cron() {
+	$jobs = array();
+//	$jobs[] = array('name','description','function','interval','enabled?');
+	
+	return $jobs;
+}
+
+function chat_info_menu_items() {
+	$items = array();
+	$items[] = array('Admin','/Chat',0,'Chat.','chat',1,1,NULL);
+
+	return $items;
+}
+
+function chat_info_system_uri() {
+	$uris = array();
+	$uris[] = array('chat',NULL,NULL,'viewSingleChat','start',0,1,0);
+	$uris[] = array('chat/%',NULL,NULL,'viewSingleChat','start',0,1,0);
+	
+	$uris[] = array('chat/getNewMsgs',NULL,NULL,'getNewMsgs','getNewMsgs',0,1,1);
+	$uris[] = array('chat/processStatuses',NULL,NULL,'processStatuses','processStatuses',0,1,1);
+	$uris[] = array('chat/uploadMessage',NULL,NULL,'uploadMessage','uploadMessage',0,1,1);
+
+//	$uris[] = array('dest','alias','access','function','file','panels','actions','fast_route');
+	
+	return $uris;
+}
+
+function chat_info_user_access() {
+	$args = array();
+		
+	return $args;
+}
+
+/*
+*	Update/modification hooks
+*/
+
+function chat_info_update() {
+	//any special processing that should occur whenever update.php is run
+}
+
+function chat_info_install() {
+	global $agave;
+	
+	$query = "SET SQL_MODE='NO_AUTO_VALUE_ON_ZERO'";
+	$agave->doSQLQuery($query, 0);
+
+	$query = "CREATE TABLE IF NOT EXISTS `chat_messages` (
+	  `messageKey` int(11) NOT NULL AUTO_INCREMENT,
+	  `chatSessionKey` int(11) NOT NULL,
+	  `authorKey` int(11) NOT NULL DEFAULT '0',
+	  `messageText` text COLLATE utf8_unicode_ci NOT NULL,
+	  `isFinal` tinyint(4) NOT NULL,
+	  `priority` tinyint(4) NOT NULL DEFAULT '0',
+	  `displayTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	  `microTime` bigint(20) DEFAULT NULL,
+	  PRIMARY KEY (`messageKey`),
+	  KEY `authorKey` (`authorKey`),
+	  KEY `chatSessionKey` (`chatSessionKey`)
+	) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;";
+	$agave->doSQLQuery($query, 0);
+
+	$query = "CREATE TABLE IF NOT EXISTS `chat_msg_user_map` (
+	  `mapKey` int(11) NOT NULL AUTO_INCREMENT,
+	  `messageKey` int(11) NOT NULL DEFAULT '0',
+	  `userKey` int(11) NOT NULL DEFAULT '0',
+	  `isActive` tinyint(4) NOT NULL DEFAULT '0',
+	  `isNew` tinyint(4) NOT NULL DEFAULT '0',
+	  PRIMARY KEY (`mapKey`),
+	  KEY `userKey` (`userKey`),
+	  KEY `messageKey` (`messageKey`)
+	) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;";
+	$agave->doSQLQuery($query, 0);
+
+	$query = "CREATE TABLE IF NOT EXISTS `chat_sessions` (
+	  `chatSessionKey` int(11) NOT NULL AUTO_INCREMENT,
+	  `sessionName` text COLLATE utf8_unicode_ci NOT NULL,
+	  `gopherInterval` int(11) NOT NULL DEFAULT '1000',
+	  `startTime` datetime NOT NULL,
+	  `endTime` datetime NOT NULL,
+	  `daysToArchive` int(11) NOT NULL DEFAULT '0',
+	  PRIMARY KEY (`chatSessionKey`)
+	) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;";
+	$agave->doSQLQuery($query, 0);
+
+	$query = "CREATE TABLE IF NOT EXISTS `chat_sessions_map` (
+	  `mapKey` int(11) NOT NULL AUTO_INCREMENT,
+	  `chatSessionKey` int(11) NOT NULL,
+	  `userKey` int(11) NOT NULL,
+	  `userLevel` enum('admin','support','proctor') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+	  `status` enum('active','inactive') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'inactive',
+	  `updateTime` bigint(20) DEFAULT '0',
+	  PRIMARY KEY (`mapKey`),
+	  KEY `chatSessionKey` (`chatSessionKey`),
+	  KEY `userKey` (`userKey`)
+	) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;";
+	$agave->doSQLQuery($query, 0);
+
+	$query = "ALTER TABLE `chat_messages`
+	  ADD CONSTRAINT `chat_messages_ibfk_1` FOREIGN KEY (`authorKey`) REFERENCES `users` (`userKey`) ON DELETE CASCADE ON UPDATE CASCADE,
+	  ADD CONSTRAINT `chat_messages_ibfk_2` FOREIGN KEY (`chatSessionKey`) REFERENCES `chat_sessions` (`chatSessionKey`) ON DELETE CASCADE ON UPDATE CASCADE;";
+	$agave->doSQLQuery($query, 0);
+	
+	$query = "ALTER TABLE `chat_msg_user_map`
+	  ADD CONSTRAINT `chat_msg_user_map_ibfk_1` FOREIGN KEY (`messageKey`) REFERENCES `chat_messages` (`messageKey`) ON DELETE CASCADE ON UPDATE CASCADE,
+	  ADD CONSTRAINT `chat_msg_user_map_ibfk_2` FOREIGN KEY (`userKey`) REFERENCES `users` (`userKey`) ON DELETE CASCADE ON UPDATE CASCADE;";
+	$agave->doSQLQuery($query, 0);
+
+	$query = "ALTER TABLE `chat_sessions_map`
+	  ADD CONSTRAINT `chat_sessions_map_ibfk_3` FOREIGN KEY (`chatSessionKey`) REFERENCES `chat_sessions` (`chatSessionKey`) ON DELETE CASCADE ON UPDATE CASCADE,
+	  ADD CONSTRAINT `chat_sessions_map_ibfk_4` FOREIGN KEY (`userKey`) REFERENCES `users` (`userKey`) ON DELETE CASCADE ON UPDATE CASCADE;";
+	$agave->doSQLQuery($query, 0);
+	
+}
+
+function chat_info_uninstall() {
+	global $agave;
+	
+	$query = "DROP TABLE `chat_msg_user_map`,`chat_messages`,`chat_sessions_map`,`chat_sessions`;";
+	$agave->doSQLQuery($query, 0);
+}

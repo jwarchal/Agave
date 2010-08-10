@@ -1,0 +1,68 @@
+<?php
+
+//
+//	This request file is called by an AJAX to retrieve new messages from the
+//	database and return them in a keyed array
+//
+
+function getNewMsgs() {
+list($lastUpdateTime, $chatSessionKey, $userKey) = array(
+								$_GET["lastUpdateTime"],
+								$_GET["chatSessionKey"],
+								$_GET["userKey"]
+								);
+
+$chatData = getChatMessages($lastUpdateTime, $chatSessionKey);
+
+	if ($chatData) {
+	returnMessageData($chatData, $userKey);
+	}	
+}
+
+function getChatMessages($lastUpdateTime, $chatSessionKey) { 
+global $agave;
+	
+$queryStatement = "SELECT messageKey, authorKey, chatSessionKey, messageText, isFinal, microTime, displayTime " .
+				  "FROM chat_messages " .
+				  "WHERE chatSessionKey = '$chatSessionKey' " .
+				  "AND microTime > '$lastUpdateTime' " .
+				  "ORDER BY microTime";
+
+return $agave->doSQLQuery($queryStatement, 3);
+}
+
+function returnMessageData($chatData, $userKey) {
+$chatMsgs = array();
+
+	foreach ($chatData as $thisChatData) {
+	$chatMessage = array();
+
+	$chatMessage["author"] = $thisChatData['authorKey'];
+	$chatMessage["session"] = $thisChatData['chatSessionKey'];
+	$chatMessage["message"] = $thisChatData['messageText'];
+	$chatMessage["isFinal"] = $thisChatData['isFinal'];
+	$chatMessage["time"] = $thisChatData['displayTime'];
+	$chatMessage["isNew"] = ($thisChatData['authorKey'] == $userKey) ? 0 : 1;
+	
+	markAsViewed($userKey,$thisChatData['messageKey']);
+	
+	$chatMsgs[] = $chatMessage;
+	
+	unset($chatMessage);	
+	
+	$lastUpdateTime = $thisChatData['microTime'];
+	}
+	
+echo json_encode(array("chatMsgs" => $chatMsgs, "lastUpdateTime" => $lastUpdateTime));
+}
+
+function markAsViewed($userKey, $messageKey) {
+global $agave;
+
+$queryStatement = "UPDATE chat_msg_user_map SET " .
+				  "isNew = '0' " .
+				  "WHERE userKey='$userKey' " .
+				  "AND messageKey='$messageKey'";
+				  
+$agave->doSQLQuery($queryStatement);
+}

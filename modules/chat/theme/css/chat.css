@@ -1,0 +1,79 @@
+.chatTranscript {
+	height:425px;
+	overflow:auto;
+}
+
+.Chat {
+	margin: 1em .5em;
+}
+
+/*.Chat h3 {
+	margin: 0;
+	padding: .25em;
+	background: #FFFFFF;
+	border-top: 1px solid #000000;
+	border-bottom: 1px solid #000000;
+}
+*/
+
+.Chat div {
+	padding: .5em .25em;
+}
+
+#tooltip {
+    padding: 5px 5px;
+    background: #FFFFFF;
+    border: 1px solid #000000;
+    opacity: 0.90;
+}
+
+.active {
+	background-image:url('../images/active.gif');
+	background-repeat:no-repeat; 
+	background-position:0px; 
+	border:0pt none; 
+	margin:0pt; 
+	padding:0pt;
+	width:35px;height:40px;
+}
+
+.inactive {
+	background-image:url('../images/inactive.gif');
+	background-repeat:no-repeat; 
+	background-position:0px; 
+	border:0pt none; 
+	margin:0pt; 
+	padding:0pt;
+	width:35px;height:40px;
+}
+
+.icon {
+	background-color:#FFFFFF;	
+    
+	background-repeat:no-repeat; 
+	background-position:0px; 
+	border:0pt none; 
+	margin:0pt; 
+	padding:0pt;
+	width:27px;height:29px;
+}
+
+.writing {
+	background-image:url('../images/writing.gif');	
+	background-repeat:no-repeat; 
+	background-position:0px; 
+	border:0pt none; 
+	margin:0pt; 
+	padding:0pt;
+	width:27px;height:29px;
+}
+
+.newMessage {
+	background-image:url('../images/uGotMail.gif');	
+	background-repeat:no-repeat; 
+	background-position:0px; 
+	border:0pt none; 
+	margin:0pt; 
+	padding:0pt;
+	width:27px;height:29px;
+}

@@ -1,0 +1,62 @@
+<?php
+
+//
+//	Does the same as loadInitialMessages in chat.object. 
+//	This script sets everyone in the session who has not checked in during $interval
+//	to inactive and returns everyone's data as a keyed array. When a user logs in,
+// 	and thus establishes a valid connection to the SQL table, they set themselves to active
+//
+
+
+function processStatuses() {
+global $agave;
+
+$chatSessionKey = $_GET["chatSessionKey"];
+
+$interval = 30 * pow(10,8);		// 30 seconds -- perhaps retrieve from SQL table
+
+$mTime = makeTimeStamp() - $interval;
+
+$queryStatement = "UPDATE chat_sessions_map " .
+				  "SET status = 'inactive' " .
+				  "WHERE chatSessionKey = '$chatSessionKey' " .
+				  "AND status = 'active' " .
+				  "AND updateTime < '$mTime' ";
+
+$agave->doSQLQuery($queryStatement, 0);
+
+$queryStatement = "SELECT chatSessionKey, userKey, status " .
+				  "FROM chat_sessions_map " .
+				  "WHERE chatSessionKey = '$chatSessionKey' ";
+
+$statusData = $agave->doSQLQuery($queryStatement, 3);
+
+returnStatusData($statusData);	
+}
+
+function makeTimeStamp() {
+list($usec, $sec) = explode(" ", microtime());
+
+$usec = preg_replace("/^0\./","",$usec);
+$convTime = $sec . $usec;
+
+return $convTime;
+}
+
+function returnStatusData($statusData) {
+$statuses = array();	
+	
+	foreach ($statusData as $thisStatusData) {
+	$status = array();	
+	
+	$status["author"] = $thisStatusData["userKey"];
+	$status["session"] = $thisStatusData["chatSessionKey"];
+	$status["status"] = $thisStatusData["status"];
+	
+	$statuses[] = $status;
+	
+	unset($status);
+	}
+	
+echo json_encode($statuses);
+}

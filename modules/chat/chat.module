@@ -2,4 +2,3 @@
 $objects = array();
 $objects['chat'] = 'chat.object';
 
-$extensions = array();

@@ -1,0 +1,85 @@
+<?php
+
+//
+//	This script uploads messages into the database and returns a 
+//	chatMessageKey to store a tempMsg.  Otherwise, it creates a new
+//	table entry for the messages and autoincrements the key
+//
+
+function uploadMessage() {	
+list($message, $isFinal, $messageKey, $chatSessionKey, $userKey, $sessionList) = array(
+																 addslashes($_POST["message"]),
+																 $_POST["isFinal"],
+																 $_POST["messageKey"],
+																 $_POST["chatSessionKey"],
+																 $_POST["userKey"],
+																 json_decode(stripslashes($_POST["sessionList"]), true)	// a list of members in session
+																 );
+
+saveMsgToDB($message, $isFinal, $messageKey, $sessionList, $userKey, $chatSessionKey);
+}
+
+function saveMsgToDB($messageText, $isFinal, $messageKey, $sessionList, $userKey, $chatSessionKey) {
+global $agave;
+
+$mTime = makeTimeStamp(microTime());
+
+$queryStatement = "REPLACE INTO chat_messages SET " .
+			 	  "messageKey = '$messageKey', " .
+				  "chatSessionKey = '$chatSessionKey', ".
+			      "authorKey = '$userKey', " .
+			      "messageText = '$messageText', " .
+				  "isFinal = '$isFinal', " .
+			      "microTime = '$mTime' ";
+
+$agave->doSQLQuery($queryStatement, 0);
+
+// Since this will always be called during each gopher cycle, it updates a user's last checkin time and marks them as active
+$queryStatement = "UPDATE chat_sessions_map SET " .
+ 				  "status = 'active', " .
+				  "updateTime = '$mTime' " .
+				  "WHERE userKey = '$userKey' " .
+				  "AND chatSessionKey = '$chatSessionKey' ";
+
+$agave->doSQLQuery($queryStatement, 0);
+
+	// If there is no message key, its a new tempMsg, so after adding it, return its key
+	if ($messageKey == "") {	
+	$queryStatement = "SELECT MAX(messageKey) " .
+					  "FROM chat_messages " .
+					  "WHERE messageText = '$messageText' " .
+					  "AND chatSessionKey = '$chatSessionKey' " .
+					  "AND authorKey = '$userKey' ";
+		  
+	$messageKey = $agave->doSQLQuery($queryStatement, 0);		
+	}
+
+	if ($isFinal) {
+		foreach($sessionList as $member) {
+		$isNew = 1;		// Mark the message as new for all but the author
+		
+			if ($member == $userKey) {
+			$isNew = 0;
+			}
+			
+		$queryStatement = "INSERT INTO chat_msg_user_map SET " .	
+						  "messageKey = '$messageKey', " .
+						  "userKey = '$member', " .
+					      "isActive = 1, " .
+						  "isNew = '$isNew'";
+							
+		$agave->doSQLQuery($queryStatement, 0);
+		}
+	}
+	
+	echo trim($messageKey); 
+}
+
+function makeTimeStamp($mTime) {
+list($usec, $sec) = explode(" ", microtime());
+
+$usec = preg_replace("/^0\./","",$usec);
+$convTime = $sec . $usec;
+
+return $convTime;
+}

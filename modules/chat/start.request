@@ -1,0 +1,15 @@
+<?php
+
+function viewSingleChat($args=null) {
+    global $agave;
+    $session = $args[0];
+ 
+  	$chat = new chat($session);
+
+    //display it
+    $t = $agave->load('themer');
+    $t->output = $chat->returnInterface();
+
+//	$t->theme('chat','admin');
+    //no need to do anything after that... Once execution is done in your code, agave will continue the work of rendering the full page
+}
