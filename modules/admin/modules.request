@@ -6,7 +6,7 @@ function viewModules() {
 
 	$modules = array();
 	$modules = getModuleData();
-	
+
 	$themevars['modules'] = $modules;
 	$t->output = $t->theme('admin','admin-modules', $themevars);
 	$t->output = $t->theme('admin', 'admin');

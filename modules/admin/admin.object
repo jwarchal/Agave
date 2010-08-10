@@ -31,6 +31,9 @@ final class admin {
 		}
 
 		$dir = $this->agave->proj_dir.'modules';
+                while(substr($dir, 0, 1) == "/"){ //TODO: Fix the source of this later...
+                    $dir = substr($dir, 1);
+                }
 		$modules = array();
 		$items = (file_exists($dir)) ? scandir($dir) : FALSE;
 		if($items) foreach($items as $item) if(substr($item, 0, 1) != '.') $modules[] = $item;
