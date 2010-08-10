@@ -43,7 +43,7 @@ function getModuleData($loc) {
 	
 	//get data from _info_meta hook if it exists, add module data into setting
 	$moduleData = $agave->setting('module_data');
-        if(!$moduleData) $moduleData = array();
+	if(!$moduleData) $moduleData = array();
 	foreach($modules as $module) if(function_exists($module."_info_meta")) {
 		$moduleData[$module] = call_user_func($module."_info_meta");
 		$moduleData[$module]['path'] = $dir."/".$module."/";

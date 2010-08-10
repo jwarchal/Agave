@@ -20,6 +20,10 @@ class agave extends db {
 	public function __construct() {	}
 	
 	public function modulePath($module) {
+		if(empty($this->settings['module_data'][$module]['path'])) {
+			$moduleData = $this->load('admin')->getModuleData();
+			$this->load('admin')->saveSetting('module_data', $moduleData);
+		}
 		return $this->settings['module_data'][$module]['path'];
 	}
 
