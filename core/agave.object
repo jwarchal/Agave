@@ -184,7 +184,7 @@ class agave extends db {
 		if(!isset($_SESSION['logs'])) $_SESSION['logs'] = array();
 		$item = array();
 		$item['type'] = $type;
-		$item['event'] = $event; 
+		$item['event'] = $this->escape($event);
 		$item['time'] = time();
 		$item['userKey'] = $userKey;
 		$item['location'] = $this->current_location;

@@ -94,10 +94,27 @@ class db {
 					return $arr;
 			}
 			if ($dataFormat == 2) { // return a hash of values
-					return $pdostate->fetch();
+					$retval = $pdostate->fetch();
+					if($retval) foreach($retval as $key=>$val){
+						if(is_numeric($key)){
+							unset($retval[$key]);
+						}
+					}
+					return $retval;
 			}
 			if (!isset($dataFormat) || $dataFormat == 3) { // return an array of hashes (default format)
-					return $pdostate->fetchAll();
+					$row = $pdostate->fetch();
+					$arr = array();
+					while($row) {
+						foreach($row as $key=>$val){
+							if(is_numeric($key)){
+								unset($row[$key]);
+							}
+						}
+						$arr[] = $row;
+						$row = $pdostate->fetch();
+					}
+					return $arr;
 			}
 		}
 		catch (PDOException $e) {
@@ -135,12 +152,7 @@ class db {
 			die("Error:  No established database connection to get last insert id from.");
 		}
 
-		if(isset($this->dbh->lastInsertId)){
-			return $this->dbh->lastInsertId;
-		}
-		else{
-			return null;
-		}
+		return $this->dbh->lastInsertId();
 	}
 
 	/*

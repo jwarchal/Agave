@@ -98,4 +98,8 @@ class contentNodeManager {
 		}
 		return $nodes;
 	}
+
+	public function deleteContentNode($key) {
+//TODO: start here
+	}
 }

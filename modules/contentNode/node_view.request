@@ -20,7 +20,6 @@ function viewContentNode($args=null) {
 
 	//give modules a chance to play with the content
 	$node = $agave->invoke("contentNode_build", $node);
-
 	$themer->page['title'] = ($node->fields->getValue('title')) ? $node->fields->getValue('title') : "Content $contentID";
 	$themer->page['keywords'] = ($node->fields->getValue('title')) ? strip_tags($node->fields->getValue('title')) : NULL;
 	$themer->page['description'] = ($node->fields->getValue('body')) ? substr(strip_tags($node->fields->getValue('body')),0, 200) : NULL;

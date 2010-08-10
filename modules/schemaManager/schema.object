@@ -22,17 +22,18 @@ class schema {
 	/*
 	 * PUBLIC API METHODS
 	 */
-	public function returnFormElements($parentElement=FALSE, $matchFields=FALSE) {
+	public function returnFormElements($matchFields=FALSE) {
 		//if matchkeys were received, set default field values based on matchkeys
 		if(!$this->fields) return;
 		$elements = array();
-		foreach($this->fieldOrderedList as $field) $elements[$field] = $this->returnFormElement($field, $parentElement, $matchFields);
+		foreach($this->fieldOrderedList as $field) $elements[$field] = $this->returnFormElement($field, $matchFields);
 		return $elements;
 	}
 
 	//TODO; remove parentElement stuff, it's probably unnecessary
-	public function returnFormElement($fieldName, $parentElement=FALSE, $matchFields=FALSE) {
+	public function returnFormElement($fieldName, $matchFields=FALSE) {
 		$element = $this->fieldElements[$fieldName];
+
 		if(!$matchFields) $matchFields = $this->matchFields; //inherit matchfields from constructor if none explicit
 		if($matchFields) $element['#metadata']['matchFields'] = $matchFields;
 
@@ -56,7 +57,7 @@ class schema {
 	
 	public function displayField($field, $matchFields=FALSE) {
 		$value = $this->getValue($field, $matchFields);
-		return ($value) ? $this->agave->load('fieldManager')->displayFormat($value, $this->fields[$field]) : NULL;
+		return ($value) ? $this->agave->load('fieldManager')->displayFormat($this->fields[$field]['type'], $value, $this->fields[$field]['settings']) : NULL;
 	}
 
 	public function getValue($field, $matchFields = FALSE) {
@@ -158,7 +159,7 @@ class schema {
 				foreach($row as $key=>$value) if(substr($key, 0, 3) == 'mf_') $matchFields[substr($key, 3, strlen($key)-3)] = $value;
 
 				$values[$row['fieldKey']][] = array(
-					'value'=>$this->agave->load('fieldManager')->schemaUnformat($this->fieldTypes[$row['fieldKey']], $row['value']),
+					'value'=>$this->agave->load('fieldManager')->schemaUnformat($row['value'], $this->fieldTypes[$row['fieldKey']]),
 					'matchFields' => (!empty($matchFields)) ? $matchFields : FALSE,
 					'valueKey'=>$row['valueKey'],
 					'fieldKey'=>$row['fieldKey'],

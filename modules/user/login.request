@@ -27,7 +27,7 @@ function buildPage() {
 	$form = $fm->startForm($agave->url."user/login&rd=".$agave->destination, "POST");
 	$form .= $fm->generateElements($formElements);
 	$form .= $fm->endForm("Login");
-	
+
 	$themer->page['title'] = "User Login";
 	$themer->output = "<h2>User login</h2>".$form;
 }

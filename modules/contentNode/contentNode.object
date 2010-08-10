@@ -21,7 +21,6 @@ class contentNode {
 		else return FALSE;
 
 		if(!isset($this->published)) $this->published = FALSE;
-	
 		//populate schema
 		$this->fields = new schema('contentNode', $this->type, $this->contentNodeKey);
 

@@ -105,7 +105,7 @@ final class fieldManager {
 		}
 		else {
 			$file = $this->fieldLocations[$field];
-			if(!$file) agave_error_page('500', "FieldManager tried to load an invalid field <b>'$field'</b>");
+			if(!$file) agave_error_page('500', "FieldManager tried to load an invalid field <b>$field</b>");
 			include_once($file);
 			$GLOBALS['objects']['fields'][$class] = (class_exists($class, FALSE)) ? new $class : FALSE;
 			return $GLOBALS['objects']['fields'][$class];
@@ -511,8 +511,8 @@ final class fieldManager {
             return $field->phpFormat($value, $meta);
         }
 
-	public function displayFormat($value, $field) { //TODO: have this take $value, $field and $meta like the other formats
-		return $this->loadField($field['type'])->display($value, $field['settings']);
+	public function displayFormat($type, $value, $metadata=false) { //TODO: have this take $value, $field and $meta like the other formats
+		return $this->loadField($type)->display($value, $metadata);
 	}
 
 	public function returnSettingsFields($field, $data=FALSE){

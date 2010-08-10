@@ -16,10 +16,10 @@ function confirm($args=NULL) {
 	if(!$user->access("delete_content_$node->type") && $user->userKey != $node->userKey) agave_error_page("403");
 
 	$elements[] = array(
-		'preHTML'=>"<p>Are you sure you want to delete this content? Once you press delete, all information related to this content will be removed, and this action cannot be undone.</p>",
-		'type'=>'hidden',
-		'name'=>'confirm',
-		'value'=>'delete'
+		'#preHTML'=>"<p>Are you sure you want to delete this content? Once you press delete, all information related to this content will be removed, and this action cannot be undone.</p>",
+		'#type'=>'hidden',
+		'#name'=>'confirm',
+		'#value'=>'delete'
 	);
 	
 	$form = $fm->startForm($agave->url."content/$id/delete", "post");
