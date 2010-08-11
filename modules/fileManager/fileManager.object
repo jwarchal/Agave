@@ -252,6 +252,7 @@ final class fileManager {
 		
 		//make sure sourceFile exists
 		$sourceRealPath = $this->realpath($sourceURI);
+                //$agave->death($sourceRealPath);
 		if(!file_exists($sourceRealPath)) {
 			$agave->message('error', "Attempted to copy a file that does not exist.");
 			$agave->debug("Tried to copy a file, but source file did not exist; returned FALSE", __METHOD__, $funcArgs, __LINE__, __FILE__);
@@ -429,7 +430,7 @@ final class fileManager {
 		//create file object
 		$file = new stdClass;
 		$file->filename = $name;
-		$file->uri = $destination;
+		$file->uri = "tmp://".basename($tmp_name);
 		$file->size = $size;
 		$file->mime = $mime;
 		$file->status = FILE_STATUS_TMP;
@@ -440,6 +441,8 @@ final class fileManager {
 
                 //move the real file to its destination?
                 $this->move_file($file,$destination);
+
+                //$file->uri = "temp://".basename($tmp_name);
 		
 		//TODO: add integrity check on filename, append .txt to executable code files
 
