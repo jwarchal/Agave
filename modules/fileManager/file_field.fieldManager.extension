@@ -98,10 +98,10 @@ final class field_file extends genericField implements fieldInterface {
 	private function markupFile($file=NULL, $element = NULL, $edit=FALSE) {
 		$user = $this->agave->load('user');
 		if(!$file) return $this->returnBlankField($element);
-		$editControls = ($user->userKey == $file->userKey && $edit==TRUE) ? $this->returnEditControls() : '';
+		$editControls = $this->returnEditControls();//($user->userKey == $file->userKey && $edit==TRUE) ? $this->returnEditControls() : '';
 		$html = "
 			<div class='fm-file-wrapper'>
-				<span class='fm-file fm-file-$file->extension'>$file->filename</span>
+				<span class='fm-file fm-file-$file->extension'>$file->filename</span><pre>".print_r($file, TRUE)."</pre>
 				$editControls
 				<input type='hidden' class='file-status' name='".$element['#name']."-status' value='FILLED' />
 				<input type='hidden' class='file-key' name='".$element['#name']."-key' value='file-$file->fileKey' />

@@ -264,6 +264,7 @@ final class fileManager {
 		//TODO: make sure you aren't shooting yourself in the foot here by assuming that $destinationURI includes the name of the file, e.g. public://path/to/file/stuff.jpg instead of just public://path/to/file/
 		//prepare destination directory (assume here that $destinationURI INCLUDES the filename)
 		$targetDir = $this->dir_name($destinationURI);
+                //$agave->death($targetDir);
 		if(!$this->prepare_dir($targetDir)) {
 			$agave->message('error', "Agave could not create or write to the necessary file directory.");
 			$agave->debug("Unsuccessful attempt at creating or writing to the new directory ($targetDir); returned FALSE", __METHOD__, $funcArgs, __LINE__, __FILE__);
@@ -279,11 +280,14 @@ final class fileManager {
 		}
 		
 		//now write the new file, return false if action didn't work
-		if(!@copy($sourceURI, $destinationURI)) {
+		if(!copy($this->realpath($sourceURI), $this->realpath($destinationURI))) { // Why would we suppress copy's error messages with @copy?
 			$agave->message('error', "Agave could not copy the file to its new location.");
 			$agave->debug("Unsuccessful attempt at copying file to new location; returned FALSE", __METHOD__, $funcArgs, __LINE__, __FILE__);
-			return FALSE;
+			//$agave->death("NOT Copied!");
+                        return FALSE;
 		}
+
+                //$agave->death("Copied!");
 		
 		//set proper permissions for new file
 		$this->chmod_file($destinationURI);
@@ -422,10 +426,10 @@ final class fileManager {
 		//TODO: add error checking based on $error, set error/debug messages and return false
 		
 		//figure out destination, default is temporary file
-		if(!$destination) $destination = "temp://".basename($tmp_name); //TODO: I changed this
+		if(!$destination) $destination = "temp://".$name; //TODO: I changed this
 		$time = time();
 
-                //$agave->death($tmp_name);
+                //$agave->death($destination);
 
 		//create file object
 		$file = new stdClass;
@@ -442,7 +446,7 @@ final class fileManager {
                 //move the real file to its destination?
                 $this->move_file($file,$destination);
 
-                //$file->uri = "temp://".basename($tmp_name);
+                //$file->uri = "temp://".basename($name);
 		
 		//TODO: add integrity check on filename, append .txt to executable code files
 
@@ -451,11 +455,11 @@ final class fileManager {
                 //$agave->death($file);
 
 		//TODO: make a little less overhead... maybe change $this->save_file to return object that was passed, with key appended
-   		/*if(!file_exists($this->realPath($file->uri))) {
+   		if(!file_exists($this->realPath($file->uri))) {
 			$agave->message('error', "Uploaded file could not be saved. The destination is not writeable.");
 			$agave->debug("Uploaded file could not be saved.", __METHOD__, $funcArgs, __LINE__, __FILE__);		
 			return FALSE;
-		}*/
+		}
 
 		$file = $this->save_file($file);
 
