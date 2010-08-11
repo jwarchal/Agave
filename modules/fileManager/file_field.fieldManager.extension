@@ -8,27 +8,8 @@ final class field_file extends genericField implements fieldInterface {
 	}
 	
 	public function __destruct() { }
-	
-	public function format($values=null, $fieldName) {
-		$args = func_get_args();
-		$i=0;
-		if(isset($values[$fieldName.'-key'])){
-			$fileKey = $values[$fieldName.'-key'];
-		}
-		if(isset($values[$fieldName.'-status'])){
-			$status = $values[$fieldName.'-status'];
-			switch($status) {
-				case 'BLANK' : $key = NULL; break;
-				case 'FILLED' : $key = $fileKey; break;
-				case 'DELETE' : $key = NULL; $this->deleteFile($fileKey); break;
-				case 'REPLACE' : $key = $this->replaceFile($fileKey, $fieldName); break;
-				case 'NEWFILE' : $key = $this->saveNewFile($fieldName); break;
-			}
-		}
-		return $key;
-	}
 
-        public function unformat($fileKeyOrObjectOrWhatever) {
+        public function phpUnformat($fileKeyOrObjectOrWhatever) {
 		return $this->fm->normalize($fileKeyOrObjectOrWhatever);
 	}
 
@@ -60,7 +41,8 @@ final class field_file extends genericField implements fieldInterface {
 	}
 	
 	private function saveNewFile($name) {
-		$args = func_get_args();
+
+                $this->agave->death($_FILES);
 		
 		$tmp_name = $_FILES[$name]['tmp_name'];
 		$name = $_FILES[$name]['name'];

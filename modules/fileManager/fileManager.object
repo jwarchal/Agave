@@ -81,6 +81,7 @@ final class fileManager {
 	}
 	
 	private function unpackFileObject($dbrow){
+                $this->agave->death($dbrow);
 		$file = new stdClass;
 		foreach($dbrow as $key=>$value) $file->$key = $value;
 		
