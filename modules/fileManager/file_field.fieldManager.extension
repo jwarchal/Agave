@@ -46,14 +46,17 @@ final class field_file extends genericField implements fieldInterface {
 	private function saveNewFile($name) {
 
                 //$this->agave->death($_FILES);
-		
+
 		$tmp_name = $_FILES[$name]['tmp_name'];
 		$name = $_FILES[$name]['name'];
 		$mime = $_FILES[$name]['type'];
 		$size = $_FILES[$name]['size'];
 		$error = $_FILES[$name]['error'];
 
-		return $this->fm->save_file_upload($name, $tmp_name, $size, $error, $mime)->fileKey;
+                //TODO:  make destination legitimate; not just public but other stuff, too
+		$dest = "public://".$name;
+
+		return $this->fm->save_file_upload($name, $tmp_name, $size, $error, $mime, $dest)->fileKey;
 	}
 	
 	private function deleteFile($fileKey) {
@@ -125,8 +128,13 @@ final class field_file extends genericField implements fieldInterface {
 	public function display($values, $row) {
 		$t = $this->agave->load('themer');
 		$t->addCSS('modules/fieldManager/theme/css/fm-filefield.css');
+                if(is_numeric($values)){
+                    $values = $this->fm->normalize($values);
+                    //$this->agave->death($values);
+                    
+                }
 		if(is_object($values)) return $this->generateDisplayHTML($values);
-		else if(is_array($values)) {
+		elseif(is_array($values)) {
 			$html = '';
 			foreach($values as $file) $html .= $this->generateDisplayHTML($file);
 			return $html;	

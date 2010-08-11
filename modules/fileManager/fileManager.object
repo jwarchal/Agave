@@ -96,7 +96,8 @@ final class fileManager {
 
 		//use stream_wrappers to determine actual URLS to file
 		$wrapper = $this->return_stream_wrapper($file->uri);
-		$file->url = $wrapper->getExternalUrl(); //could be same as absoluteURL, but may be www.example.com/download-file/$fileKey, or something like that
+                //$agave->death($dbrow);
+		$file->url = $wrapper->getExternalUrl().$file->filename; //could be same as absoluteURL, but may be www.example.com/download-file/$fileKey, or something like that
 		$file->server_path = $wrapper->realpath(); //note, we shouldn't need this anymore, just use $file->uri for file operations
 		return $file;
 	}
