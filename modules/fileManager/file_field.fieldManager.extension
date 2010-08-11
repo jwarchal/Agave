@@ -33,7 +33,22 @@ final class field_file extends genericField implements fieldInterface {
 	}
 
         public function phpFormat($postValue, $element = null) {
-                return $postValue;
+                $values = $_POST;
+                $fieldName = $element["#name"];
+		if(isset($values[$fieldName.'-key'])){
+			$fileKey = $values[$fieldName.'-key'];
+		}
+		if(isset($values[$fieldName.'-status'])){
+			$status = $values[$fieldName.'-status'];
+			switch($status) {
+				case 'BLANK' : $key = NULL; break;
+				case 'FILLED' : $key = $fileKey; break;
+				case 'DELETE' : $key = NULL; $this->deleteFile($fileKey); break;
+				case 'REPLACE' : $key = $this->replaceFile($fileKey, $fieldName); break;
+				case 'NEWFILE' : $key = $this->saveNewFile($fieldName); break;
+			}
+		}
+		return $key;
 	}
 
         public function schemaFormat($phpValue, $element = null) {
@@ -74,8 +89,8 @@ final class field_file extends genericField implements fieldInterface {
 		
 		$html = '';
 
-		if(isset($element['default'])) {
-			$html = $this->markupFile($this->unformat($element['default']), $element, TRUE);
+		if(isset($element['#default'])) {
+			$html = $this->markupFile($this->unformat($element['#default']), $element, TRUE);
 		}
 		else $html = $this->returnBlankField($element);
 		
@@ -87,15 +102,15 @@ final class field_file extends genericField implements fieldInterface {
 		$attributes = implode(" ", $this->generateAttributes($element));
 		$html = "
 			<div class='fm-file-wrapper'>
-				<input type='file' class='fm-filefield' name='".$element['name']."' $attributes />
-				<input type='hidden' class='file-status' name='".$element['name']."-status' value='BLANK' />
+				<input type='file' class='fm-filefield' name='".$element['#name']."' $attributes />
+				<input type='hidden' class='file-status' name='".$element['#name']."-status' value='BLANK' />
 			</div>
 		";
 		
 		return $html;
 	}
 	
-	private function markupFile($file=NULL, $element, $edit=FALSE) {
+	private function markupFile($file=NULL, $element = NULL, $edit=FALSE) {
 		$user = $this->agave->load('user');
 		if(!$file) return $this->returnBlankField($element);
 		$editControls = ($user->userKey == $file->userKey && $edit==TRUE) ? $this->returnEditControls() : '';
@@ -103,8 +118,8 @@ final class field_file extends genericField implements fieldInterface {
 			<div class='fm-file-wrapper'>
 				<span class='fm-file fm-file-$file->extension'>$file->filename</span>
 				$editControls
-				<input type='hidden' class='file-status' name='".$element['name']."-status' value='FILLED' />
-				<input type='hidden' class='file-key' name='".$element['name']."-key' value='file-$file->fileKey' />
+				<input type='hidden' class='file-status' name='".$element['#name']."-status' value='FILLED' />
+				<input type='hidden' class='file-key' name='".$element['#name']."-key' value='file-$file->fileKey' />
 			</div>
 		";
 		

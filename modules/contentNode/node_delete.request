@@ -40,7 +40,7 @@ function delete($args=NULL) {
 	
 	$agave->invoke("contentNode_delete", $id);
 	
-	$query = "DELETE FROM `contentNode_values` WHERE `contentNodeKey`='$node->contentNodeKey'";
+	$query = "DELETE FROM `contentNode_schema_values` WHERE `uniqueKey`='$node->contentNodeKey'";
 	$agave->doSQLQuery($query);
 	$query = "DELETE FROM `contentNode` WHERE `contentNodeKey`='$node->contentNodeKey'";
 	$agave->doSQLQuery($query);
