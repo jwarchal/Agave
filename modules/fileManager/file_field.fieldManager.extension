@@ -4,6 +4,7 @@ final class field_file extends genericField implements fieldInterface {
 	public function __construct() {
 		global $agave;
 		$this->agave = $agave;
+                //$agave->death("I AM RISEN");
 		$this->fm = $this->agave->load('fileManager');
 	}
 	
@@ -15,6 +16,8 @@ final class field_file extends genericField implements fieldInterface {
 
         public function phpFormat($postValue, $element = null) {
                 $values = $_POST;
+                $key = null;
+                //$this->agave->death("HERE");
                 $fieldName = $element["#name"];
 		if(isset($values[$fieldName.'-key'])){
 			$fileKey = $values[$fieldName.'-key'];
@@ -42,7 +45,7 @@ final class field_file extends genericField implements fieldInterface {
 	
 	private function saveNewFile($name) {
 
-                $this->agave->death($_FILES);
+                //$this->agave->death($_FILES);
 		
 		$tmp_name = $_FILES[$name]['tmp_name'];
 		$name = $_FILES[$name]['name'];
@@ -72,7 +75,7 @@ final class field_file extends genericField implements fieldInterface {
 		$html = '';
 
 		if(isset($element['#default'])) {
-			$html = $this->markupFile($this->unformat($element['#default']), $element, TRUE);
+			$html = $this->markupFile($this->phpUnformat($element['#default']), $element, TRUE);
 		}
 		else $html = $this->returnBlankField($element);
 		

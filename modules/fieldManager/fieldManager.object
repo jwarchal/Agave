@@ -180,10 +180,13 @@ final class fieldManager {
 		//forms start with state properties as false
 		$form->submitted = FALSE;
 		$form->values = array();
-		$form->files = FALSE;
+		$form->includesFiles = FALSE;
 		$form->validateOK = FALSE;
 		$form->block = FALSE;
 		$form->errors = FALSE; // populate with errors to render
+
+                //check for file fieldz
+                $form->includesFiles = $this->checkForFileField($form->fields);
 
 		$this->addNameAttributes($form->fields);
 
@@ -229,10 +232,26 @@ final class fieldManager {
 		return $form;
 	}
 
+        private function checkForFileField($array){
+            $retval = FALSE;
+            foreach($array as $key=>$value){
+                if(!$this->isProp($key)){
+                    if(isset($value["#type"])){
+                        if($value['#type'] == "file"){
+                            return TRUE;
+                        }
+                    }
+                    $retval = $this->checkForFileField($value);
+                    if($retval) return $retval;
+                }
+            }
+            return $retval;
+        }
+
         private function addNameAttributes(&$array){
             foreach($array as $key=>&$value){
                 if(!$this->isProp($key)){
-					if(!is_array($value)) agave_error_page("500", "<h3>Your form is improperly defined!!</h3>");
+                    if(!is_array($value)) agave_error_page("500", "<h3>Your form is improperly defined!!</h3>");
                     if(!isset($value['#name'])){
                         $value['#name'] = $key;
                     }
@@ -248,6 +267,9 @@ final class fieldManager {
 				$field = $this->loadField($class);
 				if(isset($form->values[$value['#name']])){
 					$form->values[$value['#name']] = $field->phpFormat($form->values[$value['#name']], $value);
+				}
+                                if($class == "file"){
+					$form->values[$value['#name']] = $field->phpFormat(null, $value);
 				}
 				$this->formatValuesWithFieldsArray($value, $form);
 			}

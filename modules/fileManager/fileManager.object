@@ -81,7 +81,7 @@ final class fileManager {
 	}
 	
 	private function unpackFileObject($dbrow){
-                $this->agave->death($dbrow);
+                //$this->agave->death($dbrow);
 		$file = new stdClass;
 		foreach($dbrow as $key=>$value) $file->$key = $value;
 		
@@ -421,11 +421,11 @@ final class fileManager {
 		//TODO: add error checking based on $error, set error/debug messages and return false
 		
 		//figure out destination, default is temporary file
-		if(!$destination) $destination = "tmp://".basename($tmp_name); //TODO: I changed this
+		if(!$destination) $destination = "temp://".basename($tmp_name); //TODO: I changed this
 		$time = time();
 
                 //$agave->death($destination);
-                //$agave->death($this->realpath($destination));
+                $agave->death($this->realpath($destination));
 
 		//create file object
 		$file = new stdClass;
@@ -443,12 +443,15 @@ final class fileManager {
 
 		//TODO: make sure $file->uri is writable
 
+                //$agave->death($file);
+
 		//TODO: make a little less overhead... maybe change $this->save_file to return object that was passed, with key appended
    		if(!file_exists($this->realPath($file->uri))) {
 			$agave->message('error', "Uploaded file could not be saved. The destination is not writeable.");
 			$agave->debug("Uploaded file could not be saved.", __METHOD__, $funcArgs, __LINE__, __FILE__);		
 			return FALSE;
 		}
+
 		$file = $this->save_file($file);
 
 		return $file;

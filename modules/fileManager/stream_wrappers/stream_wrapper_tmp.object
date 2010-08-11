@@ -8,8 +8,9 @@ class stream_wrapper_tmp extends agaveLocalStreamWrapper {
    * Implements abstract public function getDirectoryPath()
    */
 	public function getDirectoryPath() {
-                global $agave;
-                $path = $agave->upfiles_dir."tmp/";
+                $tmpfile = tempnam("dummy","");
+                $path = dirname($tmpfile);
+                unlink($tmpfile);
                 return $path;
 	}
    /**
